@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="window_bg">#DAE293</color>
+    <color name="window_bg">#D4DBB5</color>
     <color name="splash_window_bg">#2a2b42</color>
-    <color name="mmhi_dialog_bg">#FFFFFF</color>
+    <color name="dialog_bg">#FFFFFF</color>
 
-    <color name="color_primary">#046FC5</color>
-    <color name="color_primary_variant">#3A8ED1</color>
-    <color name="color_primary_dark">#00508F</color>
-    <color name="color_secondary">#69D770</color>
-    <color name="color_secondary_variant">#40A644</color>
+    <color name="color_primary">#8BC34A</color>
+    <color name="color_primary_variant">#4CAF50</color>
+    <color name="color_primary_dark">#009688</color>
+    <color name="color_secondary">#03A9F4</color>
+    <color name="color_secondary_variant">#2196F3</color>
 
     <color name="error">#CD3100</color>
     <color name="positive">#4CAF50</color>
@@ -72,7 +72,7 @@
     <color name="audio_wave_recording_error">#FF9800</color>
 
     <color name="congratulations_text_color">#69D770</color>
-    <color name="welcome_text_color">#368CD1</color>
+    <color name="welcome_text_color">#2a2b42</color>
 
     <color name="continue_button_bg_normal">#368CD1</color>
     <color name="red">#F44336</color>

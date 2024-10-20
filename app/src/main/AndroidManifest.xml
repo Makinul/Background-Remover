@@ -27,7 +27,7 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:label="@string/title_activity_settings"
+            android:label="@string/activity_settings"
             android:theme="@style/Theme.BackgroundRemover.NoActionBar">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -38,7 +38,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
-            android:label="@string/title_activity_main"
+            android:label="@string/activity_main"
             android:theme="@style/Theme.BackgroundRemover">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->

@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/nav_home"
         android:name="com.makinul.background.remover.ui.main.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/nav_dashboard"
         android:name="com.makinul.background.remover.ui.main.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/nav_notifications"
         android:name="com.makinul.background.remover.ui.main.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/notifications"
         tools:layout="@layout/fragment_notifications" />
 </navigation>
