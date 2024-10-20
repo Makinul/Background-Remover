@@ -1,0 +1,152 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+
+    <!--  default margin padding sizes  -->
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_margin_small">12dp</dimen>
+    <dimen name="default_margin_very_small">10dp</dimen>
+    <dimen name="default_margin_tiny">8dp</dimen>
+    <dimen name="default_margin_minny">5dp</dimen>
+
+    <!--  default text sizes  -->
+    <dimen name="splash_text_size">32sp</dimen>
+    <dimen name="app_title_text_size">24sp</dimen>
+    <dimen name="body_title_text_size">18sp</dimen>
+    <dimen name="body_text_size">16sp</dimen>
+    <dimen name="body_text_size_small">14sp</dimen>
+    <dimen name="body_text_size_very_small">12sp</dimen>
+    <dimen name="body_text_size_tinny">10sp</dimen>
+    <dimen name="body_text_size_minny">8sp</dimen>
+    <dimen name="body_region_text_size">10sp</dimen>
+    <dimen name="body_region_gap">5dp</dimen>
+
+    <dimen name="home_tile_message_text_size">14sp</dimen>
+
+    <!-- Bottom Sheet -->
+    <dimen name="bottom_sheet_control_button_width">48dp</dimen>
+    <dimen name="bottom_sheet_control_button_height">5dp</dimen>
+
+    <dimen name="pose_icon_width">50dp</dimen>
+    <dimen name="pose_icon_height">100dp</dimen>
+    <dimen name="demo_animation_width">150dp</dimen>
+    <dimen name="demo_animation_height">250dp</dimen>
+
+    <dimen name="pose_list_title_text_size">16sp</dimen>
+    <dimen name="demographic_question_text_size">18sp</dimen>
+    <dimen name="demographic_user_input_text_size">32sp</dimen>
+
+    <dimen name="pose_title_text_size">12sp</dimen>
+    <dimen name="pose_title_tiny_text_size">8sp</dimen>
+    <dimen name="demographic_header_icon_size">150dp</dimen>
+    <dimen name="demographic_header_icon_margin">10dp</dimen>
+    <dimen name="demographic_header_icon_padding">30dp</dimen>
+
+    <dimen name="demographic_ethic_button_text_size">12sp</dimen>
+    <dimen name="demographic_ethic_button_radius">30dp</dimen>
+
+    <dimen name="demographic_primary_button_height">75dp</dimen>
+
+    <dimen name="sign_text_size">30sp</dimen>
+    <dimen name="email_password_text_size">18sp</dimen>
+    <dimen name="email_password_padding">10dp</dimen>
+    <dimen name="email_password_layout_marginTop">@dimen/default_margin_small</dimen>
+    <dimen name="medium_button_corner_radius">20dp</dimen>
+    <dimen name="sign_button_padding">14dp</dimen>
+    <dimen name="register_button_stroke_width">2dp</dimen>
+    <dimen name="forgot_button_text_size">16sp</dimen>
+    <dimen name="forgot_button_layout_marginTopBottom">16dp</dimen>
+    <dimen name="default_edittext_stroke">1dp</dimen>
+    <dimen name="password_to_signIn_button_marginTop">10dp</dimen>
+
+    <dimen name="popup_title_text_size">24sp</dimen>
+    <dimen name="popup_body_text_size">20sp</dimen>
+    <dimen name="count_down_timer_text_size">120sp</dimen>
+
+    <dimen name="record_count_down_timer_text_size">30sp</dimen>
+    <dimen name="record_count_down_icon_size">30dp</dimen>
+
+    <dimen name="default_text_size">16sp</dimen>
+
+    <dimen name="default_small_text_size">12sp</dimen>
+    <dimen name="assessment_details_provider_text_to_profile_margin">10dp</dimen>
+    <dimen name="assessment_details_testId_to_bodyRegion_margin">10dp</dimen>
+    <dimen name="assessment_details_provider_name_textSize">16sp</dimen>
+    <dimen name="assessment_details_provider_details_layout_padding">3dp</dimen>
+    <dimen name="provider_image_layout_width">25dp</dimen>
+    <dimen name="provider_image_marginRight">5dp</dimen>
+    <dimen name="invitation_type_paddingStart">12dp</dimen>
+    <dimen name="invitation_type_textSize">16sp</dimen>
+
+    <dimen name="bot_question_answer_button_strokeWidth">0.8dp</dimen>
+    <dimen name="invitation_start_button_stroke">1dp</dimen>
+    <dimen name="invitation_start_button_corner_radius">7dp</dimen>
+
+    <dimen name="bot_question_medical_history_text_size">16sp</dimen>
+    <dimen name="skipped_qa_amount_text_size">14sp</dimen>
+    <dimen name="bot_question_text_size">12sp</dimen>
+    <dimen name="bot_question_answer_text_size">14sp</dimen>
+
+    <dimen name="assessment_progress_size">80dp</dimen>
+    <dimen name="assessment_progress_icon_size">40dp</dimen>
+    <dimen name="invitation_card_left_icon_width">12dp</dimen>
+    <dimen name="edit_icon_button_size">25dp</dimen>
+    <dimen name="settings_profile_pic_size">80dp</dimen>
+
+    <dimen name="next_previous_button_corner_radius">5dp</dimen>
+
+    <integer name="slide_animation_duration_start">400</integer>
+    <integer name="slide_animation_duration_end">200</integer>
+
+    <dimen name="tab_text_size">12sp</dimen>
+    <dimen name="movement_icon_width">50dp</dimen>
+    <dimen name="movement_icon_height">75dp</dimen>
+
+    <dimen name="camera_pager_item_normal_size">50dp</dimen>
+    <dimen name="camera_pager_item_selected_size">75dp</dimen>
+    <dimen name="forgot_password_web_view_height">360dp</dimen>
+
+    <dimen name="welcome_text_size">32sp</dimen>
+    <dimen name="ic_user_welcome_bot_size">100dp</dimen>
+
+    <dimen name="cc_question_option_radius">5dp</dimen>
+    <dimen name="cc_question_option_stroke">1dp</dimen>
+
+    <dimen name="pain_level_tag_radius">5dp</dimen>
+    <dimen name="cc_bg_stroke">8dp</dimen>
+
+    <dimen name="biometric_see_all_bg_radius">5dp</dimen>
+    <dimen name="biometric_see_all_bg_stroke">1dp</dimen>
+
+    <dimen name="biometric_item_icon_width">50dp</dimen>
+    <dimen name="biometric_item_icon_height">75dp</dimen>
+
+    <dimen name="biometric_movement_item_corner_radius">16dp</dimen>
+    <dimen name="biometric_movement_item_bg_stroke">1dp</dimen>
+
+    <dimen name="popup_instruction_icon_width">160dp</dimen>
+    <dimen name="popup_instruction_icon_height">240dp</dimen>
+    <dimen name="instruction_icon_width">80dp</dimen>
+    <dimen name="instruction_icon_height">120dp</dimen>
+
+    <dimen name="camera_view_icon_layout_corner">48dp</dimen>
+    <dimen name="camera_view_icon_layout_margin">8dp</dimen>
+
+    <dimen name="camera_view_border_width">4dp</dimen>
+    <dimen name="biometric_start_warning_button_min_width">200dp</dimen>
+    <dimen name="pain_question_item_bg_stroke">3dp</dimen>
+    <dimen name="chief_complaint_item_image_width">120dp</dimen>
+    <dimen name="chief_complaint_item_image_height">320dp</dimen>
+
+    <dimen name="home_view_status_view_top_margin">48dp</dimen>
+    <dimen name="how_it_work_number_bg_size">40dp</dimen>
+
+    <dimen name="telemedicine_subscriber_width">100dp</dimen>
+    <dimen name="telemedicine_subscriber_height">100dp</dimen>
+
+    <dimen name="biometric_details_message_height">100dp</dimen>
+</resources>

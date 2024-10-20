@@ -1,0 +1,43 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BackgroundRemover" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryVariant">@color/color_primary_variant</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
+        <item name="colorError">@color/error</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/window_bg</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/window_bg</item>
+    </style>
+
+    <style name="Theme.BackgroundRemover" parent="Base.Theme.BackgroundRemover" />
+
+    <style name="Theme.BackgroundRemover.SplashScreen" parent="Base.Theme.BackgroundRemover">
+        <!--        <item name="android:windowFullscreen">true</item>-->
+        <!--        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>-->
+        <!--        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">-->
+        <!--            @drawable/mmh_logo-->
+        <!--        </item>-->
+        <!--        <item name="android:windowSplashScreenBackground" tools:targetApi="s">-->
+        <!--            @color/mp_color_primary_variant-->
+        <!--        </item>-->
+        <!-- Status bar color. -->
+        <item name="android:windowBackground">@color/splash_window_bg</item>
+    </style>
+
+    <style name="Theme.BackgroundRemover.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.BackgroundRemover.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.BackgroundRemover.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

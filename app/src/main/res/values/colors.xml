@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_bg">#DAE293</color>
+    <color name="splash_window_bg">#2a2b42</color>
+    <color name="mmhi_dialog_bg">#FFFFFF</color>
+
+    <color name="color_primary">#046FC5</color>
+    <color name="color_primary_variant">#3A8ED1</color>
+    <color name="color_primary_dark">#00508F</color>
+    <color name="color_secondary">#69D770</color>
+    <color name="color_secondary_variant">#40A644</color>
+
+    <color name="error">#CD3100</color>
+    <color name="positive">#4CAF50</color>
+    <color name="toolbar_background">#E0E0E0</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="bottom_sheet_background">#EEEEEE</color>
+    <color name="bottom_sheet_text_color">@android:color/black</color>
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
+    <!--    <color name="blue_20">#D0E2FF</color>-->
+    <!--    <color name="blue_70">#0043CE</color>-->
+    <!--    <color name="light_blue_400">#368CD1</color>-->
+    <!--    <color name="light_blue_500">#046FC5</color>-->
+    <!--    <color name="light_blue_600">#FF039BE5</color>-->
+    <!--    <color name="light_blue_900">#FF01579B</color>-->
+    <!--    <color name="light_blue_A200">#FF40C4FF</color>-->
+    <!--    <color name="light_blue_A400">#FF00B0FF</color>-->
+    <color name="deep_blue">#023D6C</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#959595</color>
+    <color name="light_periwinkle">#D3D5EF</color>
+    <color name="light_white">#88FFFFFF</color>
+    <color name="light_gray">#E7EBEC</color>
+
+    <color name="black">#000000</color>
+    <color name="hints_color">#E7EBEC</color>
+
+    <color name="camera_screen_top_bar_gb">#77000000</color>
+
+    <color name="ethnic_demography_button_bg_normal">#F3F5F7</color>
+    <color name="ethnic_demography_button_bg_selected">#69D770</color>
+    <color name="ethnic_demography_button_text_normal">#8C939B</color>
+    <color name="ethnic_demography_button_text_selected">#FFFFFF</color>
+
+    <color name="primary_button_action_bg_normal">#2196F3</color>
+
+    <color name="primary_button_bg">#4CAF50</color>
+    <color name="primary_button_bg_normal">#F3F5F7</color>
+    <color name="primary_button_bg_selected">#69D770</color>
+
+    <color name="secondary_button_bg_normal">#F3F5F7</color>
+    <color name="secondary_button_bg_selected">#F5BE41</color>
+
+    <color name="demography_button_text_color">#8C939B</color>
+
+    <color name="demographic_header_progress_bar_bg">#E9E9E9</color>
+    <color name="demographic_header_icon_bg">#022F53</color>
+
+    <color name="demographic_header_bg">#022F53</color>
+    <color name="ethnic_progressbar_color">#2ECC71</color>
+    <color name="ethnic_progressbar_background_color">#022F53</color>
+    <color name="ethnic_selected_button_color">#69D770</color>
+    <color name="ethnic_selected_button_text_color">#FFFFFF</color>
+
+    <color name="audio_wave_active">#03A9F4</color>
+    <color name="audio_wave_inactive">#888888</color>
+    <color name="audio_wave_finished">#888888</color>
+    <color name="audio_wave_recording">#F44336</color>
+    <color name="audio_wave_recording_error">#FF9800</color>
+
+    <color name="congratulations_text_color">#69D770</color>
+    <color name="welcome_text_color">#368CD1</color>
+
+    <color name="continue_button_bg_normal">#368CD1</color>
+    <color name="red">#F44336</color>
+    <color name="textHintColor">#D3D5EF</color>
+    <color name="camera_popup_title">#046FC5</color>
+    <color name="camera_popup_bg">#E4E4E4</color>
+    <color name="count_down_timer_bg">#00B24C</color>
+    <color name="background_assessment">#E9EBF8</color>
+    <color name="assessment_details_provider_bg">#D9D9D9</color>
+    <color name="assessment_details_provider_name_color">#A4A4A4</color>
+    <color name="assessment_details_provider_text_color">#5E5F60</color>
+    <color name="assessment_details_invitation_text_color">#434343</color>
+    <color name="assessment_details_invitation_bg_color">#DDE7FF</color>
+
+    <color name="bot_question_view_answered_icon_background_color">#D9D9D9</color>
+    <color name="bot_question_text_color">#15202F</color>
+    <color name="bot_question_option_text_color">#4F4F4F</color>
+    <color name="bot_question_option_bg_color_selected">#69D770</color>
+    <color name="invitation_type_bg_color">#E67E22</color>
+    <color name="invitation_title_text_color">#4F4F4F</color>
+    <color name="invitation_creation_date_color">#8C939B</color>
+    <color name="invitation_start_button_text_color">#046FC5</color>
+
+    <color name="home_new_invitation_bg">#046FC5</color>
+    <color name="home_incomplete_assessments_bg">#FFEFCA</color>
+    <color name="home_incomplete_assessments_arrow">#A4A4A4</color>
+    <color name="home_generated_reports_bg">#E5FFF0</color>
+
+    <color name="self">#E67E22</color>
+    <color name="telemedicine">#69D770</color>
+    <color name="in_clinic">#368CD1</color>
+
+    <color name="assessment_progress_dem">#DD2214</color>
+    <color name="assessment_progress_dem_light">#FAAFA9</color>
+    <color name="assessment_progress_med">#69D770</color>
+    <color name="assessment_progress_med_light">#D9FFD0</color>
+    <color name="assessment_progress_adl">#F5BE41</color>
+    <color name="assessment_progress_adl_light">#FFF2D0</color>
+    <color name="assessment_progress_cc">#3FA1D8</color>
+    <color name="assessment_progress_cc_light">#7AC1E8</color>
+    <color name="assessment_progress_bio">#3747A6</color>
+    <color name="assessment_progress_bio_light">#ABB6FA</color>
+    <color name="assessment_progress_doc">#67C0A7</color>
+    <color name="assessment_progress_doc_light">#BEE3D9</color>
+
+    <color name="completed">#4caf50</color>
+    <color name="in_review">#FF9800</color>
+    <color name="remaining">#FF9800</color>
+
+    <color name="movement_status_completed">#4caf50</color>
+    <color name="movement_status_pending">#AAD3EA</color>
+    <color name="movement_status_processing">#A4D19A</color>
+    <color name="movement_status_error">#E8A8A8</color>
+
+    <color name="body_region_bg_stroke">#80046FC5</color>
+    <color name="bot_question_answered_type_text">#15202F</color>
+    <color name="bot_question_answered_type_bg">#D0E2FF</color>
+
+    <color name="bot_question_answered_bg">#69D770</color>
+    <color name="bot_question_answered_bg_stroke">#00BB0C</color>
+    <color name="bot_question_answered_edit_bg">#F9F9F9</color>
+
+    <color name="url_text_normal">#046FC5</color>
+    <color name="url_text_pressed">#FF9800</color>
+
+    <color name="tab_bg_color_selected">@color/color_primary</color>
+    <color name="tab_bg_color_normal">#E3E3E3</color>
+
+    <color name="pain_level_10">#F3402E</color>
+    <color name="pain_level_7">#FEB754</color>
+    <color name="pain_level_3">#76D382</color>
+    <color name="no_chief_complaint">#1176B4</color>
+
+    <color name="cc_question_option_stroke">#4F4F4F</color>
+    <color name="cc_question_option_stroke_selected">#2D8EC5</color>
+    <color name="cc_question_option_solid">#FFFFFF</color>
+    <color name="cc_question_option_solid_selected">#DFF3FF</color>
+
+    <color name="pain_level_tag_bg_0">#E2FFEA</color>
+    <color name="pain_level_tag_bg_10">#FFEEEE</color>
+    <color name="pain_level_selected_bg">#76D382</color>
+    <color name="pain_level_option_text">#4F4F4F</color>
+
+    <color name="cc_bg_stroke_normal">#A4A4A4</color>
+    <color name="cc_bg_stroke_completed">#3FA1D8</color>
+    <color name="biometric_see_all_bg_stroke">@color/color_primary</color>
+
+    <color name="biometric_movement_item_start_button">#BCE7FF</color>
+
+    <color name="biometric_movement_item_open">#8C8C8C</color>
+    <color name="biometric_movement_item_open_light">#778C8C8C</color>
+    <color name="biometric_movement_item_positive_retake">#05A14B</color>
+    <color name="biometric_movement_item_positive_retake_light">#7705A14B</color>
+    <color name="biometric_movement_item_negative_retake">#FB0604</color>
+    <color name="biometric_movement_item_negative_retake_light">#77FB0604</color>
+    <color name="biometric_movement_item_processing">#D2BA00</color>
+    <color name="biometric_movement_item_processing_light">#77D2BA00</color>
+
+    <color name="dialog_transparent_bg">#66000000</color>
+    <color name="biometric_toolbar_bg">#44000000</color>
+    <color name="record_count_down_timer_text">#FFC107</color>
+
+    <color name="recording">#FB0B09</color>
+    <color name="camera_bound_box_warning">#FB0B09</color>
+    <color name="camera_bound_box_positive">#4CAF50</color>
+    <color name="camera_center_view_bg">#FFC107</color>
+
+    <color name="action">#1079CD</color>
+    <color name="submit">#4CAF50</color>
+    <color name="retake">#F44336</color>
+
+    <color name="pain_question_blur_bg">#DDFFFFFF</color>
+    <color name="telemedicine_message_bg">#BF000000</color>
+    <color name="camera_placeholder_bg">#2C2C2C</color>
+    <color name="telemedicine_box_color">#03A9F4</color>
+
+    <color name="how_it_works_number">#4CAF50</color>
+
+    <color name="app_version_text_color">#03A9F4</color>
+</resources>

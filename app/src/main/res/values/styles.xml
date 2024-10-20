@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    ~ Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+    ~
+    ~ Licensed under the Apache License, Version 2.0 (the "License");
+    ~ you may not use this file except in compliance with the License.
+    ~ You may obtain a copy of the License at
+    ~
+    ~       http://www.apache.org/licenses/LICENSE-2.0
+    ~
+    ~ Unless required by applicable law or agreed to in writing, software
+    ~ distributed under the License is distributed on an "AS IS" BASIS,
+    ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    ~ See the License for the specific language governing permissions and
+    ~ limitations under the License.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppThemeProgressStyle">
+        <item name="colorAccent">@color/color_primary_variant</item>
+    </style>
+
+    <style name="Widget.AppTheme.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="Widget.AppTheme.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+    <style name="PoseTitleAppearance" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/pose_list_title_text_size</item>
+    </style>
+
+    <style name="PoseTitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/pose_title_text_size</item>
+    </style>
+
+    <style name="PoseTitleTiny" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/pose_title_tiny_text_size</item>
+    </style>
+
+    <style name="Demographic.Question" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/demographic_question_text_size</item>
+    </style>
+
+    <style name="Demographic.User.Input.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/demographic_user_input_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/hints_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Demographic.User.Input" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">@dimen/demographic_user_input_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/hints_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--    <style name="MMHI.PrimaButton" parent="Widget.AppCompat.Button">-->
+<!--        <item name="android:layout_width">match_parent</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/demographic_ethic_button_radius</item>-->
+<!--        <item name="android:backgroundTint">@color/primary_button_bg_selector</item>-->
+<!--        <item name="backgroundTint">@color/primary_button_bg_selector</item>-->
+<!--        <item name="android:textColor">@color/primary_button_text_selector</item>-->
+<!--        <item name="android:textSize">@dimen/demographic_ethic_button_text_size</item>-->
+<!--        <item name="android:singleLine">true</item>-->
+<!--        <item name="android:ellipsize">end</item>-->
+<!--        <item name="android:padding">@dimen/default_margin_small</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.PrimaButton.Demographic.General1" parent="MMHI.PrimaButton">-->
+<!--        <item name="minHeight">@dimen/demographic_primary_button_height</item>-->
+<!--        <item name="android:minHeight">@dimen/demographic_primary_button_height</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.PrimaButton.Continue" parent="Widget.MaterialComponents.Button.TextButton">-->
+<!--        <item name="android:backgroundTint">@color/continue_button_bg_normal</item>-->
+<!--        <item name="backgroundTint">@color/continue_button_bg_normal</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="strokeColor">@color/white</item>-->
+<!--        <item name="strokeWidth">@dimen/register_button_stroke_width</item>-->
+<!--        <item name="cornerRadius">@dimen/medium_button_corner_radius</item>-->
+<!--        <item name="android:padding">@dimen/default_margin</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.PrimaButton.Demographic.Ethnic" parent="MMHI.PrimaButton">-->
+<!--        <item name="android:layout_width">0dp</item>-->
+<!--        <item name="android:layout_height">match_parent</item>-->
+<!--        <item name="android:layout_weight">1</item>-->
+<!--        <item name="singleLine">false</item>-->
+<!--        <item name="android:singleLine">false</item>-->
+<!--        <item name="android:maxLines">3</item>-->
+<!--        <item name="maxLines">3</item>-->
+<!--        <item name="android:ellipsize">middle</item>-->
+<!--        <item name="android:textSize">@dimen/demographic_ethic_button_text_size</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.SecondaryButton" parent="MMHI.PrimaButton">-->
+<!--        <item name="android:backgroundTint">@color/secondary_button_bg_selector</item>-->
+<!--        <item name="backgroundTint">@color/secondary_button_bg_selector</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.SecondaryButton.Demographic.Gender" parent="MMHI.SecondaryButton">-->
+<!--        <item name="android:layout_height">match_parent</item>-->
+<!--        <item name="android:layout_width">wrap_content</item>-->
+<!--        <item name="android:singleLine">true</item>-->
+<!--        <item name="singleLine">true</item>-->
+<!--        <item name="android:ellipsize">end</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.SignIn" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:layout_width">wrap_content</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:text">@string/sign_in</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="android:textSize">@dimen/sign_text_size</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.SecondaryButton.SignIn" parent="Widget.MaterialComponents.Button.TextButton">-->
+<!--        <item name="android:layout_width">match_parent</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="strokeColor">@color/white</item>-->
+<!--        <item name="android:layout_marginTop">@dimen/password_to_signIn_button_marginTop</item>-->
+<!--        <item name="strokeWidth">@dimen/register_button_stroke_width</item>-->
+<!--        <item name="cornerRadius">@dimen/medium_button_corner_radius</item>-->
+<!--        <item name="android:padding">@dimen/sign_button_padding</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.SecondaryButton.ForgotPassword" parent="Widget.Material3.Button.TextButton">-->
+<!--        <item name="android:layout_gravity">center</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="strokeColor">@color/white</item>-->
+<!--        <item name="android:textSize">@dimen/forgot_button_text_size</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.EditeText.EmailPassword" parent="Widget.AppCompat.EditText">-->
+<!--        <item name="android:layout_width">match_parent</item>-->
+<!--        <item name="android:layout_height">wrap_content</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_regular</item>-->
+<!--        <item name="android:textSize">@dimen/email_password_text_size</item>-->
+<!--        <item name="android:backgroundTint">@color/deep_blue</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin</item>-->
+<!--        <item name="android:importantForAutofill" tools:targetApi="o">no</item>-->
+<!--        <item name="android:padding">@dimen/email_password_padding</item>-->
+<!--        <item name="android:layout_marginTop">@dimen/email_password_layout_marginTop</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textColorHint">@color/textHintColor</item>-->
+<!--    </style>-->
+
+<!--    <style name="CongratulationsTextStyle" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:text">@string/congratulations</item>-->
+<!--        <item name="android:textColor">@color/congratulations_text_color</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:gravity">center_horizontal</item>-->
+<!--        <item name="android:textSize">31sp</item>-->
+<!--        <item name="android:layout_marginBottom">20dp</item>-->
+<!--        <item name="android:layout_marginTop">20dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="DemographyUpdatedTextStyle">-->
+<!--        <item name="android:text">@string/demography_updated</item>-->
+<!--        <item name="android:gravity">center_horizontal|top</item>-->
+<!--        <item name="android:textSize">37sp</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="fontFamily">@font/outfit_extrabold</item>-->
+<!--        <item name="android:letterSpacing">0.01</item>-->
+<!--        <item name="android:textColor">#15202F</item>-->
+<!--    </style>-->
+
+<!--    <style name="WelcomeTextStyle">-->
+<!--        <item name="android:text">@string/welcome_text</item>-->
+<!--        <item name="android:textColor">@color/welcome_text_color</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:gravity">center_horizontal</item>-->
+<!--        <item name="android:textSize">@dimen/welcome_text_size</item>-->
+<!--    </style>-->
+
+<!--    <style name="WelcomeTextDescriptionStyle">-->
+<!--        <item name="android:textSize">@dimen/app_title_text_size</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="fontFamily">@font/outfit_bold</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Toolbar.Title" parent="TextAppearance.AppCompat.Title">-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:textStyle">normal</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Popup.Title" parent="TextAppearance.AppCompat.Title">-->
+<!--        <item name="android:textSize">@dimen/popup_title_text_size</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textStyle">normal</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="singleLine">false</item>-->
+<!--        <item name="maxLines">2</item>-->
+<!--        <item name="android:maxLines">2</item>-->
+<!--        <item name="android:singleLine">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Popup.Body" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/popup_body_text_size</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--    </style>-->
+
+<!--    &lt;!&ndash;    <style name="MMHI.TextView.TestId" parent="Widget.AppCompat.TextView">&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:background">@drawable/rounded_corner</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textColor">@color/white</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:gravity">center</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:layout_marginLeft">@dimen/default_margin</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:layout_marginTop">@dimen/default_margin</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:layout_marginRight">@dimen/default_margin</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textSize">25dp</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:padding">10dp</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textStyle">bold</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;    </style>&ndash;&gt;-->
+
+<!--    <style name="MMHI.TextView.AssessmentProgressText" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:textSize">@dimen/body_title_text_size</item>-->
+<!--        <item name="android:textColor">@color/color_primary</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Invitation.BodyRegion" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:background">@drawable/rounded_corner_body_region</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_regular</item>-->
+<!--        <item name="android:textColor">@color/color_primary</item>-->
+<!--        <item name="android:textSize">@dimen/body_region_text_size</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.InvitationType" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:paddingStart">@dimen/invitation_type_paddingStart</item>-->
+<!--        <item name="android:paddingEnd">@dimen/invitation_type_paddingStart</item>-->
+<!--        <item name="android:background">@drawable/rounded_corner_assessment_details_invitation_bg-->
+<!--        </item>-->
+<!--        <item name="android:textColor">@color/assessment_details_invitation_text_color</item>-->
+<!--        <item name="android:textSize">@dimen/invitation_type_textSize</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:text">@string/invitation_type</item>-->
+<!--    </style>-->
+
+<!--    <style name="Circular">-->
+<!--        <item name="cornerSize">50%</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.NewInvitation.NewInvitationTitle" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:layout_gravity">start</item>-->
+<!--        <item name="android:text">New Assessment</item>-->
+<!--        <item name="android:textColor">@color/invitation_title_text_color</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textSize">18sp</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Invitation.InvitationType" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:background">@drawable/rounded_corner_invitation_type</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.NewInvitation.InvitationCreationDate" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:layout_marginLeft">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:text">@string/dummy_creation_date</item>-->
+<!--        <item name="android:textColor">@color/invitation_creation_date_color</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_medium</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.NewInvitation.StartButton" parent="Widget.MaterialComponents.Button.TextButton">-->
+<!--        <item name="android:textColor">@color/invitation_start_button_text_color</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="strokeColor">@color/invitation_start_button_text_color</item>-->
+<!--        <item name="strokeWidth">@dimen/invitation_start_button_stroke</item>-->
+<!--        <item name="cornerRadius">@dimen/invitation_start_button_corner_radius</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--        <item name="android:padding">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_small</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.BotQuestion.Description" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:textSize">@dimen/bot_question_text_size</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.BotQuestion.ViewAnswer" parent="Widget.Material3.Button">-->
+<!--        <item name="android:drawableTint">@color/white</item>-->
+<!--        <item name="android:drawableEnd">@drawable/bot_view_answered_bg</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:fontFamily">@font/inter_bold</item>-->
+<!--        <item name="android:padding">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:text">View Answered</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.BotQuestion.AnswerButton" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/action_button_selector</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:padding">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:text">Yes</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:textColor">@color/action_button_text_selector</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin</item>-->
+<!--        <item name="strokeColor">@color/action</item>-->
+<!--        <item name="strokeWidth">1dp</item>-->
+<!--        <item name="android:minHeight">0dp</item>-->
+<!--        <item name="android:minWidth">0dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.BotQuestion.NextButton" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/color_primary</item>-->
+<!--        <item name="android:drawableTint">@color/white</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:fontFamily">@font/inter_bold</item>-->
+<!--        <item name="android:text">Next</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.BotQuestion.SkipButton" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/white</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:text">Skip for now</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:textColor">@color/color_primary</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_small</item>-->
+<!--        <item name="strokeColor">@color/color_primary</item>-->
+<!--        <item name="strokeWidth">1dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Title" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/app_title_text_size</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Title" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/body_title_text_size</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Home.Tile.Message" parent="MMHI.TextView.Body.Title">-->
+<!--        <item name="android:textSize">@dimen/home_tile_message_text_size</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_regular</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Cell.Date" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_small</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Link" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textColor">@color/url_text_selector</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Assessment.Status" parent="Widget.MaterialComponents.TextView">-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:background">@drawable/rounded_corner</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.AnsweredType" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:textColor">@color/bot_question_answered_type_text</item>-->
+<!--        <item name="android:background">@color/bot_question_answered_type_bg</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--        <item name="textAllCaps">true</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_small</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Answered" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:background">@drawable/bot_question_answered_bg</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:text">Daily</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_very_small</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="android:textStyle">normal</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Answered.Edit" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:background">@drawable/bot_question_answered_edit_bg</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_tiny</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_very_small</item>-->
+<!--        <item name="android:textColor">@color/color_primary_variant</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="android:textStyle">normal</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TabLayout.TextAppearance" parent="TextAppearance.Design.Tab">-->
+<!--        <item name="textAllCaps">false</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="singleLine">true</item>-->
+<!--        <item name="android:singleLine">true</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Small" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_small</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Very.Small" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_very_small</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Tinny" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_tinny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.Body.Minny" parent="MMHI.TextView.Body">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_minny</item>-->
+<!--    </style>-->
+
+<!--    &lt;!&ndash;    <style name="MMHI.TextView.Movement.Status" parent="Widget.MaterialComponents.Button.TextButton">&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="background">@color/color_primary_variant</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="cornerRadius">@dimen/default_margin_small</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:includeFontPadding">false</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:padding">@dimen/default_margin_minny</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textSize">@dimen/body_text_size_very_small</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textStyle">bold</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textColor">@color/white</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;        <item name="android:textAllCaps">false</item>&ndash;&gt;-->
+<!--    &lt;!&ndash;    </style>&ndash;&gt;-->
+
+<!--    <style name="MMHI.TextView.Movement.Status" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:background">@drawable/rounded_corner</item>-->
+<!--        <item name="android:paddingStart">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingEnd">@dimen/default_margin_small</item>-->
+<!--        <item name="android:paddingTop">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:paddingBottom">@dimen/default_margin_minny</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TabLayout.TabItem" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/tab_bg_color_selector</item>-->
+<!--        <item name="android:textColor">@color/tab_text_color_selector</item>-->
+<!--        <item name="android:textSize">@dimen/tab_text_size</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--        <item name="singleLine">true</item>-->
+<!--        <item name="android:singleLine">true</item>-->
+<!--        <item name="android:ellipsize">middle</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.App.Version" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/body_text_size_small</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textColor">@color/app_version_text_color</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.Biometric.Movements.Button" parent="Widget.Material3.Button.TextButton">-->
+<!--        <item name="android:backgroundTint">@color/light_gray</item>-->
+<!--        <item name="android:text">@string/start</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_very_small</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.Doctors.Appointment.Button" parent="Widget.Material3.Button.TextButton">-->
+<!--        <item name="android:backgroundTint">@color/light_gray</item>-->
+<!--        <item name="android:text">@string/start</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size_very_small</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.Biometric.Warning.Action" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/action_button_selector</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_bold</item>-->
+<!--        <item name="android:text">@string/yes</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:textColor">@color/action_button_text_selector</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_small</item>-->
+<!--        <item name="strokeColor">@color/color_primary</item>-->
+<!--        <item name="strokeWidth">1dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.Biometric.Warning.Submit" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/submit_button_selector</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:fontFamily">@font/inter_bold</item>-->
+<!--        <item name="android:text">Next</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin_tiny</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.Biometric.Pain" parent="Widget.Material3.Button">-->
+<!--        <item name="android:backgroundTint">@color/submit_button_selector</item>-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:fontFamily">@font/roboto_regular</item>-->
+<!--        <item name="android:text">Next</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="cornerRadius">@dimen/default_margin</item>-->
+<!--    </style>-->
+
+<!--    <style name="MMHI.TextView.How.It.Work.Number" parent="TextAppearance.AppCompat.Body1">-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:textColor">@color/white</item>-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:includeFontPadding">false</item>-->
+<!--        <item name="android:layout_width">@dimen/how_it_work_number_bg_size</item>-->
+<!--        <item name="android:layout_height">@dimen/how_it_work_number_bg_size</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:background">@drawable/white_circle</item>-->
+<!--        <item name="android:backgroundTint">@color/how_it_works_number</item>-->
+<!--    </style>-->
+
+    <style name="MMHI.TextView.How.It.Work" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">@dimen/body_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="MMHI.TextView.How.It.Work.Description" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">@dimen/body_text_size_very_small</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">start</item>
+    </style>
+</resources>
