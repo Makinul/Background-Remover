@@ -19,7 +19,7 @@
 
     <style name="Theme.BackgroundRemover" parent="Base.Theme.BackgroundRemover" />
 
-    <style name="Theme.BackgroundRemover.SplashScreen" parent="Base.Theme.BackgroundRemover">
+    <style name="Theme.BackgroundRemover.Splash" parent="Theme.BackgroundRemover">
         <!--        <item name="android:windowFullscreen">true</item>-->
         <!--        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>-->
         <!--        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">-->
@@ -30,6 +30,10 @@
         <!--        </item>-->
         <!-- Status bar color. -->
         <item name="android:windowBackground">@color/splash_window_bg</item>
+    </style>
+
+    <style name="Theme.BackgroundRemover.Home" parent="Theme.Material3.DayNight">
+
     </style>
 
     <style name="Theme.BackgroundRemover.NoActionBar">

@@ -17,7 +17,7 @@
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.BackgroundRemover.SplashScreen">
+            android:theme="@style/Theme.BackgroundRemover.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,7 +49,7 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
-            android:theme="@style/Theme.BackgroundRemover">
+            android:theme="@style/Theme.BackgroundRemover.Home">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->
 
