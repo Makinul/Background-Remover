@@ -25,8 +25,7 @@ class HomeActivity : BaseActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        setSupportActionBar(binding.toolbar)
-
+        setSupportActionBar(binding.toolbar)
 
         val bottomNavView: BottomNavigationView = binding.bottomNavView
         val navController = findNavController(R.id.nav_host_fragment_home)
@@ -35,11 +34,13 @@ class HomeActivity : BaseActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_history, R.id.nav_notifications
+                R.id.home_fragment, R.id.history_fragment, R.id.notifications_fragment
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavView.setupWithNavController(navController)
+
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home_black_24dp)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {

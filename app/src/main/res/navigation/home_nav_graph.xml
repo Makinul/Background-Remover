@@ -15,4 +15,9 @@
         android:name="com.makinul.background.remover.ui.home.HistoryFragment"
         android:label="@string/history"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/notifications_fragment"
+        android:name="com.makinul.background.remover.ui.home.NotificationsFragment"
+        android:label="@string/notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

@@ -10,8 +10,8 @@
         <item name="colorSecondary">@color/color_secondary</item>
         <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
         <item name="colorError">@color/error</item>
-<!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
-<!--        <item name="android:statusBarColor">@color/window_bg</item>-->
+        <!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
+        <!--        <item name="android:statusBarColor">@color/window_bg</item>-->
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/window_bg</item>
@@ -32,8 +32,12 @@
         <item name="android:windowBackground">@color/splash_window_bg</item>
     </style>
 
-    <style name="Theme.BackgroundRemover.Home" parent="Theme.Material3.DayNight">
+    <style name="Theme.BackgroundRemover.Home" parent="Base.Theme.BackgroundRemover">
+        <!--        <item name="windowActionBar">true</item>-->
+    </style>
 
+    <style name="Theme.BackgroundRemover.Main" parent="Base.Theme.BackgroundRemover">
+        <!--        <item name="windowActionBar">true</item>-->
     </style>
 
     <style name="Theme.BackgroundRemover.NoActionBar">
@@ -41,7 +45,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.BackgroundRemover.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.BackgroundRemover.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+<!--        <item name="android:icon">@drawable/ic_home_black_24dp</item>-->
+    </style>
 
     <style name="Theme.BackgroundRemover.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -13,6 +13,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 object AppConstants {
+    const val KEY_IMAGE_RESOURCE: String = "image_resource"
     val RECORD_AUDIO_PERMISSION =
         mutableListOf(
             android.Manifest.permission.RECORD_AUDIO

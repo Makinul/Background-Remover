@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".ui.home.HomeActivity"
             android:exported="false"
-            android:label="@string/activity_settings"
-            android:theme="@style/Theme.BackgroundRemover.NoActionBar">
+            android:icon="@drawable/ic_home_black_24dp"
+            android:theme="@style/Theme.BackgroundRemover.Home">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -47,9 +47,10 @@
             <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:theme="@style/Theme.BackgroundRemover.Home">
+            android:label="@string/activity_settings"
+            android:theme="@style/Theme.BackgroundRemover.NoActionBar">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->
 

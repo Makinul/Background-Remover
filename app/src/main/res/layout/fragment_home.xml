@@ -60,40 +60,44 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/test_image1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_splash_small"
+            android:id="@+id/demo_image_0"
+            android:layout_width="@dimen/demo_image_width"
+            android:layout_height="@dimen/demo_image_width"
+            android:scaleType="centerCrop"
+            android:src="@drawable/demo_image_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/test_image2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/demo_image_1"
+            android:layout_width="@dimen/demo_image_width"
+            android:layout_height="@dimen/demo_image_width"
             android:layout_marginStart="@dimen/default_margin"
-            android:src="@drawable/ic_splash_small"
+            android:scaleType="centerCrop"
+            android:src="@drawable/demo_image_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/test_image3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/demo_image_2"
+            android:layout_width="@dimen/demo_image_width"
+            android:layout_height="@dimen/demo_image_width"
             android:layout_marginStart="@dimen/default_margin"
-            android:src="@drawable/ic_splash_small"
+            android:scaleType="centerCrop"
+            android:src="@drawable/demo_image_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/test_image4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/demo_image_3"
+            android:layout_width="@dimen/demo_image_width"
+            android:layout_height="@dimen/demo_image_width"
             android:layout_marginStart="@dimen/default_margin"
-            android:src="@drawable/ic_splash_small"
+            android:scaleType="centerCrop"
+            android:src="@drawable/demo_image_3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
