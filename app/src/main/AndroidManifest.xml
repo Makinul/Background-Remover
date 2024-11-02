@@ -27,7 +27,7 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
-            android:icon="@drawable/ic_home_black_24dp"
+            android:icon="@drawable/ic_home_black"
             android:theme="@style/Theme.BackgroundRemover.Home">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->

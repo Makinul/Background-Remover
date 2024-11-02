@@ -1,7 +1,6 @@
 package com.makinul.background.remover.ui.home
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -40,7 +39,7 @@ class HomeActivity : BaseActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottomNavView.setupWithNavController(navController)
 
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home_black_24dp)
+        updateHomeIcon()
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -59,9 +58,15 @@ class HomeActivity : BaseActivity() {
 //        }
 //    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_home)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment_home)
+//        return navController.navigateUp(appBarConfiguration)
+//                || super.onSupportNavigateUp()
+//    }
+
+    fun updateHomeIcon() {
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayShowHomeEnabled(true)
+//        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home_white)
     }
 }

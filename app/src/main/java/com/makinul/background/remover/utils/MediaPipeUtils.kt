@@ -1,5 +1,9 @@
 package com.makinul.background.remover.utils
 
+enum class MediaType {
+    IMAGE, VIDEO, UNKNOWN
+}
+
 object MediaPipeUtils {
     const val NOSE = 0
     const val LEFT_EYE_INNER = 1
@@ -36,4 +40,6 @@ object MediaPipeUtils {
     const val RIGHT_FOOT_INDEX = 32
 
     const val DIRECTION_THRESHOLD = 0.20f
+
+
 }

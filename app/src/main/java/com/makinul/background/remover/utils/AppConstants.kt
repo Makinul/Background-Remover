@@ -1,8 +1,15 @@
 package com.makinul.background.remover.utils
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.DashPathEffect
+import android.graphics.ImageDecoder
 import android.graphics.Paint
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.makinul.background.remover.data.model.Angle
@@ -14,6 +21,45 @@ import kotlin.math.sqrt
 
 object AppConstants {
     const val KEY_IMAGE_RESOURCE: String = "image_resource"
+    const val KEY_BITMAP_IMAGE: String = "bitmap_image"
+
+    const val KEY_IMAGE_TYPE: String = "image_type"
+    const val KEY_IMAGE_TYPE_URI: String = "image_type_uri"
+    const val KEY_IMAGE_TYPE_ASSET: String = "image_type_asset"
+    const val KEY_IMAGE_PATH: String = "image_path"
+
+    fun getAssetBitmap(context: Context?, filePath: String?): Bitmap? {
+        if (context == null || filePath == null) return null
+        val assetManager = context.assets
+        val inputStream = assetManager.open(filePath)
+        return BitmapFactory.decodeStream(inputStream)
+    }
+
+    fun getUriBitmap(context: Context?, uriPath: String?): Bitmap? {
+        if (context == null || uriPath == null) return null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val source = ImageDecoder.createSource(
+                context.contentResolver, Uri.parse(uriPath)
+            )
+            ImageDecoder.decodeBitmap(source)
+        } else {
+            MediaStore.Images.Media.getBitmap(
+                context.contentResolver, Uri.parse(uriPath)
+            )
+        }.copy(Bitmap.Config.ARGB_8888, true)?.let { bitmap ->
+            return bitmap
+        }
+
+        return null
+    }
+
+    val listOfDemoImagesPath = listOf(
+        "images/demo_image_0.png",
+        "images/demo_image_1.jpg",
+        "images/demo_image_2.jpg",
+        "images/demo_image_3.jpg"
+    )
+
     val RECORD_AUDIO_PERMISSION =
         mutableListOf(
             android.Manifest.permission.RECORD_AUDIO

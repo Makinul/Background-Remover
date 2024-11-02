@@ -7,6 +7,7 @@
     <dimen name="nav_header_height">176dp</dimen>
 
     <!--  default margin padding sizes  -->
+    <dimen name="default_margin_big">16dp</dimen>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="default_margin_small">12dp</dimen>
     <dimen name="default_margin_very_small">10dp</dimen>
