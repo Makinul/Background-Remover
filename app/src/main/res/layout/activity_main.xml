@@ -75,18 +75,21 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/reset"
+            style="@style/VIMIKO.TextView.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin_very_small"
-            android:text="Reset"
+            android:text="@string/reset"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/done"
+            style="@style/VIMIKO.TextView.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Done"
+            android:text="@string/done"
+            android:textColor="@color/url_text_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/reset" />
 
@@ -104,10 +107,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:text="Erase"
-                android:textColor="@color/black"
-                app:strokeColor="@color/black"
-                app:strokeWidth="2dp" />
+                android:text="@string/erase"
+                android:textColor="@color/erase_button_selected"
+                app:strokeColor="@color/erase_button_selected"
+                app:strokeWidth="@dimen/erase_stroke_width" />
 
             <View
                 android:layout_width="@dimen/default_margin_very_small"
@@ -119,18 +122,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:text="restore"
-                android:textColor="@color/black"
-                app:strokeColor="@color/black"
-                app:strokeWidth="2dp" />
+                android:text="@string/restore"
+                android:textColor="@color/erase_button_normal"
+                app:strokeColor="@color/erase_button_normal"
+                app:strokeWidth="@dimen/erase_stroke_width" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/brush_size"
+            style="@style/VIMIKO.TextView.Body.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin_very_small"
-            android:text="Brush Size"
+            android:text="@string/brush_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttons_lay" />
 
@@ -139,6 +143,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_margin_very_small"
+            android:max="100"
+            android:progress="25"
             app:layout_constraintBottom_toBottomOf="@id/brush_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/brush_size"

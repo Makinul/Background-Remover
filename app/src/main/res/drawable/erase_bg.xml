@@ -3,16 +3,16 @@
     android:shape="rectangle">
 
     <stroke
-        android:width="5dp"
-        android:color="#A4A4A4" />
+        android:width="@dimen/erase_stroke_width"
+        android:color="@color/erase_stroke_color" />
 
-    <solid android:color="#ffffff" />
+    <solid android:color="@color/white" />
 
     <padding
-        android:bottom="5dp"
-        android:left="5dp"
-        android:right="5dp"
-        android:top="5dp" />
+        android:bottom="@dimen/erase_stroke_width"
+        android:left="@dimen/erase_stroke_width"
+        android:right="@dimen/erase_stroke_width"
+        android:top="@dimen/erase_stroke_width" />
 
-    <corners android:radius="5dp" />
+    <corners android:radius="@dimen/erase_corner_radius" />
 </shape>

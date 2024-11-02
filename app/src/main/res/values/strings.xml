@@ -30,4 +30,12 @@
     <string name="upload_image">Upload Image</string>
     <string name="no_image_try_one_of_these">No image? Try one of these:</string>
     <string name="welcome_privacy_policy_message">By uploading an image or URL you agree to our Terms of Service. To learn more about how remove.bg handles your personal data, check our Privacy Policy.</string>
+    <string name="erase">Erase</string>
+    <string name="restore">Restore</string>
+    <string name="brush_size">Brush Size</string>
+    <string name="done">Done</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
 </resources>
