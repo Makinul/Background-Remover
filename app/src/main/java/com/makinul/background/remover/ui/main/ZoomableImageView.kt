@@ -15,8 +15,10 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.appcompat.widget.AppCompatImageView
+import com.makinul.background.remover.data.model.Point
 
-class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs),
+class ZoomableImageView(context: Context, attrs: AttributeSet?) :
+    AppCompatImageView(context, attrs),
     OnTouchListener, OnGestureListener, OnDoubleTapListener,
     ScaleGestureDetector.OnScaleGestureListener {
 
@@ -25,7 +27,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImage
     private val mMatrixValues: FloatArray = FloatArray(9)
     private val mGestureDetector: GestureDetector = GestureDetector(context, this)
 
-    private val mActivePointers: SparseArray<PointF> = SparseArray()
+    private val points: ArrayList<Point> = ArrayList()
 
     init {
         super.setClickable(true)
@@ -159,8 +161,8 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImage
 //                mActivePointers!!.put(pointerId, f)
 //                showLog("mActivePointers!!.put(pointerId, f) $maskedAction")
 
-                mActivePointers.clear()
-                mActivePointers.put(pointerId, currentPoint)
+                points.clear()
+                points.add(Point(x = event.x, y = event.y))
                 mLast.set(currentPoint)
                 mStart.set(mLast)
                 mode = EDIT
@@ -172,18 +174,18 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImage
 
             MotionEvent.ACTION_MOVE -> {
                 if (mode == EDIT) {
-
-                    // a pointer was moved
-                    val size = event.pointerCount
-                    var i = 0
-                    while (i < size) {
-                        val point = mActivePointers[event.getPointerId(i)]
-                        if (point != null) {
-                            point.x = event.getX(i)
-                            point.y = event.getY(i)
-                        }
-                        i++
-                    }
+//                    // a pointer was moved
+//                    val size = event.pointerCount
+//                    var i = 0
+//                    while (i < size) {
+//                        val point = mActivePointers[event.getPointerId(i)]
+//                        if (point != null) {
+//                            point.x = event.getX(i)
+//                            point.y = event.getY(i)
+//                        }
+//                        i++
+//                    }
+                    points.add(Point(x = event.x, y = event.y))
                 } else if (mode == DRAG) {
                     val dx = currentPoint.x - mLast.x
                     val dy = currentPoint.y - mLast.y
@@ -199,6 +201,11 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImage
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
 //                mActivePointers!!.remove(pointerId)
 //                showLog("mActivePointers!!.remove(pointerId) $maskedAction")
+                if (mode == EDIT) {
+                    listener?.onEdit(points)
+                } else if (mode == DRAG) {
+                    listener?.onDrag()
+                }
                 mode = NONE
             }
         }
@@ -327,6 +334,11 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) : AppCompatImage
     ): Boolean {
         showLog("onFling")
         return false
+    }
+
+    private var listener: ZoomableImageListener? = null
+    fun setListener(listener: ZoomableImageListener) {
+        this.listener = listener
     }
 
     private fun showLog(message: String = "Test message") {
