@@ -72,6 +72,11 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         style = Paint.Style.STROKE
     }
 
+    private var eraserPaint = Paint().apply {
+        color = Color.RED
+        style = Paint.Style.FILL
+    }
+
     fun clear() {
         pointArray.clear()
         lineArray.clear()
@@ -93,8 +98,8 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         for (point in pointArray) {
             // draw shoulder point
             canvas.drawCircle(
-                point.x.toFloat(),
-                point.y.toFloat(),
+                point.x,
+                point.y,
                 pointRadius,
                 pointPaint
             )
@@ -102,11 +107,20 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         for (line in lineArray) {
             // draw shoulder point
             canvas.drawLine(
-                line.pointA.x.toFloat(),
-                line.pointA.y.toFloat(),
-                line.pointB.x.toFloat(),
-                line.pointB.y.toFloat(),
+                line.pointA.x,
+                line.pointA.y,
+                line.pointB.x,
+                line.pointB.y,
                 blueLinePaint
+            )
+        }
+
+        if (seekBarProgress > 0) {
+            canvas.drawCircle(
+                height / 2f,
+                width / 2f,
+                seekBarProgress * 2f,
+                eraserPaint
             )
         }
     }
@@ -161,6 +175,13 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
 
     private fun showLog(message: String = "Test message") {
         Log.v(TAG, message)
+    }
+
+    private var seekBarProgress = 0
+    fun setSeekBarProgress(progress: Int) {
+        seekBarProgress = progress
+
+        invalidate()
     }
 
     companion object {

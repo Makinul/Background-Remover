@@ -1,26 +1,16 @@
 package com.makinul.background.remover.ui.main
 
 import ai.painlog.mmhi.ui.zoomable.MainViewModel
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_IMAGES
-import android.Manifest.permission.READ_MEDIA_VIDEO
-import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
 import com.makinul.background.remover.data.model.Point
@@ -84,6 +74,11 @@ class MainActivity : BaseActivity() {
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 showLog("onProgressChanged fromUser $fromUser, progress $progress")
+
+                if (fromUser) {
+                    seekBarProgress = progress
+                    binding.overlay.setSeekBarProgress(progress)
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -94,7 +89,10 @@ class MainActivity : BaseActivity() {
                 showLog("onStopTrackingTouch")
             }
         })
+        seekBarProgress = binding.seeBar.progress
     }
+
+    private var seekBarProgress = 0
 
     private var imageType: String? = null
     private var imagePath: String? = null
@@ -193,7 +191,7 @@ class MainActivity : BaseActivity() {
         showLog("processedBitmap $processedBitmap")
         binding.imageResult.setImageBitmap(processedBitmap)
 
-        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
+//        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
     }
 
     private fun prepareImageSegmentation(rawBitmap: Bitmap) {
@@ -288,7 +286,8 @@ class MainActivity : BaseActivity() {
             }
 
             R.id.action_save -> {
-                requestStoragePermission()
+//                requestStoragePermission()
+//                saveBitmapToLocalStorage()
             }
 
             else -> {
@@ -299,59 +298,58 @@ class MainActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    // Register ActivityResult handler
-    private val requestPermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            // Handle permission requests results
-            // See the permission example in the Android platform samples: https://github.com/android/platform-samples
+//    // Register ActivityResult handler
+//    private val requestPermissions =
+//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+//            // Handle permission requests results
+//            // See the permission example in the Android platform samples: https://github.com/android/platform-samples
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                if (results[READ_MEDIA_IMAGES] == true) {
+//                    showLog("READ_MEDIA_IMAGES")
+//                }
+//            } else {
+//                if (results[WRITE_EXTERNAL_STORAGE] == true) {
+//                    showLog("WRITE_EXTERNAL_STORAGE")
+//                }
+//            }
+//        }
+//
+//    // Check permission
+//    private fun checkStoragePermission(): Boolean {
+//        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            ContextCompat.checkSelfPermission(
+//                this,
+//                READ_MEDIA_IMAGES
+//            ) == PackageManager.PERMISSION_GRANTED
+//        } else {
+//            ContextCompat.checkSelfPermission(
+//                this,
+//                WRITE_EXTERNAL_STORAGE
+//            ) == PackageManager.PERMISSION_GRANTED
+//        }
+//    }
+//
+//    private fun requestStoragePermission() {
+//        // Permission request logic
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            requestPermissions.launch(arrayOf(READ_MEDIA_IMAGES))
+//        } else {
+//            requestPermissions.launch(arrayOf(WRITE_EXTERNAL_STORAGE))
+//        }
+//    }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (results[READ_MEDIA_IMAGES] == true) {
-                    showLog("READ_MEDIA_IMAGES")
-                }
-            } else {
-                if (results[WRITE_EXTERNAL_STORAGE] == true) {
-                    showLog("WRITE_EXTERNAL_STORAGE")
-                }
-            }
-        }
-
-    // Check permission
-    private fun checkStoragePermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(
-                this,
-                READ_MEDIA_IMAGES
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            ContextCompat.checkSelfPermission(
-                this,
-                WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-    private fun requestStoragePermission() {
-        // Permission request logic
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissions.launch(arrayOf(READ_MEDIA_IMAGES))
-        } else {
-            requestPermissions.launch(arrayOf(WRITE_EXTERNAL_STORAGE))
-        }
-    }
-
-    @Suppress("IMPLICIT_NOTHING_TYPE_ARGUMENT_AGAINST_NOT_NOTHING_EXPECTED_TYPE")
     private fun saveBitmapToLocalStorage(
         bitmap: Bitmap,
         displayName: String
-    ): Boolean {
-        return try {
+    ) {
+        try {
             val contentValues = ContentValues().apply {
-                put(MediaStore.Images.Media.DISPLAY_NAME, "$displayName.jpg")
+                put(MediaStore.Images.Media.DISPLAY_NAME, "$displayName.png")
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    Environment.DIRECTORY_PICTURES + "/YourAppName"
+                    Environment.DIRECTORY_PICTURES + "/" + getString(R.string.app_name)
                 )
             }
 
@@ -360,15 +358,13 @@ class MainActivity : BaseActivity() {
             imageUri?.let { uri ->
                 contentResolver.openOutputStream(uri).use { outputStream: OutputStream? ->
                     outputStream?.let {
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
                         it.flush()
-                        return@saveBitmapToLocalStorage true
                     }
                 }
-            } ?: false
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            false
         }
     }
 }
