@@ -150,7 +150,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 
         val currentPoint = PointF(event.x, event.y)
 
-        showLog("maskedAction $maskedAction, eventAction: $eventAction")
+//        showLog("maskedAction $maskedAction, eventAction: $eventAction")
         // get masked (not specific to a pointer) action
         when (maskedAction) {
             MotionEvent.ACTION_DOWN -> {
@@ -242,18 +242,18 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         onDoubleTap
      */
     override fun onSingleTapConfirmed(motionEvent: MotionEvent): Boolean {
-        showLog("onSingleTapConfirmed")
+//        showLog("onSingleTapConfirmed")
         return false
     }
 
     override fun onDoubleTap(motionEvent: MotionEvent): Boolean {
-        showLog("onDoubleTap")
+//        showLog("onDoubleTap")
         fitToScreen()
         return false
     }
 
     override fun onDoubleTapEvent(motionEvent: MotionEvent): Boolean {
-        showLog("onDoubleTapEvent")
+//        showLog("onDoubleTapEvent")
         return false
     }
 
@@ -295,20 +295,20 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScaleEnd(detector: ScaleGestureDetector) {
-        showLog("onScaleEnd")
+        showLog("onScaleEnd $mSaveScale")
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
-        showLog("onDown")
+//        showLog("onDown")
         return false
     }
 
     override fun onShowPress(motionEvent: MotionEvent) {
-        showLog("onShowPress")
+//        showLog("onShowPress")
     }
 
     override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
-        showLog("onSingleTapUp")
+//        showLog("onSingleTapUp")
         return false
     }
 
@@ -323,7 +323,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onLongPress(motionEvent: MotionEvent) {
-        showLog("onLongPress")
+//        showLog("onLongPress")
     }
 
     override fun onFling(
@@ -332,11 +332,12 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        showLog("onFling")
+//        showLog("onFling")
         return false
     }
 
     private var listener: ZoomableImageListener? = null
+
     fun setListener(listener: ZoomableImageListener) {
         this.listener = listener
     }
@@ -346,7 +347,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     companion object {
-        private const val TAG = "MyImageView3"
+        private const val TAG = "ZoomableImageView"
 
         // Image States
         const val NONE = 0

@@ -31,8 +31,8 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
 
     private var blueLinePaint = Paint().apply {
         color = Color.BLUE
-        strokeWidth = 2f
-        style = Paint.Style.STROKE
+        strokeWidth = 5f
+        style = Paint.Style.FILL
     }
     private var blueCirclePaint = Paint().apply {
         color = Color.BLUE
@@ -66,14 +66,20 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         style = Paint.Style.STROKE
     }
 
-    private var rectLinePaint = Paint().apply {
+    private var segmentPaint = Paint().apply {
         color = Color.MAGENTA
-        strokeWidth = 2f
+        strokeWidth = 5f
         style = Paint.Style.STROKE
     }
 
-    private var eraserPaint = Paint().apply {
+    private var eraserProgressPaint = Paint().apply {
         color = Color.RED
+        style = Paint.Style.FILL
+    }
+
+    private var eraserLinePaint = Paint().apply {
+        color = Color.RED
+        strokeWidth = eraseBarSize.toFloat()
         style = Paint.Style.FILL
     }
 
@@ -84,26 +90,88 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         invalidate()
     }
 
+    private var startX = -1f
+    private var startY = -1f
+    private var endX = -1f
+    private var endY = -1f
+
+    fun segmentRect(startX: Float, startY: Float, endX: Float, endY: Float) {
+        this.startX = startX
+        this.startY = startY
+        this.endX = endX
+        this.endY = endY
+    }
+
+    private var startMidX: Float = -1f
+    private var startMidY: Float = -1f
+    private var endMidX: Float = -1f
+    private var endMidY: Float = -1f
+
+    fun verticalMidPoint(startMidX: Float, startMidY: Float, endMidX: Float, endMidY: Float) {
+        this.startMidX = startMidX
+        this.startMidY = startMidY
+        this.endMidX = endMidX
+        this.endMidY = endMidY
+    }
+
+    private var topMidX: Float = -1f
+    private var topMidY: Float = -1f
+    private var bottomMidX: Float = -1f
+    private var bottomMidY: Float = -1f
+
+    fun horizontalMidPoint(topMidX: Float, topMidY: Float, bottomMidX: Float, bottomMidY: Float) {
+        this.topMidX = topMidX
+        this.topMidY = topMidY
+        this.bottomMidX = bottomMidX
+        this.bottomMidY = bottomMidY
+    }
+
+    init {
+        prepareInitialData()
+    }
+
+    private fun prepareInitialData() {
+        startX = 5f
+        startY = 5f
+        endX = width - 5f
+        endY = height - 5f
+
+        startMidX = 0f
+        startMidY = height / 2f
+        endMidX = width.toFloat()
+        endMidY = startMidY
+
+        topMidX = width / 2f
+        topMidY = 0f
+        bottomMidX = topMidX
+        bottomMidY = height.toFloat()
+    }
+
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
+        prepareInitialData()
 
+//        showLog("startX $startX, startY $startY, endX $endX, endY $endY")
+//        showLog("draw")
         maskBitmap?.let {
             canvas.drawBitmap(it, 0f, 0f, null)
         }
-        canvas.drawRect(firstX, firstY, lastX, lastY, rectLinePaint)
+//        // surrounding border line
+//        canvas.drawRect(startX, startY, endX, endY, segmentPaint)
+//        // mid vertical main line
+//        canvas.drawLine(startMidX, startMidY, endMidX, endMidY, blueLinePaint)
+//        // mid horizontal main line
+//        canvas.drawLine(topMidX, topMidY, bottomMidX, bottomMidY, blueLinePaint)
+//        for (point in pointArray) {
+//            // draw shoulder point
+//            canvas.drawCircle(
+//                point.x,
+//                point.y,
+//                pointRadius,
+//                pointPaint
+//            )
+//        }
 
-        // mid vertical main line
-        canvas.drawLine(startMidX, startMidY, endMidX, endMidY, blueLinePaint)
-
-        for (point in pointArray) {
-            // draw shoulder point
-            canvas.drawCircle(
-                point.x,
-                point.y,
-                pointRadius,
-                pointPaint
-            )
-        }
         for (line in lineArray) {
             // draw shoulder point
             canvas.drawLine(
@@ -111,30 +179,20 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
                 line.pointA.y,
                 line.pointB.x,
                 line.pointB.y,
-                blueLinePaint
+                eraserLinePaint
             )
         }
 
         if (seekBarProgress > 0) {
             canvas.drawCircle(
-                height / 2f,
                 width / 2f,
-                seekBarProgress * 2f,
-                eraserPaint
+                height / 2f,
+                seekBarProgress.toFloat(),
+                eraserProgressPaint
             )
         }
-    }
 
-    private var firstX = -1f
-    private var firstY = -1f
-    private var lastX = -1f
-    private var lastY = -1f
-
-    fun segmentRect(firstX: Float, firstY: Float, lastX: Float, lastY: Float) {
-        this.firstX = firstX
-        this.firstY = firstY
-        this.lastX = lastX
-        this.lastY = lastY
+//        showLog("seekBarProgress $seekBarProgress, height/2 ${height / 2f}, width/2 ${width / 2f}")
     }
 
     private var maskBitmap: Bitmap? = null
@@ -147,44 +205,40 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         return maskBitmap
     }
 
-    private var startMidX: Float = -1f
-    private var startMidY: Float = -1f
-    private var endMidX: Float = -1f
-    private var endMidY: Float = -1f
-
-    fun midPoint(startMidX: Float, startMidY: Float, endMidX: Float, endMidY: Float) {
-        this.startMidX = startMidX
-        this.startMidY = startMidY
-        this.endMidX = endMidX
-        this.endMidY = endMidY
-    }
-
     private val pointArray: ArrayList<Point> = ArrayList()
 
-    fun setAllPoints(pointArray: ArrayList<Point>) {
+    fun setPoints(pointArray: List<Point>) {
         this.pointArray.clear()
         this.pointArray.addAll(pointArray)
     }
 
     private val lineArray: ArrayList<Line> = ArrayList()
 
-    fun setLines(lineArray: ArrayList<Line>) {
+    fun setLines(lineArray: List<Line>) {
         this.lineArray.clear()
         this.lineArray.addAll(lineArray)
     }
 
-    private fun showLog(message: String = "Test message") {
-        Log.v(TAG, message)
-    }
-
     private var seekBarProgress = 0
+
     fun setSeekBarProgress(progress: Int) {
         seekBarProgress = progress
 
         invalidate()
     }
 
+    private var eraseBarSize = 0
+
+    fun setEraseBarSize(size: Int) {
+        eraseBarSize = size
+        eraserLinePaint.strokeWidth = eraseBarSize.toFloat()
+    }
+
+    private fun showLog(message: String = "Test message") {
+        Log.v(TAG, message)
+    }
+
     companion object {
-        private const val TAG = "NewOverlayView"
+        private const val TAG = "ImageEditOverlayView"
     }
 }

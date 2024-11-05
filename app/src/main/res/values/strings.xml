@@ -22,6 +22,7 @@
     <string name="slideshow">Slideshow</string>
 
     <string name="test_message">Test Message</string>
+    <string name="unknown_error">Unknown error, please try again.</string>
 
     <string name="brand_name">VIMIKO</string>
     <string name="splash_fragment">Splash Fragment</string>
@@ -38,4 +39,6 @@
     <string name="save">Save</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+
+
 </resources>

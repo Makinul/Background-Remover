@@ -25,6 +25,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.ByteBufferExtractor
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import com.makinul.background.remover.R
 import com.makinul.background.remover.utils.Extensions.toAlphaColor
 import com.makinul.background.remover.utils.ImageSegmentHelper
 import com.makinul.background.remover.utils.PoseLandmarkHelper
@@ -57,24 +58,25 @@ class MainViewModel @Inject constructor(
         imageWidth: Int,
         imageHeight: Int,
         scaleFactor: Float,
-        poseLandmarkHelper: PoseLandmarkHelper,
-        selfieSegmentHelper: ImageSegmentHelper,
-        selfieMulticlassSegmentHelper: ImageSegmentHelper,
+        poseLandmarkHelper: PoseLandmarkHelper?,
+        selfieSegmentHelper: ImageSegmentHelper?,
+        selfieMulticlassSegmentHelper: ImageSegmentHelper?,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        showLog("processBitmapToRemoveBackground")
         _maskedBitmapArray.postValue(Event(Resource.loading()))
         val mpImage = BitmapImageBuilder(rawBitmap).build()
-        val selfieSegmentResult = selfieSegmentHelper.segmentImage(mpImage)
-        val selfieMulticlassSegmentResult = selfieMulticlassSegmentHelper.segmentImage(mpImage)
 
-        selfieSegmentHelper.clearImageSegment()
-        selfieMulticlassSegmentHelper.clearImageSegment()
+        val selfieSegmentResult = selfieSegmentHelper?.segmentImage(mpImage)
+        val selfieMulticlassSegmentResult = selfieMulticlassSegmentHelper?.segmentImage(mpImage)
+        selfieSegmentHelper?.clearImageSegment()
+        selfieMulticlassSegmentHelper?.clearImageSegment()
 
-        if (selfieSegmentResult == null || selfieMulticlassSegmentResult == null)
+        if (selfieMulticlassSegmentResult == null) {
+            _maskedBitmapArray.postValue(Event(Resource.error(messageResId = R.string.unknown_error)))
             return@launch
+        }
 
-        val selfieByteBuffer = getByteBuffer(selfieSegmentResult)
-        val selfiePixels = IntArray(selfieByteBuffer.capacity())
+//        val selfieByteBuffer = getByteBuffer(selfieSegmentResult)
+//        val selfiePixels = IntArray(selfieByteBuffer.capacity())
         val multiclassByteBuffer = getByteBuffer(selfieMulticlassSegmentResult)
         val multiclassPixels = IntArray(multiclassByteBuffer.capacity())
 

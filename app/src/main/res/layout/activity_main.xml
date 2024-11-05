@@ -48,8 +48,7 @@
         <com.makinul.background.remover.ui.main.ImageEditOverlayView
             android:id="@+id/overlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
+            android:layout_height="match_parent" />
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"

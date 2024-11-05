@@ -11,8 +11,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
+import com.makinul.background.remover.data.model.Line
 import com.makinul.background.remover.data.model.Point
 import com.makinul.background.remover.databinding.ActivityMainBinding
 import com.makinul.background.remover.utils.AppConstants
@@ -24,11 +28,16 @@ import com.makinul.background.remover.utils.InteractiveSegmentationHelper
 import com.makinul.background.remover.utils.PoseLandmarkHelper
 import com.mmh.emmahealth.data.Status
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.min
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -73,26 +82,71 @@ class MainActivity : BaseActivity() {
 
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                showLog("onProgressChanged fromUser $fromUser, progress $progress")
-
+//                showLog("onProgressChanged fromUser $fromUser, progress $progress")
                 if (fromUser) {
                     seekBarProgress = progress
                     binding.overlay.setSeekBarProgress(progress)
+                    binding.overlay.setEraseBarSize(progress)
                 }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                showLog("onStartTrackingTouch")
+//                showLog("onStartTrackingTouch")
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                showLog("onStopTrackingTouch")
+//                showLog("onStopTrackingTouch")
+                hideSeekBarProgress()
             }
         })
         seekBarProgress = binding.seeBar.progress
+//        showLog("seekBarProgress $seekBarProgress")
+        binding.overlay.setEraseBarSize(seekBarProgress)
+
+        binding.imageResult.setListener(object : ZoomableImageListener {
+            override fun onDrag() {
+                showLog("onDrag")
+            }
+
+            override fun onEdit(points: List<Point>) {
+//                if (points.isNotEmpty()) {
+//                    val point = points[0]
+//                    interactiveSegmentationHelper.segment(point.x, point.y)
+//                }
+                showLog("points $points")
+//                pointArray
+//                binding.overlay.setLines()
+                val lineArray: ArrayList<Line> = ArrayList()
+//                for (i in 1 until points.size) {
+//                    lineArray.add(Line(pointA = points[i - 1], pointB = points[i]))
+//                }
+
+                if (points.size > 1) {
+                    lineArray.add(Line(pointA = points[0], pointB = points[points.size - 1]))
+                }
+                binding.overlay.setPoints(points)
+                binding.overlay.setLines(lineArray)
+                binding.overlay.invalidate()
+            }
+        })
     }
 
     private var seekBarProgress = 0
+    private var seekbarProgressJob: Job? = null
+
+    private fun hideSeekBarProgress() {
+//        backgroundScope?.launch(Dispatchers.Main) {
+//            delay(1000)
+//            binding.overlay.setSeekBarProgress(0)
+////            showLog("hideSeekBarProgress")
+//        }
+        seekbarProgressJob?.cancel()
+        seekbarProgressJob = null
+        seekbarProgressJob = lifecycleScope.launch(Dispatchers.Main) {
+            delay(1000)
+            binding.overlay.setSeekBarProgress(0)
+        }
+    }
 
     private var imageType: String? = null
     private var imagePath: String? = null
@@ -127,15 +181,15 @@ class MainActivity : BaseActivity() {
         imageWidth = bitmap.width
         imageHeight = bitmap.height
 
-        scaleFactor = min(
-            (binding.overlay.width.toFloat() / imageWidth.toFloat()),
-            (binding.overlay.height.toFloat() / imageHeight.toFloat())
-        )
-
-//        prepareHelper(bitmap)
+        binding.overlay.post {
+            scaleFactor = min(
+                (binding.overlay.width.toFloat() / imageWidth.toFloat()),
+                (binding.overlay.height.toFloat() / imageHeight.toFloat())
+            )
+        }
+        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
-
-        saveBitmapToLocalStorage(bitmap, "New again")
+//        saveBitmapToLocalStorage(bitmap, "New again")
     }
 
     private var imageWidth: Int = -1
@@ -150,13 +204,13 @@ class MainActivity : BaseActivity() {
         // Create the PoseLandmarkHelper that will handle the inference
         backgroundExecutor.execute {
             binding.progressBar.visible()
-            val poseLandmarkHelper = PoseLandmarkHelper(
-                context = this@MainActivity
-            )
-            val selfieSegmentHelper = ImageSegmentHelper(
-                context = this@MainActivity,
-                currentModel = ImageSegmentHelper.MODEL_SELFIE_SEGMENTER
-            )
+//            val poseLandmarkHelper = PoseLandmarkHelper(
+//                context = this@MainActivity
+//            )
+//            val selfieSegmentHelper = ImageSegmentHelper(
+//                context = this@MainActivity,
+//                currentModel = ImageSegmentHelper.MODEL_SELFIE_SEGMENTER
+//            )
             val selfieMulticlassSegmentHelper = ImageSegmentHelper(
                 context = this@MainActivity,
                 currentModel = ImageSegmentHelper.MODEL_SELFIE_MULTICLASS
@@ -168,8 +222,8 @@ class MainActivity : BaseActivity() {
                 imageWidth = imageWidth,
                 imageHeight = imageHeight,
                 scaleFactor = scaleFactor,
-                poseLandmarkHelper,
-                selfieSegmentHelper,
+                null,
+                null,
                 selfieMulticlassSegmentHelper
             )
         }
@@ -183,14 +237,16 @@ class MainActivity : BaseActivity() {
             Bitmap.Config.ARGB_8888
         )
 
-//        val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
-//        val scaleHeight = (processedBitmap.height * scaleFactor).toInt()
-//        val maskBitmap =
-//            Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
-
+        val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
+        val scaleHeight = (processedBitmap.height * scaleFactor).toInt()
+        val maskBitmap =
+            Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
         showLog("processedBitmap $processedBitmap")
-        binding.imageResult.setImageBitmap(processedBitmap)
 
+        binding.overlay.setMaskBitmap(maskBitmap)
+        binding.overlay.invalidate()
+
+//        binding.imageResult.setImageBitmap(processedBitmap)
 //        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
     }
 
@@ -202,19 +258,6 @@ class MainActivity : BaseActivity() {
         interactiveSegmentationHelper.setInputImage(
             rawBitmap
         )
-
-        binding.imageResult.setListener(object : ZoomableImageListener {
-            override fun onDrag() {
-                showLog("onDrag")
-            }
-
-            override fun onEdit(points: List<Point>) {
-                if (points.isNotEmpty()) {
-                    val point = points[0]
-                    interactiveSegmentationHelper.segment(point.x, point.y)
-                }
-            }
-        })
     }
 
     private val interactiveSegmentationListener: InteractiveSegmentationHelper.InteractiveSegmentationListener =
@@ -264,18 +307,41 @@ class MainActivity : BaseActivity() {
 //        maskBitmap =
 //            Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, false)
 //        invalidate()
-
         binding.imageResult.setImageBitmap(bitmap)
     }
 
+    private var optionMenu: Menu? = null
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
+        optionMenu = menu
         menuInflater.inflate(R.menu.main_top_item_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        updateHistoryMenuButtons()
         return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun updateHistoryMenuButtons() {
+        optionMenu?.let { menu ->
+            val undoActionItem = menu.findItem(R.id.action_undo)
+            val redoActionItem = menu.findItem(R.id.action_redo)
+
+            var undoActionDrawable = undoActionItem.icon
+            undoActionDrawable = DrawableCompat.wrap(undoActionDrawable!!)
+            DrawableCompat.setTint(undoActionDrawable, ContextCompat.getColor(this, R.color.gray))
+            undoActionItem.setIcon(undoActionDrawable)
+
+            var redoActionDrawable = redoActionItem.icon
+            redoActionDrawable = DrawableCompat.wrap(redoActionDrawable!!)
+            DrawableCompat.setTint(redoActionDrawable, ContextCompat.getColor(this, R.color.gray))
+            redoActionItem.setIcon(redoActionDrawable)
+
+            undoActionItem.setEnabled(false)
+            redoActionItem.setEnabled(false)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -294,7 +360,6 @@ class MainActivity : BaseActivity() {
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -366,5 +431,11 @@ class MainActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroy() {
+        showLog("onDestroyView")
+        seekbarProgressJob?.cancel()
+        super.onDestroy()
     }
 }
