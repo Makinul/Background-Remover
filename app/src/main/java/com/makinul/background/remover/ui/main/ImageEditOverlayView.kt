@@ -29,6 +29,8 @@ import com.makinul.background.remover.data.model.Point
 class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
     View(context, attrs) {
 
+    private var eraseBarSize = 0
+
     private var blueLinePaint = Paint().apply {
         color = Color.BLUE
         strokeWidth = 5f
@@ -44,7 +46,7 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
     }
     private var pointPaint = Paint().apply {
         color = Color.RED
-        style = Paint.Style.STROKE
+        style = Paint.Style.FILL
     }
     private val pointRadius = 10f
 
@@ -162,26 +164,27 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
 //        canvas.drawLine(startMidX, startMidY, endMidX, endMidY, blueLinePaint)
 //        // mid horizontal main line
 //        canvas.drawLine(topMidX, topMidY, bottomMidX, bottomMidY, blueLinePaint)
-//        for (point in pointArray) {
-//            // draw shoulder point
-//            canvas.drawCircle(
-//                point.x,
-//                point.y,
-//                pointRadius,
-//                pointPaint
-//            )
-//        }
 
-        for (line in lineArray) {
+        for (point in pointArray) {
             // draw shoulder point
-            canvas.drawLine(
-                line.pointA.x,
-                line.pointA.y,
-                line.pointB.x,
-                line.pointB.y,
+            canvas.drawCircle(
+                point.x,
+                point.y,
+                eraseBarSize.toFloat(),
                 eraserLinePaint
             )
         }
+
+//        for (line in lineArray) {
+//            // draw shoulder point
+//            canvas.drawLine(
+//                line.pointA.x,
+//                line.pointA.y,
+//                line.pointB.x,
+//                line.pointB.y,
+//                eraserLinePaint
+//            )
+//        }
 
         if (seekBarProgress > 0) {
             canvas.drawCircle(
@@ -226,8 +229,6 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
 
         invalidate()
     }
-
-    private var eraseBarSize = 0
 
     fun setEraseBarSize(size: Int) {
         eraseBarSize = size

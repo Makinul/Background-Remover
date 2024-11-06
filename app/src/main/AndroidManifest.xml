@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />-->
-<!--    <uses-permission-->
-<!--        android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
-<!--        android:maxSdkVersion="32" />-->
+    <!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />-->
+    <!--    <uses-permission-->
+    <!--        android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
+    <!--        android:maxSdkVersion="32" />-->
 
     <application
         android:name=".base.BgRemoverApp"
@@ -23,6 +23,22 @@
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.BackgroundRemover.Splash">
+
+        </activity>
+
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="false"
+            android:icon="@drawable/ic_home_black"
+            android:theme="@style/Theme.BackgroundRemover.Home">
+
+        </activity>
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
+            android:label="@string/activity_main"
+            android:theme="@style/Theme.BackgroundRemover">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,37 +46,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.home.HomeActivity"
-            android:exported="false"
-            android:icon="@drawable/ic_home_black"
-            android:theme="@style/Theme.BackgroundRemover.Home">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
-        </activity>
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="false"
-            android:label="@string/activity_main"
-            android:theme="@style/Theme.BackgroundRemover">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
-        </activity>
-        <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/activity_settings"
             android:theme="@style/Theme.BackgroundRemover.NoActionBar">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
         </activity>
     </application>
 

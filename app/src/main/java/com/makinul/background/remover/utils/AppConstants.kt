@@ -60,6 +60,10 @@ object AppConstants {
         "images/demo_image_3.jpg"
     )
 
+    fun getDistance(pointA: Point, pointB: Point): Float {
+        return sqrt(((pointB.x - pointA.x) * (pointB.x - pointA.x)) + ((pointB.y - pointA.y) * (pointB.y - pointA.y)))
+    }
+
     val RECORD_AUDIO_PERMISSION =
         mutableListOf(
             android.Manifest.permission.RECORD_AUDIO

@@ -2,7 +2,10 @@ package com.makinul.background.remover.ui.main
 
 import com.makinul.background.remover.data.model.Point
 
+enum class ImageState {
+    NONE, EDIT, DRAG, ZOOM
+}
+
 interface ZoomableImageListener {
-    fun onDrag()
-    fun onEdit(points: List<Point>)
+    fun onComplete(imageState: ImageState, points: List<Point>)
 }

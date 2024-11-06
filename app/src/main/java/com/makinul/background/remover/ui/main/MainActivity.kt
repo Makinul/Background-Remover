@@ -20,12 +20,13 @@ import com.makinul.background.remover.data.model.Line
 import com.makinul.background.remover.data.model.Point
 import com.makinul.background.remover.databinding.ActivityMainBinding
 import com.makinul.background.remover.utils.AppConstants
+import com.makinul.background.remover.utils.AppConstants.KEY_IMAGE_TYPE_ASSET
+import com.makinul.background.remover.utils.AppConstants.KEY_IMAGE_TYPE_URI
 import com.makinul.background.remover.utils.AppConstants.getAssetBitmap
 import com.makinul.background.remover.utils.AppConstants.getUriBitmap
 import com.makinul.background.remover.utils.Extensions.visible
 import com.makinul.background.remover.utils.ImageSegmentHelper
 import com.makinul.background.remover.utils.InteractiveSegmentationHelper
-import com.makinul.background.remover.utils.PoseLandmarkHelper
 import com.mmh.emmahealth.data.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,6 @@ import java.nio.ByteBuffer
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.min
-
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -104,31 +104,88 @@ class MainActivity : BaseActivity() {
         binding.overlay.setEraseBarSize(seekBarProgress)
 
         binding.imageResult.setListener(object : ZoomableImageListener {
-            override fun onDrag() {
-                showLog("onDrag")
-            }
 
-            override fun onEdit(points: List<Point>) {
+            override fun onComplete(imageState: ImageState, points: List<Point>) {
+                val getCurrentScale = binding.imageResult.getCurrentScale()
+                showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
+
 //                if (points.isNotEmpty()) {
 //                    val point = points[0]
 //                    interactiveSegmentationHelper.segment(point.x, point.y)
 //                }
-                showLog("points $points")
+//                showLog("points $points")
 //                pointArray
 //                binding.overlay.setLines()
                 val lineArray: ArrayList<Line> = ArrayList()
 //                for (i in 1 until points.size) {
 //                    lineArray.add(Line(pointA = points[i - 1], pointB = points[i]))
 //                }
+//                if (points.size > 1) {
+//                    lineArray.add(Line(pointA = points[0], pointB = points[points.size - 1]))
+//                }
+                showLog("minDistance $minDistance, overlayDistancePercentage $overlayDistancePercentage, imageDistancePercentage $imageDistancePercentage")
+                for (i in 1 until points.size) {
+                    val pointA = points[i - 1]
+                    val pointB = points[i]
 
-                if (points.size > 1) {
-                    lineArray.add(Line(pointA = points[0], pointB = points[points.size - 1]))
+                    val distance = AppConstants.getDistance(pointA, pointB)
+                    showLog("distance $distance")
+
+                    if (distance > minDistance) {
+
+                    }
                 }
+
                 binding.overlay.setPoints(points)
                 binding.overlay.setLines(lineArray)
                 binding.overlay.invalidate()
             }
         })
+
+        val x1 = 0f
+        val y1 = 0f
+        val x2 = 8f
+        val y2 = 6f
+
+        val linePoints = bresenhamLine(x1, y1, x2, y2)
+        showLog("Points on the line: $linePoints")
+    }
+
+    private fun bresenhamLine(
+        x1: Float,
+        y1: Float,
+        x2: Float,
+        y2: Float
+    ): List<Pair<Float, Float>> {
+        val points = mutableListOf<Pair<Float, Float>>()
+
+        val dx = kotlin.math.abs(x2 - x1)
+        val dy = kotlin.math.abs(y2 - y1)
+
+        val sx = if (x1 < x2) 1 else -1
+        val sy = if (y1 < y2) 1 else -1
+
+        var err = dx - dy
+        var x = x1
+        var y = y1
+
+        while (true) {
+            points.add(Pair(x, y)) // Add current point to the list
+
+            if (x == x2 && y == y2) break // Exit if we've reached the end point
+
+            val e2 = 2 * err
+            if (e2 > -dy) {
+                err -= dy
+                x += sx
+            }
+            if (e2 < dx) {
+                err += dx
+                y += sy
+            }
+        }
+
+        return points
     }
 
     private var seekBarProgress = 0
@@ -155,16 +212,19 @@ class MainActivity : BaseActivity() {
         intent.extras?.let {
             imageType = it.getString(AppConstants.KEY_IMAGE_TYPE)
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
+        } ?: run {
+            imageType = KEY_IMAGE_TYPE_ASSET
+            imagePath = AppConstants.listOfDemoImagesPath[3]
         }
     }
 
     private fun setImage() {
         val bitmap = when (imageType) {
-            AppConstants.KEY_IMAGE_TYPE_ASSET -> {
+            KEY_IMAGE_TYPE_ASSET -> {
                 getAssetBitmap(this, imagePath)
             }
 
-            AppConstants.KEY_IMAGE_TYPE_URI -> {
+            KEY_IMAGE_TYPE_URI -> {
                 getUriBitmap(this, imagePath)
             }
 
@@ -172,7 +232,6 @@ class MainActivity : BaseActivity() {
                 return
             }
         }
-
         if (bitmap == null)
             return
 
@@ -180,12 +239,25 @@ class MainActivity : BaseActivity() {
 
         imageWidth = bitmap.width
         imageHeight = bitmap.height
+        imageDistance = AppConstants.getDistance(
+            Point(0f, 0f),
+            Point(imageWidth.toFloat(), imageHeight.toFloat())
+        )
+        imageDistancePercentage = imageDistance / 100f
 
         binding.overlay.post {
+            val overlayWidth = binding.overlay.width
+            val overlayHeight = binding.overlay.height
             scaleFactor = min(
-                (binding.overlay.width.toFloat() / imageWidth.toFloat()),
-                (binding.overlay.height.toFloat() / imageHeight.toFloat())
+                (overlayWidth.toFloat() / imageWidth.toFloat()),
+                (overlayHeight.toFloat() / imageHeight.toFloat())
             )
+            overlayDistancePercentage = AppConstants.getDistance(
+                Point(0f, 0f),
+                Point(overlayWidth.toFloat(), overlayHeight.toFloat())
+            ) / 100f
+
+            minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
         prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
@@ -194,7 +266,11 @@ class MainActivity : BaseActivity() {
 
     private var imageWidth: Int = -1
     private var imageHeight: Int = -1
+    private var imageDistance: Float = -1f
+    private var imageDistancePercentage: Float = -1f
     private var scaleFactor: Float = 1f
+    private var overlayDistancePercentage: Float = -1f
+    private var minDistance: Float = -1f
 
     /** Blocking ML operations are performed using this executor */
     private lateinit var backgroundExecutor: ExecutorService

@@ -6,7 +6,6 @@ import android.graphics.Matrix
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.util.Log
-import android.util.SparseArray
 import android.view.GestureDetector
 import android.view.GestureDetector.OnDoubleTapListener
 import android.view.GestureDetector.OnGestureListener
@@ -53,10 +52,14 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    private var mode = NONE
+    private var imageState = ImageState.NONE
 
     // Scales
     private var mSaveScale = 1f
+    fun getCurrentScale(): Float {
+        return mSaveScale
+    }
+
     private var mMinScale = 1f
     private var mMaxScale = 4f
 
@@ -165,15 +168,15 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
                 points.add(Point(x = event.x, y = event.y))
                 mLast.set(currentPoint)
                 mStart.set(mLast)
-                mode = EDIT
+                imageState = ImageState.EDIT
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
-                mode = DRAG
+                imageState = ImageState.DRAG
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (mode == EDIT) {
+                if (imageState == ImageState.EDIT) {
 //                    // a pointer was moved
 //                    val size = event.pointerCount
 //                    var i = 0
@@ -186,7 +189,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 //                        i++
 //                    }
                     points.add(Point(x = event.x, y = event.y))
-                } else if (mode == DRAG) {
+                } else if (imageState == ImageState.DRAG) {
                     val dx = currentPoint.x - mLast.x
                     val dy = currentPoint.y - mLast.y
                     val fixTransX = getFixDragTrans(dx, viewWidth.toFloat(), origWidth * mSaveScale)
@@ -201,12 +204,8 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
 //                mActivePointers!!.remove(pointerId)
 //                showLog("mActivePointers!!.remove(pointerId) $maskedAction")
-                if (mode == EDIT) {
-                    listener?.onEdit(points)
-                } else if (mode == DRAG) {
-                    listener?.onDrag()
-                }
-                mode = NONE
+                listener?.onComplete(imageState = imageState, points = points)
+                imageState = ImageState.NONE
             }
         }
 
@@ -258,8 +257,8 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-        showLog("onScaleBegin")
-        mode = ZOOM
+//        showLog("onScaleBegin")
+        imageState = ImageState.ZOOM
         return true
 //        return super.onScaleBegin(detector)
     }
@@ -295,7 +294,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScaleEnd(detector: ScaleGestureDetector) {
-        showLog("onScaleEnd $mSaveScale")
+//        showLog("onScaleEnd $mSaveScale")
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
@@ -318,7 +317,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         distanceX: Float,
         distanceY: Float
     ): Boolean {
-        showLog("onScroll")
+//        showLog("onScroll")
         return false
     }
 
@@ -348,11 +347,5 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 
     companion object {
         private const val TAG = "ZoomableImageView"
-
-        // Image States
-        const val NONE = 0
-        const val EDIT = 1
-        const val DRAG = 2
-        const val ZOOM = 3
     }
 }
