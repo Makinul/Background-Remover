@@ -145,7 +145,7 @@ class MainActivity : BaseActivity() {
         val x1 = 0f
         val y1 = 0f
         val x2 = 8f
-        val y2 = 6f
+        val y2 = 8f
 
         val linePoints = bresenhamLine(x1, y1, x2, y2)
         showLog("Points on the line: $linePoints")
@@ -162,8 +162,8 @@ class MainActivity : BaseActivity() {
         val dx = kotlin.math.abs(x2 - x1)
         val dy = kotlin.math.abs(y2 - y1)
 
-        val sx = if (x1 < x2) 1 else -1
-        val sy = if (y1 < y2) 1 else -1
+        val sx = if (x1 < x2) 5f else -5f
+        val sy = if (y1 < y2) 5f else -5f
 
         var err = dx - dy
         var x = x1
@@ -172,7 +172,7 @@ class MainActivity : BaseActivity() {
         while (true) {
             points.add(Pair(x, y)) // Add current point to the list
 
-            if (x == x2 && y == y2) break // Exit if we've reached the end point
+            if (x >= x2 && y >= y2) break // Exit if we've reached the end point
 
             val e2 = 2 * err
             if (e2 > -dy) {
