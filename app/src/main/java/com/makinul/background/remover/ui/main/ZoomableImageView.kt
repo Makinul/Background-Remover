@@ -335,9 +335,9 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         return false
     }
 
-    private var listener: ZoomableImageListener? = null
+    private var listener: ActionListener? = null
 
-    fun setListener(listener: ZoomableImageListener) {
+    fun setActionListener(listener: ActionListener) {
         this.listener = listener
     }
 

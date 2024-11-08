@@ -6,6 +6,6 @@ enum class ImageState {
     NONE, EDIT, DRAG, ZOOM
 }
 
-interface ZoomableImageListener {
+interface ActionListener {
     fun onComplete(imageState: ImageState, points: List<Point>)
 }

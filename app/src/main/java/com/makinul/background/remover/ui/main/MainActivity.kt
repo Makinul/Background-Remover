@@ -103,12 +103,11 @@ class MainActivity : BaseActivity() {
 //        showLog("seekBarProgress $seekBarProgress")
         binding.overlay.setEraseBarSize(seekBarProgress)
 
-        binding.imageResult.setListener(object : ZoomableImageListener {
+        binding.imageResult.setActionListener(object : ActionListener {
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
                 val getCurrentScale = binding.imageResult.getCurrentScale()
                 showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
-
 //                if (points.isNotEmpty()) {
 //                    val point = points[0]
 //                    interactiveSegmentationHelper.segment(point.x, point.y)
@@ -116,49 +115,75 @@ class MainActivity : BaseActivity() {
 //                showLog("points $points")
 //                pointArray
 //                binding.overlay.setLines()
+                val pointArray: ArrayList<Point> = ArrayList()
                 val lineArray: ArrayList<Line> = ArrayList()
-//                for (i in 1 until points.size) {
-//                    lineArray.add(Line(pointA = points[i - 1], pointB = points[i]))
-//                }
-//                if (points.size > 1) {
-//                    lineArray.add(Line(pointA = points[0], pointB = points[points.size - 1]))
-//                }
                 showLog("minDistance $minDistance, overlayDistancePercentage $overlayDistancePercentage, imageDistancePercentage $imageDistancePercentage")
                 for (i in 1 until points.size) {
                     val pointA = points[i - 1]
+                    pointArray.add(pointA)
                     val pointB = points[i]
-
+//                    lineArray.add(Line(pointA, pointB))
+//                    showLog("pointA $pointA, pointB $pointB")
                     val distance = AppConstants.getDistance(pointA, pointB)
-                    showLog("distance $distance")
-
+//                    showLog("distance $distance")
                     if (distance > minDistance) {
-
+                        val linePoints = findIntersectPoints(pointA, pointB, minDistance)
+                        pointArray.addAll(linePoints)
                     }
+                    pointArray.add(pointB)
                 }
+//                for (point in pointArray) {
+//                    showLog("point $point")
+//                }
 
-                binding.overlay.setPoints(points)
-                binding.overlay.setLines(lineArray)
+//                for (i in 1 until points.size) {
+//                    val pointA = points[i - 1]
+//                    val pointB = points[i]
+//
+//                    val distance = AppConstants.getDistance(pointA, pointB)
+//                    if (distance > minDistance) {
+//                        showLog("distance $distance")
+//                    }
+//                }
+                binding.overlay.setPoints(pointArray)
+//                binding.overlay.setLines(lineArray)
                 binding.overlay.invalidate()
             }
         })
 
-        val linePoints = findIntersectPoints(pointA = Point(8f, 8f), pointB = Point(0f, 0f))
-        showLog("Points on the line: $linePoints")
+        binding.erase.setOnClickListener {
+//            val linePoints = findIntersectPoints(Point(0f, 0f), Point(800f, 800f), 10f)
+//            showLog("Points on the line: $linePoints")
+        }
+        binding.erase.performClick()
     }
 
-    private fun findIntersectPoints(pointA: Point, pointB: Point): List<Point> {
+    private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
         val points = mutableListOf<Point>()
 
-        val dx = kotlin.math.abs(pointB.x - pointA.x)
-        val dy = kotlin.math.abs(pointB.y - pointA.y)
+        val x1 = pointA.x
+        val x2 = pointB.x
+        val y1 = pointA.y
+        val y2 = pointB.y
 
-        val sx = if (pointA.x < pointB.x) 5f else -5f
-        val sy = if (pointA.y < pointB.y) 5f else -5f
+        val dx = kotlin.math.abs(x2 - x1)
+        val dy = kotlin.math.abs(y2 - y1)
 
+        var x: Float = x1
+        var y: Float = y1
+
+        val sx = if (x1 < x2) {
+            1f * minDistance
+        } else {
+            -1f * minDistance
+        }
+        val sy = if (y1 < y2) {
+            1f * minDistance
+        } else {
+            -1f * minDistance
+        }
+//        showLog("sx $sx, sy $sy")
         var err = dx - dy
-        var x = -0f
-        var y = -0f
-
         while (true) {
             val e2 = 2 * err
             if (e2 > -dy) {
@@ -169,54 +194,56 @@ class MainActivity : BaseActivity() {
                 err += dx
                 y += sy
             }
-
+//            showLog("Point $x, $y")
             // Exit if we've reached the end point
-            if (pointA.x == pointB.x || pointA.y == pointB.y) {
-                if (pointA.x > pointB.x || pointA.x < pointB.x) { // y1 == y2
-                    if (pointA.x > pointB.x) { // x1 > x2
-                        if (x <= pointA.x) {
+            if (x1 == x2 && y1 == y2) {
+                return points
+            } else if (x1 == x2 || y1 == y2) {
+                showLog("Point x1 $x1, y1 $y1")
+                showLog("Point x2 $x2, y2 $y2")
+                showLog("Point x $x, y $y")
+                if (y1 == y2) {
+                    if (x1 > x2) {
+                        if (x <= x2) {
                             break
                         }
                     } else { // x2 > x1
-                        if (x >= pointB.x) {
+                        if (x >= x2) {
                             break
                         }
                     }
-                } else if (pointA.y > pointB.y || pointA.y < pointB.y) { // x1 == x2
-                    if (pointA.y > pointB.y) { // y1 > y2
-                        if (y <= pointA.y) {
+                } else { // x1 == x2
+                    if (y1 > y2) {
+                        if (y <= y2) {
                             break
                         }
                     } else { // y2 > y1
-                        if (y >= pointA.y) {
+                        if (y >= y2) {
                             break
                         }
                     }
-                } else { // all are equal (x1 == x2 == y1 == y2)
-                    return points
                 }
             } else { // none of them are equals
-                if (pointA.x > pointB.x && pointA.y > pointB.y) {// x1 > x2 && y1 > y2 (bottom right)
-                    if (x >= pointB.x && y >= pointB.y) {
+                if (x2 > x1 && y2 > y1) { // bottom right
+                    if (x >= x2 && y >= y2) {
                         break
                     }
-                } else if (pointA.x < pointB.x && pointA.y < pointB.y) {// x2 > x1 && y2 > y1 (top left)
-
-                } else if (pointA.x < pointB.x && pointA.y > pointB.y) {// x2 > x1 && y1 > y2 (bottom left)
-
-                } else if (pointA.x > pointB.x && pointA.y < pointB.y) {// x1 > x2 && y2 > y1 (top right)
-
-                    if ((x >= pointB.x && y >= pointB.y) ||
-                        (x <= pointA.x && y <= pointA.y)
-                    ) {
+                } else if (x1 > x2 && y1 > y2) { // top left
+                    if (x <= x2 && y <= y2) {
+                        break
+                    }
+                } else if (x1 > x2 && y2 > y1) { // bottom left
+                    if (x <= x2 && y >= y2) {
+                        break
+                    }
+                } else if (x2 > x1 && y1 > y2) { // top right
+                    if (x >= x2 && y <= y2) {
                         break
                     }
                 }
             }
-
             points.add(Point(x, y)) // Add current point to the list
         }
-
         return points
     }
 
@@ -286,7 +313,7 @@ class MainActivity : BaseActivity() {
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
 
-            minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
+            minDistance = min(overlayDistancePercentage, imageDistancePercentage)
         }
 //        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
