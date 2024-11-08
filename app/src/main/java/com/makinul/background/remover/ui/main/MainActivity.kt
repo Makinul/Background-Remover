@@ -142,38 +142,24 @@ class MainActivity : BaseActivity() {
             }
         })
 
-        val x1 = 0f
-        val y1 = 0f
-        val x2 = 8f
-        val y2 = 8f
-
-        val linePoints = bresenhamLine(x1, y1, x2, y2)
+        val linePoints = findIntersectPoints(pointA = Point(8f, 8f), pointB = Point(0f, 0f))
         showLog("Points on the line: $linePoints")
     }
 
-    private fun bresenhamLine(
-        x1: Float,
-        y1: Float,
-        x2: Float,
-        y2: Float
-    ): List<Pair<Float, Float>> {
-        val points = mutableListOf<Pair<Float, Float>>()
+    private fun findIntersectPoints(pointA: Point, pointB: Point): List<Point> {
+        val points = mutableListOf<Point>()
 
-        val dx = kotlin.math.abs(x2 - x1)
-        val dy = kotlin.math.abs(y2 - y1)
+        val dx = kotlin.math.abs(pointB.x - pointA.x)
+        val dy = kotlin.math.abs(pointB.y - pointA.y)
 
-        val sx = if (x1 < x2) 5f else -5f
-        val sy = if (y1 < y2) 5f else -5f
+        val sx = if (pointA.x < pointB.x) 5f else -5f
+        val sy = if (pointA.y < pointB.y) 5f else -5f
 
         var err = dx - dy
-        var x = x1
-        var y = y1
+        var x = -0f
+        var y = -0f
 
         while (true) {
-            points.add(Pair(x, y)) // Add current point to the list
-
-            if (x >= x2 && y >= y2) break // Exit if we've reached the end point
-
             val e2 = 2 * err
             if (e2 > -dy) {
                 err -= dy
@@ -183,6 +169,52 @@ class MainActivity : BaseActivity() {
                 err += dx
                 y += sy
             }
+
+            // Exit if we've reached the end point
+            if (pointA.x == pointB.x || pointA.y == pointB.y) {
+                if (pointA.x > pointB.x || pointA.x < pointB.x) { // y1 == y2
+                    if (pointA.x > pointB.x) { // x1 > x2
+                        if (x <= pointA.x) {
+                            break
+                        }
+                    } else { // x2 > x1
+                        if (x >= pointB.x) {
+                            break
+                        }
+                    }
+                } else if (pointA.y > pointB.y || pointA.y < pointB.y) { // x1 == x2
+                    if (pointA.y > pointB.y) { // y1 > y2
+                        if (y <= pointA.y) {
+                            break
+                        }
+                    } else { // y2 > y1
+                        if (y >= pointA.y) {
+                            break
+                        }
+                    }
+                } else { // all are equal (x1 == x2 == y1 == y2)
+                    return points
+                }
+            } else { // none of them are equals
+                if (pointA.x > pointB.x && pointA.y > pointB.y) {// x1 > x2 && y1 > y2 (bottom right)
+                    if (x >= pointB.x && y >= pointB.y) {
+                        break
+                    }
+                } else if (pointA.x < pointB.x && pointA.y < pointB.y) {// x2 > x1 && y2 > y1 (top left)
+
+                } else if (pointA.x < pointB.x && pointA.y > pointB.y) {// x2 > x1 && y1 > y2 (bottom left)
+
+                } else if (pointA.x > pointB.x && pointA.y < pointB.y) {// x1 > x2 && y2 > y1 (top right)
+
+                    if ((x >= pointB.x && y >= pointB.y) ||
+                        (x <= pointA.x && y <= pointA.y)
+                    ) {
+                        break
+                    }
+                }
+            }
+
+            points.add(Point(x, y)) // Add current point to the list
         }
 
         return points
@@ -232,16 +264,14 @@ class MainActivity : BaseActivity() {
                 return
             }
         }
-        if (bitmap == null)
-            return
+        if (bitmap == null) return
 
         binding.imageResult.setImageBitmap(bitmap)
 
         imageWidth = bitmap.width
         imageHeight = bitmap.height
         imageDistance = AppConstants.getDistance(
-            Point(0f, 0f),
-            Point(imageWidth.toFloat(), imageHeight.toFloat())
+            Point(0f, 0f), Point(imageWidth.toFloat(), imageHeight.toFloat())
         )
         imageDistancePercentage = imageDistance / 100f
 
@@ -253,13 +283,12 @@ class MainActivity : BaseActivity() {
                 (overlayHeight.toFloat() / imageHeight.toFloat())
             )
             overlayDistancePercentage = AppConstants.getDistance(
-                Point(0f, 0f),
-                Point(overlayWidth.toFloat(), overlayHeight.toFloat())
+                Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
 
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-        prepareHelper(bitmap)
+//        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
     }
@@ -307,16 +336,12 @@ class MainActivity : BaseActivity() {
 
     private fun prepareMaskedBitmap(bitmapArray: IntArray) {
         val processedBitmap = Bitmap.createBitmap(
-            bitmapArray,
-            imageWidth,
-            imageHeight,
-            Bitmap.Config.ARGB_8888
+            bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
         )
 
         val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
         val scaleHeight = (processedBitmap.height * scaleFactor).toInt()
-        val maskBitmap =
-            Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
+        val maskBitmap = Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
         showLog("processedBitmap $processedBitmap")
 
         binding.overlay.setMaskBitmap(maskBitmap)
@@ -328,8 +353,7 @@ class MainActivity : BaseActivity() {
 
     private fun prepareImageSegmentation(rawBitmap: Bitmap) {
         val interactiveSegmentationHelper = InteractiveSegmentationHelper(
-            context = this@MainActivity,
-            interactiveSegmentationListener
+            context = this@MainActivity, interactiveSegmentationListener
         )
         interactiveSegmentationHelper.setInputImage(
             rawBitmap
@@ -347,9 +371,7 @@ class MainActivity : BaseActivity() {
 
                 result?.let {
                     setMaskResult(
-                        it.byteBuffer,
-                        it.maskWidth,
-                        it.maskHeight
+                        it.byteBuffer, it.maskWidth, it.maskHeight
                     )
                 }
             }
@@ -368,10 +390,7 @@ class MainActivity : BaseActivity() {
         }
 
         val bitmap = Bitmap.createBitmap(
-            pixels,
-            maskWidth,
-            maskHeight,
-            Bitmap.Config.ARGB_8888
+            pixels, maskWidth, maskHeight, Bitmap.Config.ARGB_8888
         )
 
 //        // Assumes portrait for this sample, but scaling can be adjusted for landscape.
@@ -481,8 +500,7 @@ class MainActivity : BaseActivity() {
 //    }
 
     private fun saveBitmapToLocalStorage(
-        bitmap: Bitmap,
-        displayName: String
+        bitmap: Bitmap, displayName: String
     ) {
         try {
             val contentValues = ContentValues().apply {
