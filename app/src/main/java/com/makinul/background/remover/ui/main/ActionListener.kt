@@ -7,5 +7,6 @@ enum class ImageState {
 }
 
 interface ActionListener {
+    fun onEdit(point: Point)
     fun onComplete(imageState: ImageState, points: List<Point>)
 }

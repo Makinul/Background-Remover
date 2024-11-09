@@ -4,6 +4,7 @@ import ai.painlog.mmhi.ui.zoomable.MainViewModel
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -106,6 +107,10 @@ class MainActivity : BaseActivity() {
 
         binding.imageResult.setActionListener(object : ActionListener {
 
+            override fun onEdit(point: Point) {
+                TODO("Not yet implemented")
+            }
+
             override fun onComplete(imageState: ImageState, points: List<Point>) {
                 val getCurrentScale = binding.imageResult.getCurrentScale()
                 showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
@@ -126,13 +131,15 @@ class MainActivity : BaseActivity() {
 //                    lineArray.add(Line(pointA, pointB))
                     showLog("pointA $pointA, pointB $pointB")
                     val distance = AppConstants.getDistance(pointA, pointB)
-//                    showLog("distance $distance")
+                    showLog("distance $distance")
                     if (distance > minDistance) {
-                        val linePoints = findIntersectPoints(pointA, pointB, 1f)
+                        val linePoints = ddaLine(pointA, pointB)
                         pointArray.addAll(linePoints)
                     }
                     pointArray.add(pointB)
                 }
+
+//                if ()
 //                for (point in pointArray) {
 //                    showLog("point $point")
 //                }
@@ -153,20 +160,24 @@ class MainActivity : BaseActivity() {
         })
 
         binding.erase.setOnClickListener {
-            val points: ArrayList<Point> = ArrayList()
-            val pointA = Point(x = 417.06314f, y = 677.41614f)
-            val pointB = Point(x = 486.2293f, y = 676.9092f)
+//            val points: ArrayList<Point> = ArrayList()
+            val pointA = Point(x = 480f, y = 600f)
+            val pointB = Point(x = 400f, y = 600f)
 //            val pointA = Point(x = 400f, y = 640f)
 //            val pointB = Point(x = 480f, y = 600f)
 //            val distance = AppConstants.getDistance(pointA, pointB)
 //            val minDistance = 18.926826f
-            val minDistance = 1f
+//            val minDistance = 1f
 //            showLog("distance $distance")
-            points.add(pointA)
-            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
-            points.addAll(linePoints)
-            points.add(pointB)
+//            points.add(pointA)
+//            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
+//            points.addAll(linePoints)
+//            points.add(pointB)
 //            showLog("Points on the line: $linePoints")
+            val linePoints = ddaLine(pointA, pointB)
+//            for (point in linePoints) {
+//                showLog("point $point")
+//            }
             binding.overlay.setPoints(linePoints)
             binding.overlay.invalidate()
         }
@@ -272,6 +283,41 @@ class MainActivity : BaseActivity() {
                 points.add(Point(x, y))
             }
         }
+        return points
+    }
+
+    private fun ddaLine(pointA: Point, pointB: Point): List<Point> {
+        val points = mutableListOf<Point>()
+
+        val x1 = pointA.x
+        val x2 = pointB.x
+        val y1 = pointA.y
+        val y2 = pointB.y
+
+        val dx = x2 - x1
+        val dy = y2 - y1
+
+        // Determine the number of steps required
+        val steps = maxOf(abs(dx), abs(dy)).toInt() / 2
+
+        // Calculate the increments
+        val xInc = dx / steps
+        val yInc = dy / steps
+
+        // Starting point
+        var x = x1
+        var y = y1
+
+        showLog("steps $steps")
+        showLog("xInc $xInc, yInc $yInc")
+
+        for (i in 0..steps) {
+            // Add the current point to the list
+            points.add(Point(x, y))
+            x += xInc
+            y += yInc
+        }
+
         return points
     }
 
