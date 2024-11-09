@@ -37,6 +37,7 @@ import java.io.OutputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.abs
 import kotlin.math.min
 
 @AndroidEntryPoint
@@ -123,11 +124,11 @@ class MainActivity : BaseActivity() {
                     pointArray.add(pointA)
                     val pointB = points[i]
 //                    lineArray.add(Line(pointA, pointB))
-//                    showLog("pointA $pointA, pointB $pointB")
+                    showLog("pointA $pointA, pointB $pointB")
                     val distance = AppConstants.getDistance(pointA, pointB)
 //                    showLog("distance $distance")
                     if (distance > minDistance) {
-                        val linePoints = findIntersectPoints(pointA, pointB, minDistance)
+                        val linePoints = findIntersectPoints(pointA, pointB, 1f)
                         pointArray.addAll(linePoints)
                     }
                     pointArray.add(pointB)
@@ -152,8 +153,22 @@ class MainActivity : BaseActivity() {
         })
 
         binding.erase.setOnClickListener {
-//            val linePoints = findIntersectPoints(Point(0f, 0f), Point(800f, 800f), 10f)
+            val points: ArrayList<Point> = ArrayList()
+            val pointA = Point(x = 417.06314f, y = 677.41614f)
+            val pointB = Point(x = 486.2293f, y = 676.9092f)
+//            val pointA = Point(x = 400f, y = 640f)
+//            val pointB = Point(x = 480f, y = 600f)
+//            val distance = AppConstants.getDistance(pointA, pointB)
+//            val minDistance = 18.926826f
+            val minDistance = 1f
+//            showLog("distance $distance")
+            points.add(pointA)
+            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
+            points.addAll(linePoints)
+            points.add(pointB)
 //            showLog("Points on the line: $linePoints")
+            binding.overlay.setPoints(linePoints)
+            binding.overlay.invalidate()
         }
         binding.erase.performClick()
     }
@@ -166,8 +181,8 @@ class MainActivity : BaseActivity() {
         val y1 = pointA.y
         val y2 = pointB.y
 
-        val dx = kotlin.math.abs(x2 - x1)
-        val dy = kotlin.math.abs(y2 - y1)
+        val dx = abs(x2 - x1)
+        val dy = abs(y2 - y1)
 
         var x: Float = x1
         var y: Float = y1
@@ -178,9 +193,9 @@ class MainActivity : BaseActivity() {
             -1f * minDistance
         }
         val sy = if (y1 < y2) {
-            1f * minDistance
+            minDistance
         } else {
-            -1f * minDistance
+            -minDistance
         }
 //        showLog("sx $sx, sy $sy")
         var err = dx - dy
@@ -199,9 +214,6 @@ class MainActivity : BaseActivity() {
             if (x1 == x2 && y1 == y2) {
                 return points
             } else if (x1 == x2 || y1 == y2) {
-                showLog("Point x1 $x1, y1 $y1")
-                showLog("Point x2 $x2, y2 $y2")
-                showLog("Point x $x, y $y")
                 if (y1 == y2) {
                     if (x1 > x2) {
                         if (x <= x2) {
@@ -228,21 +240,37 @@ class MainActivity : BaseActivity() {
                     if (x >= x2 && y >= y2) {
                         break
                     }
+                    if (x >= x2 || y >= y2) {
+                        continue
+                    }
                 } else if (x1 > x2 && y1 > y2) { // top left
                     if (x <= x2 && y <= y2) {
                         break
+                    }
+                    if (x <= x2 || y <= y2) {
+                        continue
                     }
                 } else if (x1 > x2 && y2 > y1) { // bottom left
                     if (x <= x2 && y >= y2) {
                         break
                     }
+                    if (x <= x2 || y >= y2) {
+                        continue
+                    }
                 } else if (x2 > x1 && y1 > y2) { // top right
                     if (x >= x2 && y <= y2) {
                         break
                     }
+                    if (x >= x2 || y <= y2) {
+                        continue
+                    }
                 }
+//                showLog("Point x1 $x1, y1 $y1")
+//                showLog("Point x2 $x2, y2 $y2")
+                showLog("x $x, y $y")
+                // Add current point to the list
+                points.add(Point(x, y))
             }
-            points.add(Point(x, y)) // Add current point to the list
         }
         return points
     }
