@@ -8,5 +8,6 @@ enum class ImageState {
 
 interface ActionListener {
     fun onEdit(point: Point)
+    fun onDragStarted()
     fun onComplete(imageState: ImageState, points: List<Point>)
 }

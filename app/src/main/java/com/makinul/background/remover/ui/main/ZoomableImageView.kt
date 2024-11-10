@@ -56,8 +56,13 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 
     // Scales
     private var mSaveScale = 1f
+
     fun getCurrentScale(): Float {
         return mSaveScale
+    }
+
+    fun getMatrixValues(): FloatArray {
+        return mMatrixValues
     }
 
     private var mMinScale = 1f
@@ -164,18 +169,24 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 //                mActivePointers!!.put(pointerId, f)
 //                showLog("mActivePointers!!.put(pointerId, f) $maskedAction")
 
+                val point = Point(x = event.x, y = event.y)
                 points.clear()
-                points.add(Point(x = event.x, y = event.y))
+                points.add(point)
                 mLast.set(currentPoint)
                 mStart.set(mLast)
                 imageState = ImageState.EDIT
+                listener?.onEdit(point)
+//                showLog("ACTION_DOWN currentTimeMillis ${System.currentTimeMillis()}")
             }
 
             MotionEvent.ACTION_POINTER_DOWN -> {
                 imageState = ImageState.DRAG
+                listener?.onDragStarted()
+//                showLog("ACTION_POINTER_DOWN currentTimeMillis ${System.currentTimeMillis()}")
             }
 
             MotionEvent.ACTION_MOVE -> {
+//                showLog("ACTION_MOVE currentTimeMillis ${System.currentTimeMillis()}")
                 if (imageState == ImageState.EDIT) {
 //                    // a pointer was moved
 //                    val size = event.pointerCount
@@ -188,7 +199,9 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 //                        }
 //                        i++
 //                    }
-                    points.add(Point(x = event.x, y = event.y))
+                    val point = Point(x = event.x, y = event.y)
+                    listener?.onEdit(point)
+                    points.add(point)
                 } else if (imageState == ImageState.DRAG) {
                     val dx = currentPoint.x - mLast.x
                     val dy = currentPoint.y - mLast.y
@@ -264,7 +277,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScale(detector: ScaleGestureDetector): Boolean {
-        showLog("onScale")
+//        showLog("onScale")
         var mScaleFactor = detector.scaleFactor
         val prevScale = mSaveScale
         mSaveScale *= mScaleFactor

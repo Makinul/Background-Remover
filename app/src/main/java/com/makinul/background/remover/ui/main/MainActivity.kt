@@ -107,81 +107,118 @@ class MainActivity : BaseActivity() {
 
         binding.imageResult.setActionListener(object : ActionListener {
 
+            private val pointArray: ArrayList<Point> = ArrayList()
+
             override fun onEdit(point: Point) {
-                TODO("Not yet implemented")
+                if (pointArray.isNotEmpty()) {
+                    val pointA = pointArray[pointArray.size - 1]
+                    val distance = AppConstants.getDistance(pointA, point)
+                    if (distance > minDistance) {
+                        val points = ddaLine(pointArray[pointArray.size - 1], point)
+                        pointArray.addAll(points)
+                    }
+                    pointArray.add(point)
+                } else {
+                    pointArray.add(point)
+                }
+
+                binding.overlay.setPoints(pointArray)
+                binding.overlay.invalidate()
+            }
+
+            override fun onDragStarted() {
+                pointArray.clear()
+                binding.overlay.setPoints(pointArray)
+                binding.overlay.invalidate()
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
-                val getCurrentScale = binding.imageResult.getCurrentScale()
-                showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
-//                if (points.isNotEmpty()) {
-//                    val point = points[0]
-//                    interactiveSegmentationHelper.segment(point.x, point.y)
-//                }
-//                showLog("points $points")
-//                pointArray
-//                binding.overlay.setLines()
-                val pointArray: ArrayList<Point> = ArrayList()
-                val lineArray: ArrayList<Line> = ArrayList()
-                showLog("minDistance $minDistance, overlayDistancePercentage $overlayDistancePercentage, imageDistancePercentage $imageDistancePercentage")
-                for (i in 1 until points.size) {
-                    val pointA = points[i - 1]
-                    pointArray.add(pointA)
-                    val pointB = points[i]
-//                    lineArray.add(Line(pointA, pointB))
-                    showLog("pointA $pointA, pointB $pointB")
-                    val distance = AppConstants.getDistance(pointA, pointB)
-                    showLog("distance $distance")
-                    if (distance > minDistance) {
-                        val linePoints = ddaLine(pointA, pointB)
-                        pointArray.addAll(linePoints)
-                    }
-                    pointArray.add(pointB)
-                }
-
-//                if ()
-//                for (point in pointArray) {
-//                    showLog("point $point")
-//                }
-
+//                val getCurrentScale = binding.imageResult.getCurrentScale()
+//                showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
+////                if (points.isNotEmpty()) {
+////                    val point = points[0]
+////                    interactiveSegmentationHelper.segment(point.x, point.y)
+////                }
+////                showLog("points $points")
+////                pointArray
+////                binding.overlay.setLines()
+//                val pointArray: ArrayList<Point> = ArrayList()
+//                val lineArray: ArrayList<Line> = ArrayList()
+//                showLog("minDistance $minDistance, overlayDistancePercentage $overlayDistancePercentage, imageDistancePercentage $imageDistancePercentage")
 //                for (i in 1 until points.size) {
 //                    val pointA = points[i - 1]
+//                    pointArray.add(pointA)
 //                    val pointB = points[i]
-//
+////                    lineArray.add(Line(pointA, pointB))
+//                    showLog("pointA $pointA, pointB $pointB")
 //                    val distance = AppConstants.getDistance(pointA, pointB)
+//                    showLog("distance $distance")
 //                    if (distance > minDistance) {
-//                        showLog("distance $distance")
+//                        val linePoints = ddaLine(pointA, pointB)
+//                        pointArray.addAll(linePoints)
 //                    }
+//                    pointArray.add(pointB)
 //                }
-                binding.overlay.setPoints(pointArray)
-//                binding.overlay.setLines(lineArray)
-                binding.overlay.invalidate()
+//
+////                if ()
+////                for (point in pointArray) {
+////                    showLog("point $point")
+////                }
+//
+////                for (i in 1 until points.size) {
+////                    val pointA = points[i - 1]
+////                    val pointB = points[i]
+////
+////                    val distance = AppConstants.getDistance(pointA, pointB)
+////                    if (distance > minDistance) {
+////                        showLog("distance $distance")
+////                    }
+////                }
+//                binding.overlay.setPoints(pointArray)
+////                binding.overlay.setLines(lineArray)
+//                binding.overlay.invalidate()
+
+                if (imageState == ImageState.EDIT) {
+//                    showLog("pointArray $pointArray")
+                    startEditSelectedPoints(pointArray)
+                }
+                pointArray.clear()
             }
         })
 
-        binding.erase.setOnClickListener {
-//            val points: ArrayList<Point> = ArrayList()
-            val pointA = Point(x = 480f, y = 600f)
-            val pointB = Point(x = 400f, y = 600f)
-//            val pointA = Point(x = 400f, y = 640f)
-//            val pointB = Point(x = 480f, y = 600f)
-//            val distance = AppConstants.getDistance(pointA, pointB)
-//            val minDistance = 18.926826f
-//            val minDistance = 1f
-//            showLog("distance $distance")
-//            points.add(pointA)
-//            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
-//            points.addAll(linePoints)
-//            points.add(pointB)
-//            showLog("Points on the line: $linePoints")
-            val linePoints = ddaLine(pointA, pointB)
-//            for (point in linePoints) {
-//                showLog("point $point")
-//            }
-            binding.overlay.setPoints(linePoints)
-            binding.overlay.invalidate()
-        }
-        binding.erase.performClick()
+//        binding.erase.setOnClickListener {
+////            val points: ArrayList<Point> = ArrayList()
+//            val pointA = Point(x = 480f, y = 600f)
+//            val pointB = Point(x = 400f, y = 600f)
+////            val pointA = Point(x = 400f, y = 640f)
+////            val pointB = Point(x = 480f, y = 600f)
+////            val distance = AppConstants.getDistance(pointA, pointB)
+////            val minDistance = 18.926826f
+////            val minDistance = 1f
+////            showLog("distance $distance")
+////            points.add(pointA)
+////            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
+////            points.addAll(linePoints)
+////            points.add(pointB)
+////            showLog("Points on the line: $linePoints")
+//            val linePoints = ddaLine(pointA, pointB)
+////            for (point in linePoints) {
+////                showLog("point $point")
+////            }
+//            binding.overlay.setPoints(linePoints)
+//            binding.overlay.invalidate()
+//        }
+//        binding.erase.performClick()
+    }
+
+    private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
+        val x = pointArray[0].x / scaleFactor
+        val y = pointArray[0].y / scaleFactor
+
+        val imageScale = binding.imageResult.getCurrentScale()
+        val matrixValues = binding.imageResult.getMatrixValues()
+        showLog("startEditSelectedPoints")
+//        val pixel = rawBitmap!!.getPixel(x, y)
     }
 
     private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
@@ -368,7 +405,7 @@ class MainActivity : BaseActivity() {
         if (bitmap == null) return
 
         binding.imageResult.setImageBitmap(bitmap)
-
+        rawBitmap = bitmap
         imageWidth = bitmap.width
         imageHeight = bitmap.height
         imageDistance = AppConstants.getDistance(
@@ -387,13 +424,14 @@ class MainActivity : BaseActivity() {
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
 
-            minDistance = min(overlayDistancePercentage, imageDistancePercentage)
+            minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
 //        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
     }
 
+    private var rawBitmap: Bitmap? = null
     private var imageWidth: Int = -1
     private var imageHeight: Int = -1
     private var imageDistance: Float = -1f
