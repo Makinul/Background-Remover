@@ -186,7 +186,7 @@ class MainActivity : BaseActivity() {
             }
         })
 
-//        binding.erase.setOnClickListener {
+        binding.erase.setOnClickListener {
 ////            val points: ArrayList<Point> = ArrayList()
 //            val pointA = Point(x = 480f, y = 600f)
 //            val pointB = Point(x = 400f, y = 600f)
@@ -207,20 +207,43 @@ class MainActivity : BaseActivity() {
 ////            }
 //            binding.overlay.setPoints(linePoints)
 //            binding.overlay.invalidate()
-//        }
-//        binding.erase.performClick()
+
+//            val x = 5f
+//            val y = 5f
+//            val seekBarProgress = 3
+//            val circlePoints = circlePoints(x.toInt(), y.toInt(), seekBarProgress)
+//            for (point in circlePoints) {
+//                showLog("point $point")
+//            }
+//            binding.overlay.setPoints(circlePoints)
+//            binding.overlay.invalidate()
+
+            val xc = 5  // Center x
+            val yc = 5  // Center y
+            val radius = 3
+
+            val areaPoints = circleAreaPoints(xc, yc, radius)
+            showLog("Points within the circle: ${areaPoints.size}")
+            for (point in areaPoints) {
+                showLog("point $point")
+            }
+        }
+        binding.erase.performClick()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
-        val x = pointArray[0].x // image view position x
-        val y = pointArray[0].y // image view position y
+        val x = pointArray[0].x / scaleFactor // image view position x
+        val y = pointArray[0].y / scaleFactor // image view position y
 
         val imageScale = binding.imageResult.getCurrentScale()
         val matrixValues = binding.imageResult.getMatrixValues()
         showLog("startEditSelectedPoints x $x, y $y")
         showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
         showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
-//        val pixel = rawBitmap!!.getPixel(x, y)
+        val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
+
+//        val circlePoints = circlePoints(x.toInt(), y.toInt(), seekBarProgress / 2)
+//        showLog("circlePoints $circlePoints")
     }
 
     private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
@@ -355,6 +378,70 @@ class MainActivity : BaseActivity() {
             points.add(Point(x, y))
             x += xInc
             y += yInc
+        }
+
+        return points
+    }
+
+    private fun circlePoints(xc: Int, yc: Int, r: Int): List<Point> {
+        val points = mutableListOf<Pair<Int, Int>>()
+
+        var x = 0
+        var y = r
+        var d = 1 - r
+
+        while (x <= y) {
+            // Add points for all 8 octants
+            points.add(Pair(xc + x, yc + y))
+            points.add(Pair(xc - x, yc + y))
+            points.add(Pair(xc + x, yc - y))
+            points.add(Pair(xc - x, yc - y))
+            points.add(Pair(xc + y, yc + x))
+            points.add(Pair(xc - y, yc + x))
+            points.add(Pair(xc + y, yc - x))
+            points.add(Pair(xc - y, yc - x))
+
+            // Update based on the midpoint
+            if (d < 0) {
+                d += 2 * x + 3
+            } else {
+                d += 2 * (x - y) + 5
+                y -= 1
+            }
+            x += 1
+        }
+
+        // Fill the circle inside (optional)
+        val filledPoints = mutableListOf<Point>()
+        for (point in points) {
+            val xCoord = point.first
+            val yCoord = point.second
+            // Draw horizontal line between the two edges in each row
+            for (i in (xc - xCoord)..(xc + xCoord)) {
+                filledPoints.add(Point(i.toFloat(), yCoord.toFloat()))
+            }
+        }
+
+        return filledPoints
+    }
+
+    private fun circleAreaPoints(xc: Int, yc: Int, radius: Int): List<Pair<Int, Int>> {
+        val points = mutableListOf<Pair<Int, Int>>()
+
+        // Define the bounding box for the circle
+        val xMin = xc - radius
+        val xMax = xc + radius
+        val yMin = yc - radius
+        val yMax = yc + radius
+
+        // Check each point within the bounding box
+        for (x in xMin..xMax) {
+            for (y in yMin..yMax) {
+                // Calculate distance from the center to this point
+                if ((x - xc) * (x - xc) + (y - yc) * (y - yc) <= radius * radius) {
+                    points.add(Pair(x, y)) // Point is within the circle
+                }
+            }
         }
 
         return points
