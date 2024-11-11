@@ -22,7 +22,9 @@
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.BackgroundRemover.Splash">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.Splash"
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
 
@@ -30,7 +32,9 @@
             android:name=".ui.home.HomeActivity"
             android:exported="false"
             android:icon="@drawable/ic_home_black"
-            android:theme="@style/Theme.BackgroundRemover.Home">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.Home"
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
 
@@ -38,7 +42,9 @@
             android:name=".ui.main.MainActivity"
             android:exported="true"
             android:label="@string/activity_main"
-            android:theme="@style/Theme.BackgroundRemover">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,7 +55,9 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:label="@string/activity_settings"
-            android:theme="@style/Theme.BackgroundRemover.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
     </application>

@@ -212,12 +212,14 @@ class MainActivity : BaseActivity() {
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
-        val x = pointArray[0].x / scaleFactor
-        val y = pointArray[0].y / scaleFactor
+        val x = pointArray[0].x // image view position x
+        val y = pointArray[0].y // image view position y
 
         val imageScale = binding.imageResult.getCurrentScale()
         val matrixValues = binding.imageResult.getMatrixValues()
-        showLog("startEditSelectedPoints")
+        showLog("startEditSelectedPoints x $x, y $y")
+        showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
+        showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
 //        val pixel = rawBitmap!!.getPixel(x, y)
     }
 

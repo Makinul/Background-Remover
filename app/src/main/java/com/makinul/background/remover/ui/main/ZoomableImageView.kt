@@ -113,6 +113,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         val fixTransX = getFixTranslation(transX, viewWidth.toFloat(), origWidth * mSaveScale)
         val fixTransY = getFixTranslation(transY, viewHeight.toFloat(), origHeight * mSaveScale)
 
+        showLog("fixTransX $fixTransX, fixTransY $fixTransY")
         if (fixTransX != 0f || fixTransY != 0f)
             mMatrix.postTranslate(fixTransX, fixTransY)
     }
