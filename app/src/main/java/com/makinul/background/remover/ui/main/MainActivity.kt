@@ -218,32 +218,55 @@ class MainActivity : BaseActivity() {
 //            binding.overlay.setPoints(circlePoints)
 //            binding.overlay.invalidate()
 
-            val xc = 5  // Center x
-            val yc = 5  // Center y
-            val radius = 3
-
-            val areaPoints = circleAreaPoints(xc, yc, radius)
-            showLog("Points within the circle: ${areaPoints.size}")
-            for (point in areaPoints) {
-                showLog("point $point")
-            }
+//            val xc = 5  // Center x
+//            val yc = 5  // Center y
+//            val radius = 3
+//            val areaPoints = circleAreaPoints(xc, yc, radius)
+//            showLog("Points within the circle: ${areaPoints.size}")
+//            for (point in areaPoints) {
+//                showLog("point $point")
+//            }
+            val pointArray = ArrayList<Point>()
+            pointArray.add(Point(x = 100f, y = 100f))
+            startEditSelectedPoints(pointArray)
         }
         binding.erase.performClick()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
-        val x = pointArray[0].x / scaleFactor // image view position x
-        val y = pointArray[0].y / scaleFactor // image view position y
-
-        val imageScale = binding.imageResult.getCurrentScale()
-        val matrixValues = binding.imageResult.getMatrixValues()
-        showLog("startEditSelectedPoints x $x, y $y")
-        showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
-        showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
-        val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
+//        val x = pointArray[0].x / scaleFactor // image view position x
+//        val y = pointArray[0].y / scaleFactor // image view position y
+//
+//        val imageScale = binding.imageResult.getCurrentScale()
+//        val matrixValues = binding.imageResult.getMatrixValues()
+//        showLog("startEditSelectedPoints x $x, y $y")
+//        showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
+//        showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
+//
+//        val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
+//        val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
 
 //        val circlePoints = circlePoints(x.toInt(), y.toInt(), seekBarProgress / 2)
 //        showLog("circlePoints $circlePoints")
+
+        for (point in pointArray) {
+            val x = point.x / scaleFactor // image view position x
+            val y = point.y / scaleFactor // image view position y
+
+//            val imageScale = binding.imageResult.getCurrentScale()
+//            val matrixValues = binding.imageResult.getMatrixValues()
+//            showLog("startEditSelectedPoints x $x, y $y")
+//            showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
+//            showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
+
+//            val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
+            val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
+            showLog()
+            for (circlePoint in circleAreaPoints) {
+                rawBitmap!!.setPixel(circlePoint.first, circlePoint.second, Color.TRANSPARENT)
+            }
+        }
+        binding.imageResult.setImageBitmap(rawBitmap)
     }
 
     private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
@@ -493,8 +516,8 @@ class MainActivity : BaseActivity() {
         }
         if (bitmap == null) return
 
-        binding.imageResult.setImageBitmap(bitmap)
         rawBitmap = bitmap
+        binding.imageResult.setImageBitmap(rawBitmap)
         imageWidth = bitmap.width
         imageHeight = bitmap.height
         imageDistance = AppConstants.getDistance(
