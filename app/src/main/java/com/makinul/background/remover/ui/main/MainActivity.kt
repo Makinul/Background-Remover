@@ -1,10 +1,10 @@
 package com.makinul.background.remover.ui.main
 
 import ai.painlog.mmhi.ui.zoomable.MainViewModel
+import android.R.attr.bitmap
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -17,7 +17,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
-import com.makinul.background.remover.data.model.Line
 import com.makinul.background.remover.data.model.Point
 import com.makinul.background.remover.databinding.ActivityMainBinding
 import com.makinul.background.remover.utils.AppConstants
@@ -40,6 +39,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.math.min
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -179,10 +179,8 @@ class MainActivity : BaseActivity() {
 //                binding.overlay.invalidate()
 
                 if (imageState == ImageState.EDIT) {
-//                    showLog("pointArray $pointArray")
-                    startEditSelectedPoints(pointArray)
+                    editBitmap(pointArray)
                 }
-                pointArray.clear()
             }
         })
 
@@ -228,9 +226,8 @@ class MainActivity : BaseActivity() {
 //            }
             val pointArray = ArrayList<Point>()
             pointArray.add(Point(x = 100f, y = 100f))
-            startEditSelectedPoints(pointArray)
+            editBitmap(pointArray)
         }
-        binding.erase.performClick()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
@@ -267,6 +264,41 @@ class MainActivity : BaseActivity() {
             }
         }
         binding.imageResult.setImageBitmap(rawBitmap)
+    }
+
+    private fun editBitmap(pointArray: List<Point>) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val width: Int = rawBitmap!!.width
+            val height: Int = rawBitmap!!.height
+
+            val bitmapArray = IntArray(width * height)
+            rawBitmap!!.getPixels(bitmapArray, 0, width, 0, 0, width, height)
+
+//            for (point in pointArray) {
+//                val x = point.x / scaleFactor // image view position x
+//                val y = point.y / scaleFactor // image view position y
+//
+//                val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
+//                for (circlePoint in circleAreaPoints) {
+//                    val i = (height * circlePoint.second) + circlePoint.first
+//                    bitmapArray[i] = Color.RED
+//                }
+//            }
+
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    val i = (y * width) + x
+
+                    bitmapArray[i] = Color.TRANSPARENT
+                }
+            }
+
+            val processedBitmap = Bitmap.createBitmap(
+                bitmapArray, width, height, Bitmap.Config.ARGB_8888
+            )
+
+            binding.imageResult.setImageBitmap(processedBitmap)
+        }
     }
 
     private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
@@ -514,6 +546,7 @@ class MainActivity : BaseActivity() {
                 return
             }
         }
+
         if (bitmap == null) return
 
         rawBitmap = bitmap
@@ -541,6 +574,7 @@ class MainActivity : BaseActivity() {
 //        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
+        binding.erase.performClick()
     }
 
     private var rawBitmap: Bitmap? = null
