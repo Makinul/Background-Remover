@@ -79,9 +79,6 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        prepareImageData()
-        setImage()
-
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 //                showLog("onProgressChanged fromUser $fromUser, progress $progress")
@@ -122,14 +119,14 @@ class MainActivity : BaseActivity() {
                     pointArray.add(point)
                 }
 
-                binding.overlay.setPoints(pointArray)
-                binding.overlay.invalidate()
+//                binding.overlay.setPoints(pointArray)
+//                binding.overlay.invalidate()
             }
 
             override fun onDragStarted() {
                 pointArray.clear()
-                binding.overlay.setPoints(pointArray)
-                binding.overlay.invalidate()
+//                binding.overlay.setPoints(pointArray)
+//                binding.overlay.invalidate()
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
@@ -179,8 +176,9 @@ class MainActivity : BaseActivity() {
 //                binding.overlay.invalidate()
 
                 if (imageState == ImageState.EDIT) {
-                    editBitmap(pointArray)
+                    editBitmap(ArrayList(points))
                 }
+                pointArray.clear()
             }
         })
 
@@ -228,6 +226,9 @@ class MainActivity : BaseActivity() {
             pointArray.add(Point(x = 100f, y = 100f))
             editBitmap(pointArray)
         }
+
+        prepareImageData()
+        setImage()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
@@ -274,24 +275,28 @@ class MainActivity : BaseActivity() {
             val bitmapArray = IntArray(width * height)
             rawBitmap!!.getPixels(bitmapArray, 0, width, 0, 0, width, height)
 
-//            for (point in pointArray) {
-//                val x = point.x / scaleFactor // image view position x
-//                val y = point.y / scaleFactor // image view position y
-//
+            for (point in pointArray) {
+                val x = point.x / scaleFactor // image view position x
+                val y = point.y / scaleFactor // image view position y
+                showLog("x $x, y $y")
 //                val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
+//                showLog("circleAreaPoints $circleAreaPoints")
 //                for (circlePoint in circleAreaPoints) {
 //                    val i = (height * circlePoint.second) + circlePoint.first
+////                    showLog("i $i")
 //                    bitmapArray[i] = Color.RED
 //                }
-//            }
-
-            for (y in 0 until height) {
-                for (x in 0 until width) {
-                    val i = (y * width) + x
-
-                    bitmapArray[i] = Color.TRANSPARENT
-                }
+                val i = (height * y.toInt()) + x.toInt()
+                bitmapArray[i] = Color.RED
             }
+
+//            for (y in 0 until height) {
+//                for (x in 0 until width) {
+//                    val i = (y * width) + x
+//
+//                    bitmapArray[i] = Color.TRANSPARENT
+//                }
+//            }
 
             val processedBitmap = Bitmap.createBitmap(
                 bitmapArray, width, height, Bitmap.Config.ARGB_8888
@@ -425,8 +430,8 @@ class MainActivity : BaseActivity() {
         var x = x1
         var y = y1
 
-        showLog("steps $steps")
-        showLog("xInc $xInc, yInc $yInc")
+//        showLog("steps $steps")
+//        showLog("xInc $xInc, yInc $yInc")
 
         for (i in 0..steps) {
             // Add the current point to the list
@@ -528,7 +533,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[3]
+            imagePath = AppConstants.listOfDemoImagesPath[0]
         }
     }
 

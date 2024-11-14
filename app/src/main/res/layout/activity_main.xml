@@ -36,8 +36,7 @@
             android:id="@+id/transparent_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/transparent_bg" />
+            android:background="@color/red" />
 
         <com.makinul.background.remover.ui.main.ZoomableImageView
             android:id="@+id/imageResult"
