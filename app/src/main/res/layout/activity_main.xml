@@ -106,8 +106,8 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:text="@string/erase"
-                android:textColor="@color/erase_button_selected"
-                app:strokeColor="@color/erase_button_selected"
+                android:textColor="@color/erase_button_selector"
+                app:strokeColor="@color/erase_button_selector"
                 app:strokeWidth="@dimen/erase_stroke_width" />
 
             <View
@@ -121,8 +121,8 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:text="@string/restore"
-                android:textColor="@color/erase_button_normal"
-                app:strokeColor="@color/erase_button_normal"
+                android:textColor="@color/erase_button_selector"
+                app:strokeColor="@color/erase_button_selector"
                 app:strokeWidth="@dimen/erase_stroke_width" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 

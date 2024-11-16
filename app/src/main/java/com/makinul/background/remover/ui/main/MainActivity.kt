@@ -1,7 +1,6 @@
 package com.makinul.background.remover.ui.main
 
 import ai.painlog.mmhi.ui.zoomable.MainViewModel
-import android.R.attr.bitmap
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -14,6 +13,7 @@ import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
@@ -225,7 +225,16 @@ class MainActivity : BaseActivity() {
             val pointArray = ArrayList<Point>()
             pointArray.add(Point(x = 100f, y = 100f))
             editBitmap(pointArray)
+
+            binding.erase.isSelected = true
+            binding.restore.isSelected = false
         }
+
+        binding.restore.setOnClickListener {
+            binding.erase.isSelected = false
+            binding.restore.isSelected = true
+        }
+        binding.erase.isSelected = true
 
         prepareImageData()
         setImage()
@@ -276,25 +285,30 @@ class MainActivity : BaseActivity() {
             rawBitmap!!.getPixels(bitmapArray, 0, width, 0, 0, width, height)
 
             for (point in pointArray) {
-                val x = point.x / scaleFactor // image view position x
-                val y = point.y / scaleFactor // image view position y
-                showLog("x $x, y $y")
-//                val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
+                val selectedX = point.x // scaleFactor // image view position x
+                val selectedY = point.y // scaleFactor // image view position y
+                showLog("selectedX $selectedX, selectedY $selectedY")
+                val circleAreaPoints =
+                    circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
 //                showLog("circleAreaPoints $circleAreaPoints")
-//                for (circlePoint in circleAreaPoints) {
-//                    val i = (height * circlePoint.second) + circlePoint.first
-////                    showLog("i $i")
-//                    bitmapArray[i] = Color.RED
-//                }
-                val i = (height * y.toInt()) + x.toInt()
-                bitmapArray[i] = Color.RED
+                for (circlePoint in circleAreaPoints) {
+                    val x = circlePoint.first
+                    val y = circlePoint.second
+                    val i = (y * width) + x
+                    showLog("i $i")
+                    showLog("x $x, y $y")
+                    bitmapArray[i] = Color.TRANSPARENT
+                }
+//                val i = (height * y.toInt()) + x.toInt()
+//                bitmapArray[i] = Color.TRANSPARENT
             }
 
 //            for (y in 0 until height) {
 //                for (x in 0 until width) {
-//                    val i = (y * width) + x
-//
-//                    bitmapArray[i] = Color.TRANSPARENT
+//                    if (x % 10 == 0 && y % 10 == 0) {
+//                        val i = (y * width) + x
+//                        bitmapArray[i] = Color.TRANSPARENT
+//                    }
 //                }
 //            }
 
@@ -739,6 +753,8 @@ class MainActivity : BaseActivity() {
             R.id.action_save -> {
 //                requestStoragePermission()
 //                saveBitmapToLocalStorage()
+                val bitmap = binding.imageResult.drawable.toBitmap()
+                saveBitmapToLocalStorage(bitmap, "new")
             }
 
             else -> {
