@@ -156,7 +156,7 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
 //        showLog("startX $startX, startY $startY, endX $endX, endY $endY")
 //        showLog("draw")
         maskBitmap?.let {
-            canvas.drawBitmap(it, 0f, 0f, null)
+            canvas.drawBitmap(it, leftPosition, topPosition, null)
         }
 //        // surrounding border line
 //        canvas.drawRect(startX, startY, endX, endY, segmentPaint)
@@ -199,9 +199,13 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
     }
 
     private var maskBitmap: Bitmap? = null
+    private var leftPosition: Float = 0f
+    private var topPosition: Float = 0f
 
-    fun setMaskBitmap(maskBitmap: Bitmap) {
+    fun setMaskBitmap(maskBitmap: Bitmap, left: Float = 0f, top: Float = 0f) {
         this.maskBitmap = maskBitmap
+        this.leftPosition = left
+        this.topPosition = top
     }
 
     fun getMaskBitmap(): Bitmap? {

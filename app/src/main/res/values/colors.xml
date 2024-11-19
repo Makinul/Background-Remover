@@ -34,6 +34,7 @@
     <color name="light_periwinkle">#D3D5EF</color>
     <color name="light_white">#88FFFFFF</color>
     <color name="light_gray">#E7EBEC</color>
+    <color name="transparent">#00000000</color>
 
     <color name="black">#000000</color>
     <color name="hints_color">#E7EBEC</color>

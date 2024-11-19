@@ -174,9 +174,10 @@ class MainActivity : BaseActivity() {
 //                binding.overlay.setPoints(pointArray)
 ////                binding.overlay.setLines(lineArray)
 //                binding.overlay.invalidate()
-
+                val tmpArray: ArrayList<Point> = ArrayList()
+                tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
-                    editBitmap(ArrayList(points))
+                    editBitmap(tmpArray)
                 }
                 pointArray.clear()
             }
@@ -222,9 +223,9 @@ class MainActivity : BaseActivity() {
 //            for (point in areaPoints) {
 //                showLog("point $point")
 //            }
-            val pointArray = ArrayList<Point>()
-            pointArray.add(Point(x = 100f, y = 100f))
-            editBitmap(pointArray)
+//            val pointArray = ArrayList<Point>()
+//            pointArray.add(Point(x = 100f, y = 100f))
+//            editBitmap(pointArray)
 
             binding.erase.isSelected = true
             binding.restore.isSelected = false
@@ -278,15 +279,12 @@ class MainActivity : BaseActivity() {
 
     private fun editBitmap(pointArray: List<Point>) {
         lifecycleScope.launch(Dispatchers.Main) {
-            val width: Int = rawBitmap!!.width
-            val height: Int = rawBitmap!!.height
-
-            val bitmapArray = IntArray(width * height)
-            rawBitmap!!.getPixels(bitmapArray, 0, width, 0, 0, width, height)
+            val bitmapArray = IntArray(imageWidth * imageHeight)
+            rawBitmap!!.getPixels(bitmapArray, 0, imageWidth, 0, 0, imageWidth, imageHeight)
 
             for (point in pointArray) {
-                val selectedX = point.x // scaleFactor // image view position x
-                val selectedY = point.y // scaleFactor // image view position y
+                val selectedX = point.x * scaleFactor // image view position x
+                val selectedY = point.y * scaleFactor // image view position y
                 showLog("selectedX $selectedX, selectedY $selectedY")
                 val circleAreaPoints =
                     circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
@@ -294,7 +292,7 @@ class MainActivity : BaseActivity() {
                 for (circlePoint in circleAreaPoints) {
                     val x = circlePoint.first
                     val y = circlePoint.second
-                    val i = (y * width) + x
+                    val i = (y * imageWidth) + x
                     showLog("i $i")
                     showLog("x $x, y $y")
                     bitmapArray[i] = Color.TRANSPARENT
@@ -311,12 +309,12 @@ class MainActivity : BaseActivity() {
 //                    }
 //                }
 //            }
+//            val processedBitmap = Bitmap.createBitmap(
+//                bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
+//            )
 
-            val processedBitmap = Bitmap.createBitmap(
-                bitmapArray, width, height, Bitmap.Config.ARGB_8888
-            )
-
-            binding.imageResult.setImageBitmap(processedBitmap)
+            prepareMaskedBitmap(bitmapArray)
+//            binding.imageResult.setImageBitmap(processedBitmap)
         }
     }
 
@@ -547,7 +545,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[0]
+            imagePath = AppConstants.listOfDemoImagesPath[4]
         }
     }
 
@@ -590,10 +588,10 @@ class MainActivity : BaseActivity() {
 
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-//        prepareHelper(bitmap)
+        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
-        binding.erase.performClick()
+//        binding.erase.performClick()
     }
 
     private var rawBitmap: Bitmap? = null
@@ -638,7 +636,10 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private var processedBitmapArray: IntArray = IntArray(0)
+
     private fun prepareMaskedBitmap(bitmapArray: IntArray) {
+        processedBitmapArray = bitmapArray
         val processedBitmap = Bitmap.createBitmap(
             bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
         )
@@ -646,12 +647,25 @@ class MainActivity : BaseActivity() {
         val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
         val scaleHeight = (processedBitmap.height * scaleFactor).toInt()
         val maskBitmap = Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
-        showLog("processedBitmap $processedBitmap")
 
-        binding.overlay.setMaskBitmap(maskBitmap)
+        val overlayWidth = binding.overlay.width
+        val overlayHeight = binding.overlay.height
+
+        val leftPosition: Float
+        val topPosition: Float
+
+        if (overlayWidth == scaleWidth) {
+            leftPosition = 0f
+            topPosition = abs(overlayHeight - scaleHeight) / 2f
+        } else {
+            topPosition = 0f
+            leftPosition = abs(overlayWidth - scaleWidth) / 2f
+        }
+
+        binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
         binding.overlay.invalidate()
 
-//        binding.imageResult.setImageBitmap(processedBitmap)
+        binding.imageResult.setImageResource(R.drawable.transparent_bg)
 //        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
     }
 
@@ -753,8 +767,11 @@ class MainActivity : BaseActivity() {
             R.id.action_save -> {
 //                requestStoragePermission()
 //                saveBitmapToLocalStorage()
-                val bitmap = binding.imageResult.drawable.toBitmap()
-                saveBitmapToLocalStorage(bitmap, "new")
+//                val bitmap = binding.imageResult.drawable.toBitmap()
+                val processedBitmap = Bitmap.createBitmap(
+                    processedBitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
+                )
+                saveBitmapToLocalStorage(processedBitmap)
             }
 
             else -> {
@@ -805,12 +822,10 @@ class MainActivity : BaseActivity() {
 //        }
 //    }
 
-    private fun saveBitmapToLocalStorage(
-        bitmap: Bitmap, displayName: String
-    ) {
+    private fun saveBitmapToLocalStorage(bitmap: Bitmap) {
         try {
             val contentValues = ContentValues().apply {
-                put(MediaStore.Images.Media.DISPLAY_NAME, "$displayName.png")
+                put(MediaStore.Images.Media.DISPLAY_NAME, "${System.currentTimeMillis()}.png")
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,

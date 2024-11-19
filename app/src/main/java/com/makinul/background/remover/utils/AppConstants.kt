@@ -57,7 +57,8 @@ object AppConstants {
         "images/demo_image_0.png",
         "images/demo_image_1.jpg",
         "images/demo_image_2.jpg",
-        "images/demo_image_3.jpg"
+        "images/demo_image_3.jpg",
+        "images/demo_image_4.jpg"
     )
 
     fun getDistance(pointA: Point, pointB: Point): Float {
