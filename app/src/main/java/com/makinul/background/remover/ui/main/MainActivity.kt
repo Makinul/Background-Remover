@@ -1,7 +1,6 @@
 package com.makinul.background.remover.ui.main
 
 import ai.painlog.mmhi.ui.zoomable.MainViewModel
-import android.R.attr.bitmap
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -14,6 +13,7 @@ import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
@@ -79,9 +79,6 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        prepareImageData()
-        setImage()
-
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 //                showLog("onProgressChanged fromUser $fromUser, progress $progress")
@@ -122,14 +119,14 @@ class MainActivity : BaseActivity() {
                     pointArray.add(point)
                 }
 
-                binding.overlay.setPoints(pointArray)
-                binding.overlay.invalidate()
+//                binding.overlay.setPoints(pointArray)
+//                binding.overlay.invalidate()
             }
 
             override fun onDragStarted() {
                 pointArray.clear()
-                binding.overlay.setPoints(pointArray)
-                binding.overlay.invalidate()
+//                binding.overlay.setPoints(pointArray)
+//                binding.overlay.invalidate()
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
@@ -179,8 +176,9 @@ class MainActivity : BaseActivity() {
 //                binding.overlay.invalidate()
 
                 if (imageState == ImageState.EDIT) {
-                    editBitmap(pointArray)
+                    editBitmap(ArrayList(points))
                 }
+                pointArray.clear()
             }
         })
 
@@ -227,7 +225,19 @@ class MainActivity : BaseActivity() {
             val pointArray = ArrayList<Point>()
             pointArray.add(Point(x = 100f, y = 100f))
             editBitmap(pointArray)
+
+            binding.erase.isSelected = true
+            binding.restore.isSelected = false
         }
+
+        binding.restore.setOnClickListener {
+            binding.erase.isSelected = false
+            binding.restore.isSelected = true
+        }
+        binding.erase.isSelected = true
+
+        prepareImageData()
+        setImage()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
@@ -274,24 +284,33 @@ class MainActivity : BaseActivity() {
             val bitmapArray = IntArray(width * height)
             rawBitmap!!.getPixels(bitmapArray, 0, width, 0, 0, width, height)
 
-//            for (point in pointArray) {
-//                val x = point.x / scaleFactor // image view position x
-//                val y = point.y / scaleFactor // image view position y
-//
-//                val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
-//                for (circlePoint in circleAreaPoints) {
-//                    val i = (height * circlePoint.second) + circlePoint.first
-//                    bitmapArray[i] = Color.RED
-//                }
-//            }
-
-            for (y in 0 until height) {
-                for (x in 0 until width) {
+            for (point in pointArray) {
+                val selectedX = point.x // scaleFactor // image view position x
+                val selectedY = point.y // scaleFactor // image view position y
+                showLog("selectedX $selectedX, selectedY $selectedY")
+                val circleAreaPoints =
+                    circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
+//                showLog("circleAreaPoints $circleAreaPoints")
+                for (circlePoint in circleAreaPoints) {
+                    val x = circlePoint.first
+                    val y = circlePoint.second
                     val i = (y * width) + x
-
+                    showLog("i $i")
+                    showLog("x $x, y $y")
                     bitmapArray[i] = Color.TRANSPARENT
                 }
+//                val i = (height * y.toInt()) + x.toInt()
+//                bitmapArray[i] = Color.TRANSPARENT
             }
+
+//            for (y in 0 until height) {
+//                for (x in 0 until width) {
+//                    if (x % 10 == 0 && y % 10 == 0) {
+//                        val i = (y * width) + x
+//                        bitmapArray[i] = Color.TRANSPARENT
+//                    }
+//                }
+//            }
 
             val processedBitmap = Bitmap.createBitmap(
                 bitmapArray, width, height, Bitmap.Config.ARGB_8888
@@ -425,8 +444,8 @@ class MainActivity : BaseActivity() {
         var x = x1
         var y = y1
 
-        showLog("steps $steps")
-        showLog("xInc $xInc, yInc $yInc")
+//        showLog("steps $steps")
+//        showLog("xInc $xInc, yInc $yInc")
 
         for (i in 0..steps) {
             // Add the current point to the list
@@ -528,7 +547,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[3]
+            imagePath = AppConstants.listOfDemoImagesPath[0]
         }
     }
 
@@ -734,6 +753,8 @@ class MainActivity : BaseActivity() {
             R.id.action_save -> {
 //                requestStoragePermission()
 //                saveBitmapToLocalStorage()
+                val bitmap = binding.imageResult.drawable.toBitmap()
+                saveBitmapToLocalStorage(bitmap, "new")
             }
 
             else -> {
