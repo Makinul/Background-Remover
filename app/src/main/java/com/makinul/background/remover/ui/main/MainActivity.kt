@@ -2,6 +2,7 @@ package com.makinul.background.remover.ui.main
 
 import ai.painlog.mmhi.ui.zoomable.MainViewModel
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
@@ -11,9 +12,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
@@ -239,6 +240,8 @@ class MainActivity : BaseActivity() {
 
         prepareImageData()
         setImage()
+
+        showErrorAlert()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
@@ -289,6 +292,24 @@ class MainActivity : BaseActivity() {
                 val circleAreaPoints =
                     circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
 //                showLog("circleAreaPoints $circleAreaPoints")
+
+                val scaleWidth = (imageWidth * scaleFactor).toInt()
+                val scaleHeight = (imageHeight * scaleFactor).toInt()
+
+                val overlayWidth = binding.imageResult.width
+                val overlayHeight = binding.imageResult.height
+
+                val leftPosition: Float
+                val topPosition: Float
+
+                if (overlayWidth == scaleWidth) {
+                    leftPosition = 0f
+                    topPosition = abs(overlayHeight - scaleHeight) / 2f
+                } else {
+                    topPosition = 0f
+                    leftPosition = abs(overlayWidth - scaleWidth) / 2f
+                }
+
                 for (circlePoint in circleAreaPoints) {
                     val x = circlePoint.first
                     val y = circlePoint.second
@@ -588,7 +609,7 @@ class MainActivity : BaseActivity() {
 
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-        prepareHelper(bitmap)
+//        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
 //        binding.erase.performClick()
@@ -846,6 +867,28 @@ class MainActivity : BaseActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun showErrorAlert() {
+
+        // on below line we are creating a variable for builder to build our alert dialog and passing a custom theme to it.
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        // on below line we are setting message for our alert dialog.
+        builder.setMessage("Welcome to Tutorials Point")
+        // on below line we are setting title for our alert dialog.
+        builder.setTitle("Welcome")
+        // on below line we are setting cancelable for our alert dialog.
+        builder.setCancelable(false)
+        // on below line we are setting positive button for our alert dialog and adding click listener to it.
+        builder.setPositiveButton("Cancel", { dialog: DialogInterface, which: Int ->
+            // below method is use to dismiss the dialog.
+            dialog.cancel()
+        })
+
+        // on below line we are Creating the Alert dialog
+        val alertDialog: AlertDialog = builder.create()
+        // on below line we are displaying our alert dialog.
+        alertDialog.show()
     }
 
     override fun onDestroy() {
