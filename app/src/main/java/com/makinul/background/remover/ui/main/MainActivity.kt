@@ -224,9 +224,9 @@ class MainActivity : BaseActivity() {
 //            for (point in areaPoints) {
 //                showLog("point $point")
 //            }
-//            val pointArray = ArrayList<Point>()
-//            pointArray.add(Point(x = 100f, y = 100f))
-//            editBitmap(pointArray)
+            val pointArray = ArrayList<Point>()
+            pointArray.add(Point(x = 100f, y = 100f))
+            editBitmap(pointArray)
 
             binding.erase.isSelected = true
             binding.restore.isSelected = false
@@ -240,8 +240,7 @@ class MainActivity : BaseActivity() {
 
         prepareImageData()
         setImage()
-
-        showErrorAlert()
+//        showErrorAlert()
     }
 
     private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
@@ -282,40 +281,49 @@ class MainActivity : BaseActivity() {
 
     private fun editBitmap(pointArray: List<Point>) {
         lifecycleScope.launch(Dispatchers.Main) {
-            val bitmapArray = IntArray(imageWidth * imageHeight)
-            rawBitmap!!.getPixels(bitmapArray, 0, imageWidth, 0, 0, imageWidth, imageHeight)
+            val bitmapWidth = rawBitmap!!.width
+            val bitmapHeight = rawBitmap!!.height
+
+            val viewWidth = binding.imageResult.width
+            val viewHeight = binding.imageResult.height
+
+            scaleFactor = min(
+                (viewWidth.toFloat() / bitmapWidth.toFloat()),
+                (viewHeight.toFloat() / bitmapHeight.toFloat())
+            )
+
+            showLog("scaleFactor $scaleFactor")
+
+            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
+            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+
+            val leftPosition: Float
+            val topPosition: Float
+
+            if (viewWidth == bitmapWidth) {
+                leftPosition = 0f
+                topPosition = abs(viewHeight - bitmapHeight) / 2f
+            } else {
+                topPosition = 0f
+                leftPosition = abs(viewWidth - bitmapWidth) / 2f
+            }
+
+            showLog("leftPosition $leftPosition, topPosition $topPosition")
 
             for (point in pointArray) {
-                val selectedX = point.x * scaleFactor // image view position x
-                val selectedY = point.y * scaleFactor // image view position y
-                showLog("selectedX $selectedX, selectedY $selectedY")
+                val selectedX = point.x // * scaleFactor // image view position x
+                val selectedY = point.y // * scaleFactor // image view position y
+//                showLog("selectedX $selectedX, selectedY $selectedY")
                 val circleAreaPoints =
                     circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
 //                showLog("circleAreaPoints $circleAreaPoints")
-
-                val scaleWidth = (imageWidth * scaleFactor).toInt()
-                val scaleHeight = (imageHeight * scaleFactor).toInt()
-
-                val overlayWidth = binding.imageResult.width
-                val overlayHeight = binding.imageResult.height
-
-                val leftPosition: Float
-                val topPosition: Float
-
-                if (overlayWidth == scaleWidth) {
-                    leftPosition = 0f
-                    topPosition = abs(overlayHeight - scaleHeight) / 2f
-                } else {
-                    topPosition = 0f
-                    leftPosition = abs(overlayWidth - scaleWidth) / 2f
-                }
 
                 for (circlePoint in circleAreaPoints) {
                     val x = circlePoint.first
                     val y = circlePoint.second
                     val i = (y * imageWidth) + x
-                    showLog("i $i")
-                    showLog("x $x, y $y")
+//                    showLog("i $i")
+//                    showLog("x $x, y $y")
                     bitmapArray[i] = Color.TRANSPARENT
                 }
 //                val i = (height * y.toInt()) + x.toInt()
@@ -566,7 +574,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[4]
+            imagePath = AppConstants.listOfDemoImagesPath[0]
         }
     }
 
@@ -606,13 +614,13 @@ class MainActivity : BaseActivity() {
             overlayDistancePercentage = AppConstants.getDistance(
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
-
+            showLog("scaleFactor $scaleFactor")
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-//        prepareHelper(bitmap)
+        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
-//        binding.erase.performClick()
+        binding.erase.performClick()
     }
 
     private var rawBitmap: Bitmap? = null
@@ -686,7 +694,7 @@ class MainActivity : BaseActivity() {
         binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
         binding.overlay.invalidate()
 
-        binding.imageResult.setImageResource(R.drawable.transparent_bg)
+        binding.imageResult.setImageBitmap(null)
 //        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
     }
 
@@ -870,7 +878,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showErrorAlert() {
-
         // on below line we are creating a variable for builder to build our alert dialog and passing a custom theme to it.
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         // on below line we are setting message for our alert dialog.
