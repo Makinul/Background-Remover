@@ -8,10 +8,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -175,6 +177,8 @@ class MainActivity : BaseActivity() {
 //                binding.overlay.setPoints(pointArray)
 ////                binding.overlay.setLines(lineArray)
 //                binding.overlay.invalidate()
+
+
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
@@ -225,7 +229,7 @@ class MainActivity : BaseActivity() {
 //                showLog("point $point")
 //            }
             val pointArray = ArrayList<Point>()
-            pointArray.add(Point(x = 100f, y = 100f))
+            pointArray.add(Point(x = 200f, y = 200f)) // image view x && y position
             editBitmap(pointArray)
 
             binding.erase.isSelected = true
@@ -270,11 +274,11 @@ class MainActivity : BaseActivity() {
 //            showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
 
 //            val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
-            val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
-            showLog()
-            for (circlePoint in circleAreaPoints) {
-                rawBitmap!!.setPixel(circlePoint.first, circlePoint.second, Color.TRANSPARENT)
-            }
+//            val circleAreaPoints = circleAreaPoints(x, y, seekBarProgress)
+//            showLog()
+//            for (circlePoint in circleAreaPoints) {
+//                rawBitmap!!.setPixel(circlePoint.first, circlePoint.second, Color.TRANSPARENT)
+//            }
         }
         binding.imageResult.setImageBitmap(rawBitmap)
     }
@@ -292,40 +296,37 @@ class MainActivity : BaseActivity() {
                 (viewHeight.toFloat() / bitmapHeight.toFloat())
             )
 
+            val bitmapScaledWidth = (bitmapWidth * scaleFactor).toInt()
+            val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
+
             showLog("scaleFactor $scaleFactor")
 
             val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
             rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
 
-            val leftPosition: Float
-            val topPosition: Float
-
-            if (viewWidth == bitmapWidth) {
-                leftPosition = 0f
-                topPosition = abs(viewHeight - bitmapHeight) / 2f
-            } else {
-                topPosition = 0f
-                leftPosition = abs(viewWidth - bitmapWidth) / 2f
-            }
-
+            val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
+            val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
             showLog("leftPosition $leftPosition, topPosition $topPosition")
 
             for (point in pointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
                 val selectedY = point.y // * scaleFactor // image view position y
-//                showLog("selectedX $selectedX, selectedY $selectedY")
-                val circleAreaPoints =
-                    circleAreaPoints(selectedX.toInt(), selectedY.toInt(), seekBarProgress)
-//                showLog("circleAreaPoints $circleAreaPoints")
+                showLog("selectedX $selectedX, selectedY $selectedY")
+                val x = selectedX - leftPosition
+                val y = selectedY - topPosition
+                val i = ((y * bitmapWidth) + x).toInt()
+                bitmapArray[i] = Color.RED
 
-                for (circlePoint in circleAreaPoints) {
-                    val x = circlePoint.first
-                    val y = circlePoint.second
-                    val i = (y * imageWidth) + x
-//                    showLog("i $i")
-//                    showLog("x $x, y $y")
-                    bitmapArray[i] = Color.TRANSPARENT
-                }
+//                val circleAreaPoints = circleAreaPoints(selectedX, selectedY, seekBarProgress)
+//                showLog("circleAreaPoints $circleAreaPoints")
+//                for (circlePoint in circleAreaPoints) {
+//                    val x = circlePoint.first - leftPosition
+//                    val y = circlePoint.second - topPosition
+//                    val i = ((y * bitmapWidth) + x).toInt()
+////                    showLog("i $i")
+////                    showLog("x $x, y $y")
+//                    bitmapArray[i] = Color.TRANSPARENT
+//                }
 //                val i = (height * y.toInt()) + x.toInt()
 //                bitmapArray[i] = Color.TRANSPARENT
             }
@@ -526,21 +527,21 @@ class MainActivity : BaseActivity() {
         return filledPoints
     }
 
-    private fun circleAreaPoints(xc: Int, yc: Int, radius: Int): List<Pair<Int, Int>> {
-        val points = mutableListOf<Pair<Int, Int>>()
+    private fun circleAreaPoints(xc: Float, yc: Float, radius: Int): List<Pair<Float, Float>> {
+        val points = mutableListOf<Pair<Float, Float>>()
 
-        // Define the bounding box for the circle
-        val xMin = xc - radius
-        val xMax = xc + radius
-        val yMin = yc - radius
-        val yMax = yc + radius
+        // Define the bounding box with floating-point bounds rounded to integers
+        val xMin = kotlin.math.floor(xc - radius).toInt()
+        val xMax = kotlin.math.ceil(xc + radius).toInt()
+        val yMin = kotlin.math.floor(yc - radius).toInt()
+        val yMax = kotlin.math.ceil(yc + radius).toInt()
 
         // Check each point within the bounding box
         for (x in xMin..xMax) {
             for (y in yMin..yMax) {
-                // Calculate distance from the center to this point
-                if ((x - xc) * (x - xc) + (y - yc) * (y - yc) <= radius * radius) {
-                    points.add(Pair(x, y)) // Point is within the circle
+                // Calculate the squared distance from the center to this point
+                if ((x - xc) * (x - xc) + (y - yc) * (y - yc) <= (radius * radius).toFloat()) {
+                    points.add(Pair(x.toFloat(), y.toFloat())) // Add point as a floating-point pair
                 }
             }
         }
@@ -574,7 +575,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[0]
+            imagePath = AppConstants.listOfDemoImagesPath[4]
         }
     }
 
@@ -617,7 +618,7 @@ class MainActivity : BaseActivity() {
             showLog("scaleFactor $scaleFactor")
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-        prepareHelper(bitmap)
+//        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
         binding.erase.performClick()
@@ -680,16 +681,8 @@ class MainActivity : BaseActivity() {
         val overlayWidth = binding.overlay.width
         val overlayHeight = binding.overlay.height
 
-        val leftPosition: Float
-        val topPosition: Float
-
-        if (overlayWidth == scaleWidth) {
-            leftPosition = 0f
-            topPosition = abs(overlayHeight - scaleHeight) / 2f
-        } else {
-            topPosition = 0f
-            leftPosition = abs(overlayWidth - scaleWidth) / 2f
-        }
+        val leftPosition = abs(overlayWidth - scaleWidth) / 2f
+        val topPosition = abs(overlayHeight - scaleHeight) / 2f
 
         binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
         binding.overlay.invalidate()
@@ -898,9 +891,21 @@ class MainActivity : BaseActivity() {
         alertDialog.show()
     }
 
+    private fun showLog(message: String = getString(R.string.test_message)) {
+        AppConstants.showLog(TAG, message)
+    }
+
+    private fun showLog(@StringRes message: Int) {
+        showLog(getString(message))
+    }
+
     override fun onDestroy() {
         showLog("onDestroyView")
         seekbarProgressJob?.cancel()
         super.onDestroy()
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }

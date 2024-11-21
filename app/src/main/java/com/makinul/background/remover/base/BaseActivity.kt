@@ -10,20 +10,6 @@ import com.makinul.background.remover.R
 
 open class BaseActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-
-        showLog()
-    }
-
-    fun showLog(message: String = getString(R.string.test_message)) {
-        Log.v(TAG, message)
-    }
-
-    fun showLog(@StringRes message: Int) {
-        showLog(getString(message))
-    }
-
     fun showToast(message: String = getString(R.string.test_message)) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
