@@ -85,11 +85,14 @@ class MainActivity : BaseActivity() {
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 //                showLog("onProgressChanged fromUser $fromUser, progress $progress")
+                binding.overlay.clearPoints()
+                binding.overlay.clearLines()
                 if (fromUser) {
                     seekBarProgress = progress
                     binding.overlay.setSeekBarProgress(progress)
                     binding.overlay.setEraseBarSize(progress)
                 }
+                binding.overlay.invalidate()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -122,8 +125,8 @@ class MainActivity : BaseActivity() {
                     pointArray.add(point)
                 }
 
-//                binding.overlay.setPoints(pointArray)
-//                binding.overlay.invalidate()
+                binding.overlay.setPoints(pointArray)
+                binding.overlay.invalidate()
             }
 
             override fun onDragStarted() {
@@ -178,12 +181,12 @@ class MainActivity : BaseActivity() {
 ////                binding.overlay.setLines(lineArray)
 //                binding.overlay.invalidate()
 
-
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
                     editBitmap(tmpArray)
                 }
+//                showLog("pointArray $pointArray")
                 pointArray.clear()
             }
         })
@@ -228,9 +231,9 @@ class MainActivity : BaseActivity() {
 //            for (point in areaPoints) {
 //                showLog("point $point")
 //            }
-            val pointArray = ArrayList<Point>()
-            pointArray.add(Point(x = 200f, y = 200f)) // image view x && y position
-            editBitmap(pointArray)
+//            val pointArray = ArrayList<Point>()
+//            pointArray.add(Point(x = 200f, y = 200f)) // image view x && y position
+//            editBitmap(pointArray)
 
             binding.erase.isSelected = true
             binding.restore.isSelected = false
@@ -299,34 +302,35 @@ class MainActivity : BaseActivity() {
             val bitmapScaledWidth = (bitmapWidth * scaleFactor).toInt()
             val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
 
-            showLog("scaleFactor $scaleFactor")
+//            showLog("scaleFactor $scaleFactor")
 
             val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
             rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
 
             val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
             val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
-            showLog("leftPosition $leftPosition, topPosition $topPosition")
+//            showLog("leftPosition $leftPosition, topPosition $topPosition")
 
             for (point in pointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
                 val selectedY = point.y // * scaleFactor // image view position y
-                showLog("selectedX $selectedX, selectedY $selectedY")
-                val x = selectedX - leftPosition
-                val y = selectedY - topPosition
-                val i = ((y * bitmapWidth) + x).toInt()
-                bitmapArray[i] = Color.RED
 
-//                val circleAreaPoints = circleAreaPoints(selectedX, selectedY, seekBarProgress)
+                val x = (selectedX - leftPosition) / scaleFactor
+                val y = (selectedY - topPosition) / scaleFactor
+
+//                showLog("x $x, y $y")
+//                val i = ((y * bitmapWidth) + x).toInt()
+//                bitmapArray[i] = Color.RED
+
+                val circleAreaPoints =
+                    circleAreaPoints(x, y, (seekBarProgress / scaleFactor).toInt())
 //                showLog("circleAreaPoints $circleAreaPoints")
-//                for (circlePoint in circleAreaPoints) {
-//                    val x = circlePoint.first - leftPosition
-//                    val y = circlePoint.second - topPosition
-//                    val i = ((y * bitmapWidth) + x).toInt()
-////                    showLog("i $i")
-////                    showLog("x $x, y $y")
-//                    bitmapArray[i] = Color.TRANSPARENT
-//                }
+                for (circlePoint in circleAreaPoints) {
+                    val circleX = circlePoint.first
+                    val circleY = circlePoint.second
+                    val i = ((circleY * bitmapWidth) + circleX).toInt()
+                    bitmapArray[i] = Color.TRANSPARENT
+                }
 //                val i = (height * y.toInt()) + x.toInt()
 //                bitmapArray[i] = Color.TRANSPARENT
             }
@@ -344,6 +348,8 @@ class MainActivity : BaseActivity() {
 //            )
 
             prepareMaskedBitmap(bitmapArray)
+            binding.overlay.clearPoints()
+            binding.overlay.invalidate()
 //            binding.imageResult.setImageBitmap(processedBitmap)
         }
     }
@@ -442,7 +448,7 @@ class MainActivity : BaseActivity() {
                 }
 //                showLog("Point x1 $x1, y1 $y1")
 //                showLog("Point x2 $x2, y2 $y2")
-                showLog("x $x, y $y")
+//                showLog("x $x, y $y")
                 // Add current point to the list
                 points.add(Point(x, y))
             }
@@ -615,13 +621,13 @@ class MainActivity : BaseActivity() {
             overlayDistancePercentage = AppConstants.getDistance(
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
-            showLog("scaleFactor $scaleFactor")
+//            showLog("scaleFactor $scaleFactor")
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
 //        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
-        binding.erase.performClick()
+//        binding.erase.performClick()
     }
 
     private var rawBitmap: Bitmap? = null
@@ -708,12 +714,12 @@ class MainActivity : BaseActivity() {
 
             override fun onResults(result: InteractiveSegmentationHelper.ResultBundle?) {
                 showLog("result $result")
-
-                result?.let {
-                    setMaskResult(
-                        it.byteBuffer, it.maskWidth, it.maskHeight
-                    )
-                }
+//
+//                result?.let {
+//                    setMaskResult(
+//                        it.byteBuffer, it.maskWidth, it.maskHeight
+//                    )
+//                }
             }
         }
 
@@ -900,7 +906,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        showLog("onDestroyView")
         seekbarProgressJob?.cancel()
         super.onDestroy()
     }

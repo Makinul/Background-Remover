@@ -219,6 +219,10 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         this.pointArray.addAll(pointArray)
     }
 
+    fun clearPoints() {
+        this.pointArray.clear()
+    }
+
     private val lineArray: ArrayList<Line> = ArrayList()
 
     fun setLines(lineArray: List<Line>) {
@@ -226,12 +230,14 @@ class ImageEditOverlayView(context: Context?, attrs: AttributeSet?) :
         this.lineArray.addAll(lineArray)
     }
 
+    fun clearLines() {
+        this.lineArray.clear()
+    }
+
     private var seekBarProgress = 0
 
     fun setSeekBarProgress(progress: Int) {
         seekBarProgress = progress
-
-        invalidate()
     }
 
     fun setEraseBarSize(size: Int) {
