@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
@@ -286,10 +285,8 @@ class MainActivity : BaseActivity() {
         binding.imageResult.setImageBitmap(rawBitmap)
     }
 
-    private fun editBitmap(pointArray: List<Point>) {
+    private fun editBitmap(editPointArray: List<Point>) {
         lifecycleScope.launch(Dispatchers.Main) {
-            val bitmapWidth = rawBitmap!!.width
-            val bitmapHeight = rawBitmap!!.height
 
             val viewWidth = binding.imageResult.width
             val viewHeight = binding.imageResult.height
@@ -304,14 +301,27 @@ class MainActivity : BaseActivity() {
 
 //            showLog("scaleFactor $scaleFactor")
 
-            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
-            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+//            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
+//            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+            val imageEditType = if (binding.restore.isSelected) {
+                ImageEditType.RESTORE
+            } else {
+                ImageEditType.ERASE
+            }
+            val radius = (seekBarProgress / scaleFactor).toInt()
+            val item = ImageEdit(
+                type = imageEditType,
+                pointArray = editPointArray,
+                radius = radius
+            )
+            items.add(item)
+            currentItemPosition += 1
 
             val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
             val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
 //            showLog("leftPosition $leftPosition, topPosition $topPosition")
 
-            for (point in pointArray) {
+            for (point in editPointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
                 val selectedY = point.y // * scaleFactor // image view position y
 
@@ -322,21 +332,25 @@ class MainActivity : BaseActivity() {
 //                val i = ((y * bitmapWidth) + x).toInt()
 //                bitmapArray[i] = Color.RED
 
-                val circleAreaPoints =
-                    circleAreaPoints(x, y, (seekBarProgress / scaleFactor).toInt())
+                val circleAreaPoints = circleAreaPoints(x, y, radius)
 
 //                showLog("circleAreaPoints $circleAreaPoints")
                 for (circlePoint in circleAreaPoints) {
                     val circleX = circlePoint.first
                     val circleY = circlePoint.second
                     val i = ((circleY * bitmapWidth) + circleX).toInt()
-                    val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
-                    val previousColor = Color.rgb(
-                        Color.red(pixel),
-                        Color.green(pixel),
-                        Color.blue(pixel)
-                    )
-                    bitmapArray[i] = previousColor
+
+                    if (imageEditType == ImageEditType.RESTORE) {
+                        val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+                        val previousColor = Color.rgb(
+                            Color.red(pixel),
+                            Color.green(pixel),
+                            Color.blue(pixel)
+                        )
+                        processedBitmapArray[i] = previousColor
+                    } else {
+                        processedBitmapArray[i] = Color.TRANSPARENT
+                    }
                 }
 //                val i = (height * y.toInt()) + x.toInt()
 //                bitmapArray[i] = Color.TRANSPARENT
@@ -354,9 +368,11 @@ class MainActivity : BaseActivity() {
 //                bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
 //            )
 
-            prepareMaskedBitmap(bitmapArray)
+            prepareMaskedBitmap(processedBitmapArray)
             binding.overlay.clearPoints()
             binding.overlay.invalidate()
+
+            updateHistoryMenuButtons()
 //            binding.imageResult.setImageBitmap(processedBitmap)
         }
     }
@@ -610,11 +626,16 @@ class MainActivity : BaseActivity() {
         if (bitmap == null) return
 
         rawBitmap = bitmap
+        bitmapWidth = bitmap.width
+        bitmapHeight = bitmap.height
+
+        processedBitmapArray = IntArray(bitmapWidth * bitmapHeight)
+        rawBitmap!!.getPixels(processedBitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+
         binding.imageResult.setImageBitmap(rawBitmap)
-        imageWidth = bitmap.width
-        imageHeight = bitmap.height
+
         imageDistance = AppConstants.getDistance(
-            Point(0f, 0f), Point(imageWidth.toFloat(), imageHeight.toFloat())
+            Point(0f, 0f), Point(bitmapWidth.toFloat(), bitmapHeight.toFloat())
         )
         imageDistancePercentage = imageDistance / 100f
 
@@ -622,8 +643,8 @@ class MainActivity : BaseActivity() {
             val overlayWidth = binding.overlay.width
             val overlayHeight = binding.overlay.height
             scaleFactor = min(
-                (overlayWidth.toFloat() / imageWidth.toFloat()),
-                (overlayHeight.toFloat() / imageHeight.toFloat())
+                (overlayWidth.toFloat() / bitmapWidth.toFloat()),
+                (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
             overlayDistancePercentage = AppConstants.getDistance(
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
@@ -638,8 +659,8 @@ class MainActivity : BaseActivity() {
     }
 
     private var rawBitmap: Bitmap? = null
-    private var imageWidth: Int = -1
-    private var imageHeight: Int = -1
+    private var bitmapWidth: Int = -1
+    private var bitmapHeight: Int = -1
     private var imageDistance: Float = -1f
     private var imageDistancePercentage: Float = -1f
     private var scaleFactor: Float = 1f
@@ -669,8 +690,8 @@ class MainActivity : BaseActivity() {
             binding.progressBar.hide()
             viewModel.processBitmapToRemoveBackground(
                 rawBitmap = rawBitmap,
-                imageWidth = imageWidth,
-                imageHeight = imageHeight,
+                imageWidth = bitmapWidth,
+                imageHeight = bitmapHeight,
                 scaleFactor = scaleFactor,
                 null,
                 null,
@@ -684,7 +705,7 @@ class MainActivity : BaseActivity() {
     private fun prepareMaskedBitmap(bitmapArray: IntArray) {
         processedBitmapArray = bitmapArray
         val processedBitmap = Bitmap.createBitmap(
-            bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
+            bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
         )
 
         val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
@@ -772,24 +793,43 @@ class MainActivity : BaseActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+    private val items: ArrayList<ImageEdit> = ArrayList()
+    private var currentItemPosition = -1
+
     private fun updateHistoryMenuButtons() {
         optionMenu?.let { menu ->
             val undoActionItem = menu.findItem(R.id.action_undo)
             val redoActionItem = menu.findItem(R.id.action_redo)
 
-            var undoActionDrawable = undoActionItem.icon
-            undoActionDrawable = DrawableCompat.wrap(undoActionDrawable!!)
-            DrawableCompat.setTint(undoActionDrawable, ContextCompat.getColor(this, R.color.gray))
-            undoActionItem.setIcon(undoActionDrawable)
-
-            var redoActionDrawable = redoActionItem.icon
-            redoActionDrawable = DrawableCompat.wrap(redoActionDrawable!!)
-            DrawableCompat.setTint(redoActionDrawable, ContextCompat.getColor(this, R.color.gray))
-            redoActionItem.setIcon(redoActionDrawable)
-
-            undoActionItem.setEnabled(false)
-            redoActionItem.setEnabled(false)
+            if (items.isEmpty()) {
+                changeUndoActionButton(undoActionItem, false)
+                changeUndoActionButton(redoActionItem, false)
+            } else {
+//                if (currentItemPosition >= items.size - 1) {
+//
+//                }
+                changeUndoActionButton(undoActionItem, true)
+                changeUndoActionButton(redoActionItem, true)
+            }
         }
+    }
+
+    private fun changeUndoActionButton(actionItem: MenuItem, enable: Boolean = false) {
+        var undoActionDrawable = actionItem.icon
+        undoActionDrawable = DrawableCompat.wrap(undoActionDrawable!!)
+        if (enable) {
+            DrawableCompat.setTint(
+                undoActionDrawable,
+                ContextCompat.getColor(this, R.color.white)
+            )
+        } else {
+            DrawableCompat.setTint(
+                undoActionDrawable,
+                ContextCompat.getColor(this, R.color.gray)
+            )
+        }
+        actionItem.setIcon(undoActionDrawable)
+        actionItem.setEnabled(enable)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -804,7 +844,7 @@ class MainActivity : BaseActivity() {
 //                saveBitmapToLocalStorage()
 //                val bitmap = binding.imageResult.drawable.toBitmap()
                 val processedBitmap = Bitmap.createBitmap(
-                    processedBitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
+                    processedBitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
                 )
                 saveBitmapToLocalStorage(processedBitmap)
             }
@@ -920,4 +960,14 @@ class MainActivity : BaseActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
+
+    enum class ImageEditType {
+        ERASE, RESTORE
+    }
+
+    data class ImageEdit(
+        val type: ImageEditType,
+        val pointArray: List<Point> = emptyList(),
+        val radius: Int
+    )
 }
