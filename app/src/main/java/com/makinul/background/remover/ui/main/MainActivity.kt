@@ -324,12 +324,19 @@ class MainActivity : BaseActivity() {
 
                 val circleAreaPoints =
                     circleAreaPoints(x, y, (seekBarProgress / scaleFactor).toInt())
+
 //                showLog("circleAreaPoints $circleAreaPoints")
                 for (circlePoint in circleAreaPoints) {
                     val circleX = circlePoint.first
                     val circleY = circlePoint.second
                     val i = ((circleY * bitmapWidth) + circleX).toInt()
-                    bitmapArray[i] = Color.TRANSPARENT
+                    val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+                    val previousColor = Color.rgb(
+                        Color.red(pixel),
+                        Color.green(pixel),
+                        Color.blue(pixel)
+                    )
+                    bitmapArray[i] = previousColor
                 }
 //                val i = (height * y.toInt()) + x.toInt()
 //                bitmapArray[i] = Color.TRANSPARENT
