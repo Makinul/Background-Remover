@@ -300,7 +300,6 @@ class MainActivity : BaseActivity() {
             val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
 
 //            showLog("scaleFactor $scaleFactor")
-
 //            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
 //            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
             val imageEditType = if (binding.restore.isSelected) {
@@ -314,6 +313,11 @@ class MainActivity : BaseActivity() {
                 pointArray = editPointArray,
                 radius = radius
             )
+
+            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
+                items.removeAt(index)
+            }
+
             items.add(item)
             currentItemPosition += 1
 
@@ -333,12 +337,15 @@ class MainActivity : BaseActivity() {
 //                bitmapArray[i] = Color.RED
 
                 val circleAreaPoints = circleAreaPoints(x, y, radius)
-
-//                showLog("circleAreaPoints $circleAreaPoints")
                 for (circlePoint in circleAreaPoints) {
                     val circleX = circlePoint.first
                     val circleY = circlePoint.second
+                    if (circleX < 0 || circleX > bitmapWidth || circleY < 0 || circleY > bitmapHeight)
+                        continue
+
                     val i = ((circleY * bitmapWidth) + circleX).toInt()
+                    if (i + 1 >= (bitmapWidth * bitmapHeight))
+                        continue
 
                     if (imageEditType == ImageEditType.RESTORE) {
                         val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
@@ -802,19 +809,24 @@ class MainActivity : BaseActivity() {
             val redoActionItem = menu.findItem(R.id.action_redo)
 
             if (items.isEmpty()) {
-                changeUndoActionButton(undoActionItem, false)
-                changeUndoActionButton(redoActionItem, false)
+                changeEditActionButton(undoActionItem, false)
+                changeEditActionButton(redoActionItem, false)
             } else {
-//                if (currentItemPosition >= items.size - 1) {
-//
-//                }
-                changeUndoActionButton(undoActionItem, true)
-                changeUndoActionButton(redoActionItem, true)
+                if (currentItemPosition >= items.size - 1) {
+                    changeEditActionButton(undoActionItem, true)
+                    changeEditActionButton(redoActionItem, false)
+                } else if (currentItemPosition < 0) {
+                    changeEditActionButton(undoActionItem, false)
+                    changeEditActionButton(redoActionItem, true)
+                } else {
+                    changeEditActionButton(undoActionItem, true)
+                    changeEditActionButton(redoActionItem, true)
+                }
             }
         }
     }
 
-    private fun changeUndoActionButton(actionItem: MenuItem, enable: Boolean = false) {
+    private fun changeEditActionButton(actionItem: MenuItem, enable: Boolean = false) {
         var undoActionDrawable = actionItem.icon
         undoActionDrawable = DrawableCompat.wrap(undoActionDrawable!!)
         if (enable) {
@@ -849,11 +861,85 @@ class MainActivity : BaseActivity() {
                 saveBitmapToLocalStorage(processedBitmap)
             }
 
+            R.id.action_undo -> {
+                currentItemPosition -= 1
+                updateHistoryMenuButtons()
+                updateEditedView()
+            }
+
+            R.id.action_redo -> {
+                currentItemPosition += 1
+                updateHistoryMenuButtons()
+                updateEditedView()
+            }
+
             else -> {
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateEditedView() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val viewWidth = binding.imageResult.width
+            val viewHeight = binding.imageResult.height
+
+            scaleFactor = min(
+                (viewWidth.toFloat() / bitmapWidth.toFloat()),
+                (viewHeight.toFloat() / bitmapHeight.toFloat())
+            )
+
+            val bitmapScaledWidth = (bitmapWidth * scaleFactor).toInt()
+            val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
+
+            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
+            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+
+            val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
+            val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
+//            showLog("leftPosition $leftPosition, topPosition $topPosition")
+
+            for (index in 0..currentItemPosition) {
+                val item = items[index]
+
+                for (point in item.pointArray) {
+                    val selectedX = point.x // * scaleFactor // image view position x
+                    val selectedY = point.y // * scaleFactor // image view position y
+
+                    val x = (selectedX - leftPosition) / scaleFactor
+                    val y = (selectedY - topPosition) / scaleFactor
+
+                    val circleAreaPoints = circleAreaPoints(x, y, item.radius)
+
+                    for (circlePoint in circleAreaPoints) {
+                        val circleX = circlePoint.first
+                        val circleY = circlePoint.second
+                        if (circleX < 0 || circleX > bitmapWidth || circleY < 0 || circleY > bitmapHeight)
+                            continue
+
+                        val i = ((circleY * bitmapWidth) + circleX).toInt()
+                        if (i + 1 >= (bitmapWidth * bitmapHeight))
+                            continue
+
+                        if (item.type == ImageEditType.RESTORE) {
+                            val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+                            val previousColor = Color.rgb(
+                                Color.red(pixel),
+                                Color.green(pixel),
+                                Color.blue(pixel)
+                            )
+                            bitmapArray[i] = previousColor
+                        } else {
+                            bitmapArray[i] = Color.TRANSPARENT
+                        }
+                    }
+                }
+            }
+
+            prepareMaskedBitmap(bitmapArray)
+            binding.overlay.invalidate()
+        }
     }
 
 //    // Register ActivityResult handler
