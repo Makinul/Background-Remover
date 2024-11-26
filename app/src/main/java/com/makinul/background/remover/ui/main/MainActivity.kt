@@ -184,9 +184,14 @@ class MainActivity : BaseActivity() {
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
                     editBitmap(tmpArray)
+                } else if (imageState == ImageState.ZOOM) {
+                    pointArray.clear()
+                    binding.overlay.setPoints(pointArray)
+                    binding.overlay.invalidate()
+                    return
                 }
-//                showLog("pointArray $pointArray")
                 pointArray.clear()
+//                showLog("pointArray $pointArray")
             }
         })
 
