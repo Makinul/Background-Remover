@@ -83,7 +83,6 @@ class MainActivity : BaseActivity() {
 
         binding.seeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                showLog("onProgressChanged fromUser $fromUser, progress $progress")
                 binding.overlay.clearPoints()
                 binding.overlay.clearLines()
                 if (fromUser) {
@@ -104,7 +103,6 @@ class MainActivity : BaseActivity() {
             }
         })
         seekBarProgress = binding.seeBar.progress
-//        showLog("seekBarProgress $seekBarProgress")
         binding.overlay.setEraseBarSize(seekBarProgress)
 
         binding.imageResult.setActionListener(object : ActionListener {
@@ -135,59 +133,19 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
-//                val getCurrentScale = binding.imageResult.getCurrentScale()
-//                showLog("onComplete: image scale $getCurrentScale, overlay scale $scaleFactor")
-////                if (points.isNotEmpty()) {
-////                    val point = points[0]
-////                    interactiveSegmentationHelper.segment(point.x, point.y)
-////                }
-////                showLog("points $points")
-////                pointArray
-////                binding.overlay.setLines()
-//                val pointArray: ArrayList<Point> = ArrayList()
-//                val lineArray: ArrayList<Line> = ArrayList()
-//                showLog("minDistance $minDistance, overlayDistancePercentage $overlayDistancePercentage, imageDistancePercentage $imageDistancePercentage")
-//                for (i in 1 until points.size) {
-//                    val pointA = points[i - 1]
-//                    pointArray.add(pointA)
-//                    val pointB = points[i]
-////                    lineArray.add(Line(pointA, pointB))
-//                    showLog("pointA $pointA, pointB $pointB")
-//                    val distance = AppConstants.getDistance(pointA, pointB)
-//                    showLog("distance $distance")
-//                    if (distance > minDistance) {
-//                        val linePoints = ddaLine(pointA, pointB)
-//                        pointArray.addAll(linePoints)
-//                    }
-//                    pointArray.add(pointB)
-//                }
-//
-////                if ()
-////                for (point in pointArray) {
-////                    showLog("point $point")
-////                }
-//
-////                for (i in 1 until points.size) {
-////                    val pointA = points[i - 1]
-////                    val pointB = points[i]
-////
-////                    val distance = AppConstants.getDistance(pointA, pointB)
-////                    if (distance > minDistance) {
-////                        showLog("distance $distance")
-////                    }
-////                }
-//                binding.overlay.setPoints(pointArray)
-////                binding.overlay.setLines(lineArray)
-//                binding.overlay.invalidate()
-
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
                     editBitmap(tmpArray)
                 } else if (imageState == ImageState.ZOOM) {
                     pointArray.clear()
+
+                    val currentState = binding.imageResult.getCurrentScale()
+                    showLog("currentState $currentState")
+
                     binding.overlay.setPoints(pointArray)
                     binding.overlay.invalidate()
+
                     return
                 }
                 pointArray.clear()
@@ -196,45 +154,6 @@ class MainActivity : BaseActivity() {
         })
 
         binding.erase.setOnClickListener {
-////            val points: ArrayList<Point> = ArrayList()
-//            val pointA = Point(x = 480f, y = 600f)
-//            val pointB = Point(x = 400f, y = 600f)
-////            val pointA = Point(x = 400f, y = 640f)
-////            val pointB = Point(x = 480f, y = 600f)
-////            val distance = AppConstants.getDistance(pointA, pointB)
-////            val minDistance = 18.926826f
-////            val minDistance = 1f
-////            showLog("distance $distance")
-////            points.add(pointA)
-////            val linePoints = findIntersectPoints(pointA, pointB, minDistance)
-////            points.addAll(linePoints)
-////            points.add(pointB)
-////            showLog("Points on the line: $linePoints")
-//            val linePoints = ddaLine(pointA, pointB)
-////            for (point in linePoints) {
-////                showLog("point $point")
-////            }
-//            binding.overlay.setPoints(linePoints)
-//            binding.overlay.invalidate()
-
-//            val x = 5f
-//            val y = 5f
-//            val seekBarProgress = 3
-//            val circlePoints = circlePoints(x.toInt(), y.toInt(), seekBarProgress)
-//            for (point in circlePoints) {
-//                showLog("point $point")
-//            }
-//            binding.overlay.setPoints(circlePoints)
-//            binding.overlay.invalidate()
-
-//            val xc = 5  // Center x
-//            val yc = 5  // Center y
-//            val radius = 3
-//            val areaPoints = circleAreaPoints(xc, yc, radius)
-//            showLog("Points within the circle: ${areaPoints.size}")
-//            for (point in areaPoints) {
-//                showLog("point $point")
-//            }
 //            val pointArray = ArrayList<Point>()
 //            pointArray.add(Point(x = 200f, y = 200f)) // image view x && y position
 //            editBitmap(pointArray)
@@ -252,42 +171,6 @@ class MainActivity : BaseActivity() {
         prepareImageData()
         setImage()
 //        showErrorAlert()
-    }
-
-    private fun startEditSelectedPoints(pointArray: ArrayList<Point>) {
-//        val x = pointArray[0].x / scaleFactor // image view position x
-//        val y = pointArray[0].y / scaleFactor // image view position y
-//
-//        val imageScale = binding.imageResult.getCurrentScale()
-//        val matrixValues = binding.imageResult.getMatrixValues()
-//        showLog("startEditSelectedPoints x $x, y $y")
-//        showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
-//        showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
-//
-//        val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
-//        val circleAreaPoints = circleAreaPoints(x.toInt(), y.toInt(), seekBarProgress)
-
-//        val circlePoints = circlePoints(x.toInt(), y.toInt(), seekBarProgress / 2)
-//        showLog("circlePoints $circlePoints")
-
-        for (point in pointArray) {
-            val x = point.x / scaleFactor // image view position x
-            val y = point.y / scaleFactor // image view position y
-
-//            val imageScale = binding.imageResult.getCurrentScale()
-//            val matrixValues = binding.imageResult.getMatrixValues()
-//            showLog("startEditSelectedPoints x $x, y $y")
-//            showLog("startEditSelectedPoints imageWidth $imageWidth, imageHeight $imageHeight")
-//            showLog("startEditSelectedPoints imageResult width ${binding.imageResult.width}, imageResult height ${binding.imageResult.height}")
-
-//            val pixel = rawBitmap!!.getPixel(x.toInt(), y.toInt())
-//            val circleAreaPoints = circleAreaPoints(x, y, seekBarProgress)
-//            showLog()
-//            for (circlePoint in circleAreaPoints) {
-//                rawBitmap!!.setPixel(circlePoint.first, circlePoint.second, Color.TRANSPARENT)
-//            }
-        }
-        binding.imageResult.setImageBitmap(rawBitmap)
     }
 
     private fun editBitmap(editPointArray: List<Point>) {
@@ -389,108 +272,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun findIntersectPoints(pointA: Point, pointB: Point, minDistance: Float): List<Point> {
-        val points = mutableListOf<Point>()
-
-        val x1 = pointA.x
-        val x2 = pointB.x
-        val y1 = pointA.y
-        val y2 = pointB.y
-
-        val dx = abs(x2 - x1)
-        val dy = abs(y2 - y1)
-
-        var x: Float = x1
-        var y: Float = y1
-
-        val sx = if (x1 < x2) {
-            1f * minDistance
-        } else {
-            -1f * minDistance
-        }
-        val sy = if (y1 < y2) {
-            minDistance
-        } else {
-            -minDistance
-        }
-//        showLog("sx $sx, sy $sy")
-        var err = dx - dy
-        while (true) {
-            val e2 = 2 * err
-            if (e2 > -dy) {
-                err -= dy
-                x += sx
-            }
-            if (e2 < dx) {
-                err += dx
-                y += sy
-            }
-//            showLog("Point $x, $y")
-            // Exit if we've reached the end point
-            if (x1 == x2 && y1 == y2) {
-                return points
-            } else if (x1 == x2 || y1 == y2) {
-                if (y1 == y2) {
-                    if (x1 > x2) {
-                        if (x <= x2) {
-                            break
-                        }
-                    } else { // x2 > x1
-                        if (x >= x2) {
-                            break
-                        }
-                    }
-                } else { // x1 == x2
-                    if (y1 > y2) {
-                        if (y <= y2) {
-                            break
-                        }
-                    } else { // y2 > y1
-                        if (y >= y2) {
-                            break
-                        }
-                    }
-                }
-            } else { // none of them are equals
-                if (x2 > x1 && y2 > y1) { // bottom right
-                    if (x >= x2 && y >= y2) {
-                        break
-                    }
-                    if (x >= x2 || y >= y2) {
-                        continue
-                    }
-                } else if (x1 > x2 && y1 > y2) { // top left
-                    if (x <= x2 && y <= y2) {
-                        break
-                    }
-                    if (x <= x2 || y <= y2) {
-                        continue
-                    }
-                } else if (x1 > x2 && y2 > y1) { // bottom left
-                    if (x <= x2 && y >= y2) {
-                        break
-                    }
-                    if (x <= x2 || y >= y2) {
-                        continue
-                    }
-                } else if (x2 > x1 && y1 > y2) { // top right
-                    if (x >= x2 && y <= y2) {
-                        break
-                    }
-                    if (x >= x2 || y <= y2) {
-                        continue
-                    }
-                }
-//                showLog("Point x1 $x1, y1 $y1")
-//                showLog("Point x2 $x2, y2 $y2")
-//                showLog("x $x, y $y")
-                // Add current point to the list
-                points.add(Point(x, y))
-            }
-        }
-        return points
-    }
-
     private fun ddaLine(pointA: Point, pointB: Point): List<Point> {
         val points = mutableListOf<Point>()
 
@@ -524,48 +305,6 @@ class MainActivity : BaseActivity() {
         }
 
         return points
-    }
-
-    private fun circlePoints(xc: Int, yc: Int, r: Int): List<Point> {
-        val points = mutableListOf<Pair<Int, Int>>()
-
-        var x = 0
-        var y = r
-        var d = 1 - r
-
-        while (x <= y) {
-            // Add points for all 8 octants
-            points.add(Pair(xc + x, yc + y))
-            points.add(Pair(xc - x, yc + y))
-            points.add(Pair(xc + x, yc - y))
-            points.add(Pair(xc - x, yc - y))
-            points.add(Pair(xc + y, yc + x))
-            points.add(Pair(xc - y, yc + x))
-            points.add(Pair(xc + y, yc - x))
-            points.add(Pair(xc - y, yc - x))
-
-            // Update based on the midpoint
-            if (d < 0) {
-                d += 2 * x + 3
-            } else {
-                d += 2 * (x - y) + 5
-                y -= 1
-            }
-            x += 1
-        }
-
-        // Fill the circle inside (optional)
-        val filledPoints = mutableListOf<Point>()
-        for (point in points) {
-            val xCoord = point.first
-            val yCoord = point.second
-            // Draw horizontal line between the two edges in each row
-            for (i in (xc - xCoord)..(xc + xCoord)) {
-                filledPoints.add(Point(i.toFloat(), yCoord.toFloat()))
-            }
-        }
-
-        return filledPoints
     }
 
     private fun circleAreaPoints(xc: Float, yc: Float, radius: Int): List<Pair<Float, Float>> {
