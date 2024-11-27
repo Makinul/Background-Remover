@@ -66,7 +66,7 @@ class MainActivity : BaseActivity() {
                     Status.SUCCESS -> {
                         binding.progressBar.hide()
                         it.data?.let { bitmapArray ->
-                            prepareMaskedBitmap(bitmapArray)
+                            prepareMaskedBitmap(bitmapArray, bitmapScale)
                         }
                     }
 
@@ -142,7 +142,10 @@ class MainActivity : BaseActivity() {
 
                     val currentState = binding.imageResult.getCurrentScale()
                     showLog("currentState $currentState")
-
+                    showLog("scaleFactor $bitmapScale")
+//                    bitmapScale = currentState
+                    val finalScale = currentState * bitmapScale
+                    prepareMaskedBitmap(processedBitmapArray, finalScale)
                     binding.overlay.setPoints(pointArray)
                     binding.overlay.invalidate()
 
@@ -176,16 +179,16 @@ class MainActivity : BaseActivity() {
     private fun editBitmap(editPointArray: List<Point>) {
         lifecycleScope.launch(Dispatchers.Main) {
 
-            val viewWidth = binding.imageResult.width
-            val viewHeight = binding.imageResult.height
+            val overlayWidth = binding.overlay.width
+            val overlayHeight = binding.overlay.height
 
-            scaleFactor = min(
-                (viewWidth.toFloat() / bitmapWidth.toFloat()),
-                (viewHeight.toFloat() / bitmapHeight.toFloat())
+            bitmapScale = min(
+                (overlayWidth.toFloat() / bitmapWidth.toFloat()),
+                (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
 
-            val bitmapScaledWidth = (bitmapWidth * scaleFactor).toInt()
-            val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
+            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
+            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
 
 //            showLog("scaleFactor $scaleFactor")
 //            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
@@ -195,7 +198,7 @@ class MainActivity : BaseActivity() {
             } else {
                 ImageEditType.ERASE
             }
-            val radius = (seekBarProgress / scaleFactor).toInt()
+            val radius = (seekBarProgress / bitmapScale).toInt()
             val item = ImageEdit(
                 type = imageEditType,
                 pointArray = editPointArray,
@@ -209,16 +212,16 @@ class MainActivity : BaseActivity() {
             items.add(item)
             currentItemPosition += 1
 
-            val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
-            val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
+            val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+            val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
 //            showLog("leftPosition $leftPosition, topPosition $topPosition")
 
             for (point in editPointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
                 val selectedY = point.y // * scaleFactor // image view position y
 
-                val x = (selectedX - leftPosition) / scaleFactor
-                val y = (selectedY - topPosition) / scaleFactor
+                val x = (selectedX - leftPosition) / bitmapScale
+                val y = (selectedY - topPosition) / bitmapScale
 
 //                showLog("x $x, y $y")
 //                val i = ((y * bitmapWidth) + x).toInt()
@@ -263,12 +266,11 @@ class MainActivity : BaseActivity() {
 //                bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
 //            )
 
-            prepareMaskedBitmap(processedBitmapArray)
+            prepareMaskedBitmap(processedBitmapArray, bitmapScale)
             binding.overlay.clearPoints()
             binding.overlay.invalidate()
 
             updateHistoryMenuButtons()
-//            binding.imageResult.setImageBitmap(processedBitmap)
         }
     }
 
@@ -355,7 +357,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[4]
+            imagePath = AppConstants.listOfDemoImagesPath[3]
         }
     }
 
@@ -383,8 +385,6 @@ class MainActivity : BaseActivity() {
         processedBitmapArray = IntArray(bitmapWidth * bitmapHeight)
         rawBitmap!!.getPixels(processedBitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
 
-        binding.imageResult.setImageBitmap(rawBitmap)
-
         imageDistance = AppConstants.getDistance(
             Point(0f, 0f), Point(bitmapWidth.toFloat(), bitmapHeight.toFloat())
         )
@@ -393,10 +393,13 @@ class MainActivity : BaseActivity() {
         binding.overlay.post {
             val overlayWidth = binding.overlay.width
             val overlayHeight = binding.overlay.height
-            scaleFactor = min(
+            bitmapScale = min(
                 (overlayWidth.toFloat() / bitmapWidth.toFloat()),
                 (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
+
+            prepareMaskedBitmap(processedBitmapArray, bitmapScale)
+
             overlayDistancePercentage = AppConstants.getDistance(
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
             ) / 100f
@@ -414,7 +417,7 @@ class MainActivity : BaseActivity() {
     private var bitmapHeight: Int = -1
     private var imageDistance: Float = -1f
     private var imageDistancePercentage: Float = -1f
-    private var scaleFactor: Float = 1f
+    private var bitmapScale: Float = 1f
     private var overlayDistancePercentage: Float = -1f
     private var minDistance: Float = -1f
 
@@ -443,7 +446,7 @@ class MainActivity : BaseActivity() {
                 rawBitmap = rawBitmap,
                 imageWidth = bitmapWidth,
                 imageHeight = bitmapHeight,
-                scaleFactor = scaleFactor,
+                scaleFactor = bitmapScale,
                 null,
                 null,
                 selfieMulticlassSegmentHelper
@@ -453,14 +456,15 @@ class MainActivity : BaseActivity() {
 
     private var processedBitmapArray: IntArray = IntArray(0)
 
-    private fun prepareMaskedBitmap(bitmapArray: IntArray) {
+    private fun prepareMaskedBitmap(bitmapArray: IntArray, scale: Float) {
         processedBitmapArray = bitmapArray
         val processedBitmap = Bitmap.createBitmap(
             bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
         )
 
-        val scaleWidth = (processedBitmap.width * scaleFactor).toInt()
-        val scaleHeight = (processedBitmap.height * scaleFactor).toInt()
+        val scaleWidth = (processedBitmap.width * scale).toInt()
+        val scaleHeight = (processedBitmap.height * scale).toInt()
+
         val maskBitmap = Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
 
         val overlayWidth = binding.overlay.width
@@ -527,7 +531,7 @@ class MainActivity : BaseActivity() {
 //        maskBitmap =
 //            Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, false)
 //        invalidate()
-        binding.imageResult.setImageBitmap(bitmap)
+        binding.imageResult.setImageBitmap(null)
     }
 
     private var optionMenu: Menu? = null
@@ -626,22 +630,22 @@ class MainActivity : BaseActivity() {
 
     private fun updateEditedView() {
         lifecycleScope.launch(Dispatchers.Main) {
-            val viewWidth = binding.imageResult.width
-            val viewHeight = binding.imageResult.height
+            val overlayWidth = binding.overlay.width
+            val overlayHeight = binding.overlay.height
 
-            scaleFactor = min(
-                (viewWidth.toFloat() / bitmapWidth.toFloat()),
-                (viewHeight.toFloat() / bitmapHeight.toFloat())
+            bitmapScale = min(
+                (overlayWidth.toFloat() / bitmapWidth.toFloat()),
+                (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
 
-            val bitmapScaledWidth = (bitmapWidth * scaleFactor).toInt()
-            val bitmapScaledHeight = (bitmapHeight * scaleFactor).toInt()
+            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
+            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
 
             val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
             rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
 
-            val leftPosition = abs(viewWidth - bitmapScaledWidth) / 2f
-            val topPosition = abs(viewHeight - bitmapScaledHeight) / 2f
+            val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+            val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
 //            showLog("leftPosition $leftPosition, topPosition $topPosition")
 
             for (index in 0..currentItemPosition) {
@@ -651,8 +655,8 @@ class MainActivity : BaseActivity() {
                     val selectedX = point.x // * scaleFactor // image view position x
                     val selectedY = point.y // * scaleFactor // image view position y
 
-                    val x = (selectedX - leftPosition) / scaleFactor
-                    val y = (selectedY - topPosition) / scaleFactor
+                    val x = (selectedX - leftPosition) / bitmapScale
+                    val y = (selectedY - topPosition) / bitmapScale
 
                     val circleAreaPoints = circleAreaPoints(x, y, item.radius)
 
@@ -681,7 +685,7 @@ class MainActivity : BaseActivity() {
                 }
             }
 
-            prepareMaskedBitmap(bitmapArray)
+            prepareMaskedBitmap(bitmapArray, bitmapScale)
             binding.overlay.invalidate()
         }
     }
