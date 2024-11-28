@@ -295,11 +295,13 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         if (origWidth * mSaveScale <= viewWidth
             || origHeight * mSaveScale <= viewHeight
         ) {
+            showLog("mMatrix.postScale0")
             mMatrix.postScale(
                 mScaleFactor, mScaleFactor, viewWidth / 2.toFloat(),
                 viewHeight / 2.toFloat()
             )
         } else {
+            showLog("mMatrix.postScale1")
             mMatrix.postScale(
                 mScaleFactor, mScaleFactor,
                 detector.focusX, detector.focusY
@@ -311,10 +313,10 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScaleEnd(detector: ScaleGestureDetector) {
-        showLog("onScaleEnd scaleFactor ${detector.scaleFactor}")
-        showLog("onScaleEnd focusX ${detector.focusX}")
-        showLog("onScaleEnd currentSpanX ${detector.currentSpanX}")
-        showLog("onScaleEnd previousSpanX ${detector.previousSpanX}")
+//        showLog("onScaleEnd scaleFactor ${detector.scaleFactor}")
+//        showLog("onScaleEnd focusX ${detector.focusX}")
+//        showLog("onScaleEnd currentSpanX ${detector.currentSpanX}")
+//        showLog("onScaleEnd previousSpanX ${detector.previousSpanX}")
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
