@@ -140,12 +140,12 @@ class MainActivity : BaseActivity() {
                 } else if (imageState == ImageState.ZOOM) {
                     pointArray.clear()
 
-                    val currentState = binding.imageResult.getCurrentScale()
-                    showLog("currentState $currentState")
-                    showLog("scaleFactor $bitmapScale")
-//                    bitmapScale = currentState
-                    val finalScale = currentState * bitmapScale
-                    prepareMaskedBitmap(processedBitmapArray, finalScale)
+//                    val currentState = binding.imageResult.getCurrentScale()
+//                    showLog("currentState $currentState")
+//                    showLog("scaleFactor $bitmapScale")
+////                    bitmapScale = currentState
+//                    val finalScale = currentState * bitmapScale
+//                    prepareMaskedBitmap(processedBitmapArray, finalScale)
                     binding.overlay.setPoints(pointArray)
                     binding.overlay.invalidate()
 
@@ -187,6 +187,10 @@ class MainActivity : BaseActivity() {
                 (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
 
+            val currentScale = binding.imageResult.getCurrentScale()
+            val finalScale = currentScale * bitmapScale
+            showLog("finalScale $finalScale")
+
             val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
             val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
 
@@ -199,18 +203,18 @@ class MainActivity : BaseActivity() {
                 ImageEditType.ERASE
             }
             val radius = (seekBarProgress / bitmapScale).toInt()
-            val item = ImageEdit(
-                type = imageEditType,
-                pointArray = editPointArray,
-                radius = radius
-            )
-
-            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
-                items.removeAt(index)
-            }
-
-            items.add(item)
-            currentItemPosition += 1
+//            val item = ImageEdit(
+//                type = imageEditType,
+//                pointArray = editPointArray,
+//                radius = radius
+//            )
+//
+//            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
+//                items.removeAt(index)
+//            }
+//
+//            items.add(item)
+//            currentItemPosition += 1
 
             val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
             val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
@@ -357,7 +361,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[3]
+            imagePath = AppConstants.listOfDemoImagesPath[0]
         }
     }
 
@@ -467,16 +471,16 @@ class MainActivity : BaseActivity() {
 
         val maskBitmap = Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
 
-        val overlayWidth = binding.overlay.width
-        val overlayHeight = binding.overlay.height
+//        val overlayWidth = binding.overlay.width
+//        val overlayHeight = binding.overlay.height
+//
+//        val leftPosition = abs(overlayWidth - scaleWidth) / 2f
+//        val topPosition = abs(overlayHeight - scaleHeight) / 2f
+//
+//        binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
+//        binding.overlay.invalidate()
 
-        val leftPosition = abs(overlayWidth - scaleWidth) / 2f
-        val topPosition = abs(overlayHeight - scaleHeight) / 2f
-
-        binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
-        binding.overlay.invalidate()
-
-        binding.imageResult.setImageBitmap(null)
+        binding.imageResult.setImageBitmap(maskBitmap)
 //        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
     }
 

@@ -93,7 +93,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         val redundantYSpace = (viewHeight.toFloat() - (scale * imageHeight.toFloat())) / 2f
         val redundantXSpace = (viewWidth.toFloat() - (scale * imageWidth.toFloat())) / 2f
 
-        mMatrix.postTranslate(redundantXSpace, redundantYSpace)
+        postTranslate(redundantXSpace, redundantYSpace)
 
         origWidth = viewWidth - (2 * redundantXSpace)
         origHeight = viewHeight - (2 * redundantYSpace)
@@ -113,9 +113,8 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         val fixTransX = getFixTranslation(transX, viewWidth.toFloat(), origWidth * mSaveScale)
         val fixTransY = getFixTranslation(transY, viewHeight.toFloat(), origHeight * mSaveScale)
 
-//        showLog("fixTransX $fixTransX, fixTransY $fixTransY")
         if (fixTransX != 0f || fixTransY != 0f)
-            mMatrix.postTranslate(fixTransX, fixTransY)
+            postTranslate(fixTransX, fixTransY)
     }
 
     private fun getFixTranslation(trans: Float, viewSize: Float, contentSize: Float): Float {
@@ -209,7 +208,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
                     val fixTransX = getFixDragTrans(dx, viewWidth.toFloat(), origWidth * mSaveScale)
                     val fixTransY =
                         getFixDragTrans(dy, viewHeight.toFloat(), origHeight * mSaveScale)
-                    mMatrix.postTranslate(fixTransX, fixTransY)
+                    postTranslate(fixTransX, fixTransY)
                     fixTranslation()
                     mLast[currentPoint.x] = currentPoint.y
                 }
@@ -237,7 +236,7 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 //                    val fixTransX = getFixDragTrans(dx, viewWidth.toFloat(), origWidth * mSaveScale)
 //                    val fixTransY =
 //                        getFixDragTrans(dy, viewHeight.toFloat(), origHeight * mSaveScale)
-//                    mMatrix.postTranslate(fixTransX, fixTransY)
+//                    postTranslate(fixTransX, fixTransY)
 //                    fixTranslation()
 //                    mLast[currentPoint.x] = currentPoint.y
 //                }
@@ -249,6 +248,10 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
 //        }
         imageMatrix = mMatrix
         return false
+    }
+
+    private fun postTranslate(dx: Float, dy: Float) {
+        mMatrix.postTranslate(dx, dy)
     }
 
     /*
@@ -308,7 +311,10 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onScaleEnd(detector: ScaleGestureDetector) {
-//        showLog("onScaleEnd $mSaveScale")
+        showLog("onScaleEnd scaleFactor ${detector.scaleFactor}")
+        showLog("onScaleEnd focusX ${detector.focusX}")
+        showLog("onScaleEnd currentSpanX ${detector.currentSpanX}")
+        showLog("onScaleEnd previousSpanX ${detector.previousSpanX}")
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
