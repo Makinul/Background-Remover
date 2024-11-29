@@ -67,7 +67,10 @@ class MainActivity : BaseActivity() {
                     Status.SUCCESS -> {
                         binding.progressBar.hide()
                         it.data?.let { bitmapArray ->
-                            prepareMaskedBitmap(bitmapArray, bitmapScale)
+                            initialBitmap = Bitmap.createBitmap(
+                                bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
+                            )
+                            prepareMaskedBitmap(bitmapArray)
                         }
                     }
 
@@ -115,7 +118,7 @@ class MainActivity : BaseActivity() {
                     val pointA = pointArray[pointArray.size - 1]
                     val distance = AppConstants.getDistance(pointA, point)
                     if (distance > minDistance) {
-                        val points = ddaLine(pointArray[pointArray.size - 1], point)
+                        val points = findConnectedPoints(pointArray[pointArray.size - 1], point)
                         pointArray.addAll(points)
                     }
                     pointArray.add(point)
@@ -138,16 +141,10 @@ class MainActivity : BaseActivity() {
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
-                    editBitmap(tmpArray)
+                    editImage(tmpArray)
                 } else if (imageState == ImageState.ZOOM) {
                     pointArray.clear()
 
-//                    val currentState = binding.imageResult.getCurrentScale()
-//                    showLog("currentState $currentState")
-//                    showLog("scaleFactor $bitmapScale")
-////                    bitmapScale = currentState
-//                    val finalScale = currentState * bitmapScale
-//                    prepareMaskedBitmap(processedBitmapArray, finalScale)
                     binding.overlay.setPoints(pointArray)
                     binding.overlay.invalidate()
 
@@ -159,10 +156,6 @@ class MainActivity : BaseActivity() {
         })
 
         binding.erase.setOnClickListener {
-//            val pointArray = ArrayList<Point>()
-//            pointArray.add(Point(x = 200f, y = 200f)) // image view x && y position
-//            editBitmap(pointArray)
-
             binding.erase.isSelected = true
             binding.restore.isSelected = false
         }
@@ -178,126 +171,7 @@ class MainActivity : BaseActivity() {
 //        showErrorAlert()
     }
 
-    private fun editBitmap(editPointArray: List<Point>) {
-        lifecycleScope.launch(Dispatchers.Main) {
-
-            val overlayWidth = binding.overlay.width
-            val overlayHeight = binding.overlay.height
-
-            bitmapScale = min(
-                (overlayWidth.toFloat() / bitmapWidth.toFloat()),
-                (overlayHeight.toFloat() / bitmapHeight.toFloat())
-            )
-
-            val currentScale = binding.imageResult.getCurrentScale()
-            val finalScale = currentScale * bitmapScale
-            showLog("finalScale $finalScale")
-
-            val matrixValues = binding.imageResult.getMatrixValues()
-            val transX =
-                matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
-            val transY =
-                matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
-
-            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
-            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
-
-//            showLog("scaleFactor $scaleFactor")
-//            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
-//            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
-            val imageEditType = if (binding.restore.isSelected) {
-                ImageEditType.RESTORE
-            } else {
-                ImageEditType.ERASE
-            }
-            val radius = (seekBarProgress / finalScale).toInt()
-            val item = ImageEdit(
-                type = imageEditType,
-                pointArray = editPointArray,
-                radius = radius
-            )
-
-            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
-                items.removeAt(index)
-            }
-
-            items.add(item)
-            currentItemPosition += 1
-
-
-            val leftPosition: Float
-            val topPosition: Float
-
-            if (transX == 0f && transY == 0f) {
-                leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
-                topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
-            } else {
-                leftPosition = transX
-                topPosition = transY
-            }
-
-            showLog("leftPosition $leftPosition, topPosition $topPosition")
-            showLog("transX $transX, transY $transY")
-
-            for (point in editPointArray) {
-                val selectedX = point.x // * scaleFactor // image view position x
-                val selectedY = point.y // * scaleFactor // image view position y
-
-                val x = (selectedX - leftPosition) / finalScale
-                val y = (selectedY - topPosition) / finalScale
-
-//                showLog("x $x, y $y")
-//                val i = ((y * bitmapWidth) + x).toInt()
-//                bitmapArray[i] = Color.RED
-
-                val circleAreaPoints = circleAreaPoints(x, y, radius)
-                for (circlePoint in circleAreaPoints) {
-                    val circleX = circlePoint.first
-                    val circleY = circlePoint.second
-                    if (circleX < 0 || circleX > bitmapWidth || circleY < 0 || circleY > bitmapHeight)
-                        continue
-
-                    val i = ((circleY * bitmapWidth) + circleX).toInt()
-                    if (i + 1 >= (bitmapWidth * bitmapHeight))
-                        continue
-
-                    if (imageEditType == ImageEditType.RESTORE) {
-                        val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
-                        val previousColor = Color.rgb(
-                            Color.red(pixel),
-                            Color.green(pixel),
-                            Color.blue(pixel)
-                        )
-                        processedBitmapArray[i] = previousColor
-                    } else {
-                        processedBitmapArray[i] = Color.TRANSPARENT
-                    }
-                }
-//                val i = (height * y.toInt()) + x.toInt()
-//                bitmapArray[i] = Color.TRANSPARENT
-            }
-
-//            for (y in 0 until height) {
-//                for (x in 0 until width) {
-//                    if (x % 10 == 0 && y % 10 == 0) {
-//                        val i = (y * width) + x
-//                        bitmapArray[i] = Color.TRANSPARENT
-//                    }
-//                }
-//            }
-//            val processedBitmap = Bitmap.createBitmap(
-//                bitmapArray, imageWidth, imageHeight, Bitmap.Config.ARGB_8888
-//            )
-
-            prepareMaskedBitmap(processedBitmapArray, bitmapScale)
-            binding.overlay.clearPoints()
-            binding.overlay.invalidate()
-
-            updateHistoryMenuButtons()
-        }
-    }
-
-    private fun ddaLine(pointA: Point, pointB: Point): List<Point> {
+    private fun findConnectedPoints(pointA: Point, pointB: Point): List<Point> {
         val points = mutableListOf<Point>()
 
         val x1 = pointA.x
@@ -332,7 +206,118 @@ class MainActivity : BaseActivity() {
         return points
     }
 
-    private fun circleAreaPoints(xc: Float, yc: Float, radius: Int): List<Pair<Float, Float>> {
+    private fun editImage(pointArray: List<Point>) {
+        lifecycleScope.launch(Dispatchers.Main) {
+
+            val currentScale = binding.imageResult.getCurrentScale()
+            val finalScale = currentScale * bitmapScale
+
+            val imageEditType = if (binding.restore.isSelected) {
+                ImageEditType.RESTORE
+            } else {
+                ImageEditType.ERASE
+            }
+            val radius = (seekBarProgress / finalScale).toInt()
+            val item = ImageEdit(
+                type = imageEditType,
+                pointArray = pointArray,
+                radius = radius
+            )
+
+            // to remove afterward items if available
+            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
+                items.removeAt(index)
+            }
+
+            items.add(item)
+            currentItemPosition += 1
+
+            updateSelectedItem(item, finalScale)
+        }
+    }
+
+    private fun updateSelectedItem(item: ImageEdit, finalScale: Float) {
+        val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
+        val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
+
+        val overlayWidth = binding.overlay.width
+        val overlayHeight = binding.overlay.height
+
+        bitmapScale = min(
+            (overlayWidth.toFloat() / bitmapWidth.toFloat()),
+            (overlayHeight.toFloat() / bitmapHeight.toFloat())
+        )
+
+        val matrixValues = binding.imageResult.getMatrixValues()
+        val transX =
+            matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
+        val transY =
+            matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
+
+        val leftPosition: Float
+        val topPosition: Float
+
+        if (transX == 0f && transY == 0f) {
+            leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+            topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
+        } else {
+            leftPosition = transX
+            topPosition = transY
+        }
+
+        updateSelectedItem(item, leftPosition, topPosition, finalScale)
+
+        prepareMaskedBitmap(processedBitmapArray)
+        binding.overlay.clearPoints()
+        binding.overlay.invalidate()
+
+        updateHistoryMenuButtons()
+    }
+
+    private fun updateSelectedItem(
+        item: ImageEdit,
+        tansX: Float,
+        tansY: Float,
+        scaleFactor: Float
+    ) {
+        for (point in item.pointArray) {
+            val selectedX = point.x // * scaleFactor // image view position x
+            val selectedY = point.y // * scaleFactor // image view position y
+
+            val x = (selectedX - tansX) / scaleFactor
+            val y = (selectedY - tansY) / scaleFactor
+
+            val circleAreaPoints = getPointsAroundSelectedPoint(x, y, item.radius)
+            for (circlePoint in circleAreaPoints) {
+                val circleX = circlePoint.first
+                val circleY = circlePoint.second
+                if (circleX < 0 || circleX >= bitmapWidth || circleY < 0 || circleY >= bitmapHeight)
+                    continue
+
+                val i = ((circleY * bitmapWidth) + circleX).toInt()
+                if (i + 1 >= (bitmapWidth * bitmapHeight))
+                    continue
+
+                if (item.type == ImageEditType.RESTORE) {
+                    val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+                    val previousColor = Color.rgb(
+                        Color.red(pixel),
+                        Color.green(pixel),
+                        Color.blue(pixel)
+                    )
+                    processedBitmapArray[i] = previousColor
+                } else {
+                    processedBitmapArray[i] = Color.TRANSPARENT
+                }
+            }
+        }
+    }
+
+    private fun getPointsAroundSelectedPoint(
+        xc: Float,
+        yc: Float,
+        radius: Int
+    ): List<Pair<Float, Float>> {
         val points = mutableListOf<Pair<Float, Float>>()
 
         // Define the bounding box with floating-point bounds rounded to integers
@@ -384,6 +369,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private lateinit var processedBitmapArray: IntArray
+
     private fun setImage() {
         val bitmap = when (imageType) {
             KEY_IMAGE_TYPE_ASSET -> {
@@ -402,6 +389,7 @@ class MainActivity : BaseActivity() {
         if (bitmap == null) return
 
         rawBitmap = bitmap
+        initialBitmap = bitmap
         bitmapWidth = bitmap.width
         bitmapHeight = bitmap.height
 
@@ -421,7 +409,7 @@ class MainActivity : BaseActivity() {
                 (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
 
-            prepareMaskedBitmap(processedBitmapArray, bitmapScale)
+            prepareMaskedBitmap(processedBitmapArray)
 
             overlayDistancePercentage = AppConstants.getDistance(
                 Point(0f, 0f), Point(overlayWidth.toFloat(), overlayHeight.toFloat())
@@ -429,13 +417,14 @@ class MainActivity : BaseActivity() {
 //            showLog("scaleFactor $scaleFactor")
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-//        prepareHelper(bitmap)
+        prepareHelper(bitmap)
 //        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
 //        binding.erase.performClick()
     }
 
     private var rawBitmap: Bitmap? = null
+    private var initialBitmap: Bitmap? = null
     private var bitmapWidth: Int = -1
     private var bitmapHeight: Int = -1
     private var imageDistance: Float = -1f
@@ -477,30 +466,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private var processedBitmapArray: IntArray = IntArray(0)
-
-    private fun prepareMaskedBitmap(bitmapArray: IntArray, scale: Float) {
+    private fun prepareMaskedBitmap(bitmapArray: IntArray) {
         processedBitmapArray = bitmapArray
         val processedBitmap = Bitmap.createBitmap(
             bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
         )
 
-        val scaleWidth = (processedBitmap.width * scale).toInt()
-        val scaleHeight = (processedBitmap.height * scale).toInt()
-
-        val maskBitmap = Bitmap.createScaledBitmap(processedBitmap, scaleWidth, scaleHeight, false)
-
-//        val overlayWidth = binding.overlay.width
-//        val overlayHeight = binding.overlay.height
-//
-//        val leftPosition = abs(overlayWidth - scaleWidth) / 2f
-//        val topPosition = abs(overlayHeight - scaleHeight) / 2f
-//
-//        binding.overlay.setMaskBitmap(maskBitmap, leftPosition, topPosition)
-//        binding.overlay.invalidate()
-
-        binding.imageResult.setImageBitmap(maskBitmap)
-//        saveBitmapToLocalStorage(bitmap = processedBitmap, "New Image")
+        binding.imageResult.setImageBitmap(processedBitmap)
     }
 
     private fun prepareImageSegmentation(rawBitmap: Bitmap) {
@@ -619,13 +591,10 @@ class MainActivity : BaseActivity() {
         // handle arrow click here
         when (item.itemId) {
             android.R.id.home -> {
-                finish() // close this activity and return to preview activity (if there is any)
+                finish() // close this activity and return to previous
             }
 
             R.id.action_save -> {
-//                requestStoragePermission()
-//                saveBitmapToLocalStorage()
-//                val bitmap = binding.imageResult.drawable.toBitmap()
                 val processedBitmap = Bitmap.createBitmap(
                     processedBitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
                 )
@@ -635,13 +604,13 @@ class MainActivity : BaseActivity() {
             R.id.action_undo -> {
                 currentItemPosition -= 1
                 updateHistoryMenuButtons()
-                updateEditedView()
+                updateHistoryView(true)
             }
 
             R.id.action_redo -> {
                 currentItemPosition += 1
                 updateHistoryMenuButtons()
-                updateEditedView()
+                updateHistoryView(false)
             }
 
             else -> {
@@ -651,8 +620,72 @@ class MainActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun updateEditedView() {
+    private fun updateHistoryView(undo: Boolean) {
         lifecycleScope.launch(Dispatchers.Main) {
+//            val overlayWidth = binding.overlay.width
+//            val overlayHeight = binding.overlay.height
+//
+//            bitmapScale = min(
+//                (overlayWidth.toFloat() / bitmapWidth.toFloat()),
+//                (overlayHeight.toFloat() / bitmapHeight.toFloat())
+//            )
+//
+//            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
+//            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
+//
+//            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
+//            initialBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+//
+//            val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+//            val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
+////            showLog("leftPosition $leftPosition, topPosition $topPosition")
+//
+//            for (index in 0..currentItemPosition) {
+//                val item = items[index]
+//
+//                for (point in item.pointArray) {
+//                    val selectedX = point.x // * scaleFactor // image view position x
+//                    val selectedY = point.y // * scaleFactor // image view position y
+//
+//                    val x = (selectedX - leftPosition) / bitmapScale
+//                    val y = (selectedY - topPosition) / bitmapScale
+//
+//                    val circleAreaPoints = getPointsAroundSelectedPoint(x, y, item.radius)
+//
+//                    for (circlePoint in circleAreaPoints) {
+//                        val circleX = circlePoint.first
+//                        val circleY = circlePoint.second
+//                        if (circleX < 0 || circleX > bitmapWidth || circleY < 0 || circleY > bitmapHeight)
+//                            continue
+//
+//                        val i = ((circleY * bitmapWidth) + circleX).toInt()
+//                        if (i + 1 >= (bitmapWidth * bitmapHeight))
+//                            continue
+//
+//                        if (item.type == ImageEditType.RESTORE) {
+//                            val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+//                            val previousColor = Color.rgb(
+//                                Color.red(pixel),
+//                                Color.green(pixel),
+//                                Color.blue(pixel)
+//                            )
+//                            bitmapArray[i] = previousColor
+//                        } else {
+//                            bitmapArray[i] = Color.TRANSPARENT
+//                        }
+//                    }
+//                }
+//            }
+//
+//            prepareMaskedBitmap(bitmapArray)
+//            binding.overlay.invalidate()
+
+            val currentScale = binding.imageResult.getCurrentScale()
+            val finalScale = currentScale * bitmapScale
+
+            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
+            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
+
             val overlayWidth = binding.overlay.width
             val overlayHeight = binding.overlay.height
 
@@ -661,55 +694,73 @@ class MainActivity : BaseActivity() {
                 (overlayHeight.toFloat() / bitmapHeight.toFloat())
             )
 
-            val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
-            val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
+            val matrixValues = binding.imageResult.getMatrixValues()
+            val transX =
+                matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
+            val transY =
+                matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
 
-            val bitmapArray = IntArray(bitmapWidth * bitmapHeight)
-            rawBitmap!!.getPixels(bitmapArray, 0, bitmapWidth, 0, 0, bitmapWidth, bitmapHeight)
+            val leftPosition: Float
+            val topPosition: Float
 
-            val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
-            val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
-//            showLog("leftPosition $leftPosition, topPosition $topPosition")
-
-            for (index in 0..currentItemPosition) {
-                val item = items[index]
-
-                for (point in item.pointArray) {
-                    val selectedX = point.x // * scaleFactor // image view position x
-                    val selectedY = point.y // * scaleFactor // image view position y
-
-                    val x = (selectedX - leftPosition) / bitmapScale
-                    val y = (selectedY - topPosition) / bitmapScale
-
-                    val circleAreaPoints = circleAreaPoints(x, y, item.radius)
-
-                    for (circlePoint in circleAreaPoints) {
-                        val circleX = circlePoint.first
-                        val circleY = circlePoint.second
-                        if (circleX < 0 || circleX > bitmapWidth || circleY < 0 || circleY > bitmapHeight)
-                            continue
-
-                        val i = ((circleY * bitmapWidth) + circleX).toInt()
-                        if (i + 1 >= (bitmapWidth * bitmapHeight))
-                            continue
-
-                        if (item.type == ImageEditType.RESTORE) {
-                            val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
-                            val previousColor = Color.rgb(
-                                Color.red(pixel),
-                                Color.green(pixel),
-                                Color.blue(pixel)
-                            )
-                            bitmapArray[i] = previousColor
-                        } else {
-                            bitmapArray[i] = Color.TRANSPARENT
-                        }
-                    }
-                }
+            if (transX == 0f && transY == 0f) {
+                leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+                topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
+            } else {
+                leftPosition = transX
+                topPosition = transY
             }
 
-            prepareMaskedBitmap(bitmapArray, bitmapScale)
+            if (undo) {
+                val item = items[currentItemPosition + 1]
+                reverseSelectedItem(item, leftPosition, topPosition, finalScale)
+            } else {
+                val item = items[currentItemPosition + 1]
+                updateSelectedItem(item, leftPosition, topPosition, finalScale)
+            }
+
+            prepareMaskedBitmap(processedBitmapArray)
+            binding.overlay.clearPoints()
             binding.overlay.invalidate()
+        }
+    }
+
+    private fun reverseSelectedItem(
+        item: ImageEdit,
+        tansX: Float,
+        tansY: Float,
+        scaleFactor: Float
+    ) {
+        for (point in item.pointArray) {
+            val selectedX = point.x // * scaleFactor // image view position x
+            val selectedY = point.y // * scaleFactor // image view position y
+
+            val x = (selectedX - tansX) / scaleFactor
+            val y = (selectedY - tansY) / scaleFactor
+
+            val circleAreaPoints = getPointsAroundSelectedPoint(x, y, item.radius)
+            for (circlePoint in circleAreaPoints) {
+                val circleX = circlePoint.first
+                val circleY = circlePoint.second
+                if (circleX < 0 || circleX >= bitmapWidth || circleY < 0 || circleY >= bitmapHeight)
+                    continue
+
+                val i = ((circleY * bitmapWidth) + circleX).toInt()
+                if (i + 1 >= (bitmapWidth * bitmapHeight))
+                    continue
+
+                if (item.type == ImageEditType.RESTORE) {
+                    processedBitmapArray[i] = Color.TRANSPARENT
+                } else {
+                    val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
+                    val previousColor = Color.rgb(
+                        Color.red(pixel),
+                        Color.green(pixel),
+                        Color.blue(pixel)
+                    )
+                    processedBitmapArray[i] = previousColor
+                }
+            }
         }
     }
 
