@@ -110,6 +110,8 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         val transX = mMatrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
         val transY = mMatrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
 
+//        showLog("transX $transX, transY $transY")
+
         val fixTransX = getFixTranslation(transX, viewWidth.toFloat(), origWidth * mSaveScale)
         val fixTransY = getFixTranslation(transY, viewHeight.toFloat(), origHeight * mSaveScale)
 
@@ -295,13 +297,13 @@ class ZoomableImageView(context: Context, attrs: AttributeSet?) :
         if (origWidth * mSaveScale <= viewWidth
             || origHeight * mSaveScale <= viewHeight
         ) {
-            showLog("mMatrix.postScale0")
+//            showLog("mMatrix.postScale0")
             mMatrix.postScale(
                 mScaleFactor, mScaleFactor, viewWidth / 2.toFloat(),
                 viewHeight / 2.toFloat()
             )
         } else {
-            showLog("mMatrix.postScale1")
+//            showLog("mMatrix.postScale1")
             mMatrix.postScale(
                 mScaleFactor, mScaleFactor,
                 detector.focusX, detector.focusY

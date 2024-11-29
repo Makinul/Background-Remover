@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -128,11 +129,19 @@ class MainActivity : BaseActivity() {
 
             override fun onDragStarted() {
                 pointArray.clear()
-//                binding.overlay.setPoints(pointArray)
-//                binding.overlay.invalidate()
+                binding.overlay.setPoints(pointArray)
+                binding.overlay.invalidate()
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
+                val matrixValues = binding.imageResult.getMatrixValues()
+                val transX =
+                    matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
+                val transY =
+                    matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
+
+                showLog("transX $transX, transY $transY")
+
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
                 if (imageState == ImageState.EDIT) {
