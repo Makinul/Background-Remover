@@ -134,13 +134,6 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onComplete(imageState: ImageState, points: List<Point>) {
-                val matrixValues = binding.imageResult.getMatrixValues()
-                val transX =
-                    matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
-                val transY =
-                    matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
-
-                showLog("transX $transX, transY $transY")
 
                 val tmpArray: ArrayList<Point> = ArrayList()
                 tmpArray.addAll(pointArray)
@@ -200,6 +193,12 @@ class MainActivity : BaseActivity() {
             val finalScale = currentScale * bitmapScale
             showLog("finalScale $finalScale")
 
+            val matrixValues = binding.imageResult.getMatrixValues()
+            val transX =
+                matrixValues[Matrix.MTRANS_X] //get the most recent translation in x direction
+            val transY =
+                matrixValues[Matrix.MTRANS_Y] //get the most recent translation in y direction
+
             val bitmapScaledWidth = (bitmapWidth * bitmapScale).toInt()
             val bitmapScaledHeight = (bitmapHeight * bitmapScale).toInt()
 
@@ -227,7 +226,15 @@ class MainActivity : BaseActivity() {
 
             val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
             val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
-//            showLog("leftPosition $leftPosition, topPosition $topPosition")
+
+            showLog("leftPosition $leftPosition, topPosition $topPosition")
+            showLog("transX $transX, transY $transY")
+
+            if (transX == 0f && transY == 0f) {
+
+            } else {
+
+            }
 
             for (point in editPointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
