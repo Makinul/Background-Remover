@@ -210,38 +210,41 @@ class MainActivity : BaseActivity() {
             } else {
                 ImageEditType.ERASE
             }
-            val radius = (seekBarProgress / bitmapScale).toInt()
-//            val item = ImageEdit(
-//                type = imageEditType,
-//                pointArray = editPointArray,
-//                radius = radius
-//            )
-//
-//            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
-//                items.removeAt(index)
-//            }
-//
-//            items.add(item)
-//            currentItemPosition += 1
+            val radius = (seekBarProgress / finalScale).toInt()
+            val item = ImageEdit(
+                type = imageEditType,
+                pointArray = editPointArray,
+                radius = radius
+            )
 
-            val leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
-            val topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
+            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
+                items.removeAt(index)
+            }
+
+            items.add(item)
+            currentItemPosition += 1
+
+
+            val leftPosition: Float
+            val topPosition: Float
+
+            if (transX == 0f && transY == 0f) {
+                leftPosition = abs(overlayWidth - bitmapScaledWidth) / 2f
+                topPosition = abs(overlayHeight - bitmapScaledHeight) / 2f
+            } else {
+                leftPosition = transX
+                topPosition = transY
+            }
 
             showLog("leftPosition $leftPosition, topPosition $topPosition")
             showLog("transX $transX, transY $transY")
-
-            if (transX == 0f && transY == 0f) {
-
-            } else {
-
-            }
 
             for (point in editPointArray) {
                 val selectedX = point.x // * scaleFactor // image view position x
                 val selectedY = point.y // * scaleFactor // image view position y
 
-                val x = (selectedX - leftPosition) / bitmapScale
-                val y = (selectedY - topPosition) / bitmapScale
+                val x = (selectedX - leftPosition) / finalScale
+                val y = (selectedY - topPosition) / finalScale
 
 //                showLog("x $x, y $y")
 //                val i = ((y * bitmapWidth) + x).toInt()
@@ -377,7 +380,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[0]
+            imagePath = AppConstants.listOfDemoImagesPath[4]
         }
     }
 
