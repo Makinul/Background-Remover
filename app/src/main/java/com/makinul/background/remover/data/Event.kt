@@ -1,4 +1,4 @@
-package com.mmh.emmahealth.data
+package com.makinul.background.remover.data
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.

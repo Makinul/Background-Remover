@@ -30,7 +30,7 @@ import com.makinul.background.remover.utils.AppConstants.getUriBitmap
 import com.makinul.background.remover.utils.Extensions.visible
 import com.makinul.background.remover.utils.ImageSegmentHelper
 import com.makinul.background.remover.utils.InteractiveSegmentationHelper
-import com.mmh.emmahealth.data.Status
+import com.makinul.background.remover.data.Status
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

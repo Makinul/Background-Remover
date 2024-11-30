@@ -13,7 +13,7 @@ android {
         applicationId = "com.makinul.background.remover"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,7 +21,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -57,7 +58,6 @@ dependencies {
 
     // media pipe AI
     implementation(libs.mediapipe.tasks.vision)
-    implementation(libs.mediapipe.tasks.text)
 
     // for dependency injection
     implementation(libs.dagger.hilt.android)
@@ -81,14 +81,6 @@ dependencies {
 
     // coroutines
     implementation(libs.jetbrains.kotlinx.coroutines)
-
-    // for network calling
-    implementation(libs.squareup.retrofit2.retrofit)
-    implementation(libs.squareup.retrofit2.converter.gson)
-
-    // okhttp for retrofit
-    implementation(libs.squareup.okhttp3.okhttp)
-    implementation(libs.squareup.okhttp3.logging.interceptor)
 }
 
 // Allow references to generated code

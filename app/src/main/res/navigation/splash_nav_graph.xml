@@ -28,7 +28,7 @@
 
 <!--    <fragment-->
 <!--        android:id="@+id/auth_fragment"-->
-<!--        android:name="com.mmh.emmahealth.ui.splash.auth.AuthFragment"-->
+<!--        android:name="ui.splash.auth.AuthFragment"-->
 <!--        android:label="@string/auth_fragment"-->
 <!--        tools:layout="@layout/fragment_auth">-->
 
