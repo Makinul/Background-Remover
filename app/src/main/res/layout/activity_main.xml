@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin_very_small"
             android:text="@string/reset"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -89,6 +90,7 @@
             android:layout_height="wrap_content"
             android:text="@string/done"
             android:textColor="@color/url_text_selector"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/reset" />
 
@@ -96,7 +98,6 @@
             android:id="@+id/buttons_lay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin_very_small"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/reset">
 

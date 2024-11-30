@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Background Remover</string>
+    <string name="app_name">AI BG Remover</string>
     <!-- Strings used for fragments for navigation -->
     <string name="settings">Settings</string>
     <string name="next">Next</string>
@@ -39,6 +39,8 @@
     <string name="save">Save</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="your_image_stored_into_your_galley">Your image stored successfully into your galley</string>
 
 
 </resources>

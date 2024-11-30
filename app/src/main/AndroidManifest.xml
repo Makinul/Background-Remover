@@ -25,7 +25,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BackgroundRemover.Splash"
             tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -40,16 +44,12 @@
 
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.BackgroundRemover"
             tools:ignore="LockedOrientationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
