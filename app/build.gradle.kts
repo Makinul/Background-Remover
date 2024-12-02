@@ -81,6 +81,8 @@ dependencies {
 
     // coroutines
     implementation(libs.jetbrains.kotlinx.coroutines)
+
+    implementation(libs.airbnb.lottie)
 }
 
 // Allow references to generated code

@@ -1,6 +1,5 @@
 package com.makinul.background.remover.ui.main
 
-import ai.painlog.mmhi.ui.zoomable.MainViewModel
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.graphics.Bitmap
@@ -31,6 +30,7 @@ import com.makinul.background.remover.utils.Extensions.visible
 import com.makinul.background.remover.utils.ImageSegmentHelper
 import com.makinul.background.remover.utils.InteractiveSegmentationHelper
 import com.makinul.background.remover.data.Status
+import com.makinul.background.remover.utils.Extensions.invisible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -65,7 +65,7 @@ class MainActivity : BaseActivity() {
             event.getContentIfNotHandled()?.let {
                 when (it.status) {
                     Status.SUCCESS -> {
-                        binding.progressBar.hide()
+                        binding.progressBar.invisible()
                         it.data?.let { bitmapArray ->
                             initialBitmap = Bitmap.createBitmap(
                                 bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
@@ -75,11 +75,31 @@ class MainActivity : BaseActivity() {
                     }
 
                     Status.ERROR -> {
-                        binding.progressBar.hide()
+                        binding.progressBar.invisible()
                     }
 
                     Status.LOADING -> {
                         binding.progressBar.visible()
+                    }
+                }
+            }
+        }
+        viewModel.updatedBitmapArray.observe(this) { event ->
+            event.getContentIfNotHandled()?.let {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        it.data?.let { bitmapArray ->
+                            prepareMaskedBitmap(bitmapArray)
+                        }
+                        updateHistoryMenuButtons()
+                    }
+
+                    Status.ERROR -> {
+
+                    }
+
+                    Status.LOADING -> {
+
                     }
                 }
             }
@@ -151,7 +171,6 @@ class MainActivity : BaseActivity() {
                     return
                 }
                 pointArray.clear()
-//                showLog("pointArray $pointArray")
             }
         })
 
@@ -207,33 +226,30 @@ class MainActivity : BaseActivity() {
     }
 
     private fun editImage(pointArray: List<Point>) {
-        lifecycleScope.launch(Dispatchers.Main) {
+        val currentScale = binding.imageResult.getCurrentScale()
+        val finalScale = currentScale * bitmapScale
 
-            val currentScale = binding.imageResult.getCurrentScale()
-            val finalScale = currentScale * bitmapScale
-
-            val imageEditType = if (binding.restore.isSelected) {
-                ImageEditType.RESTORE
-            } else {
-                ImageEditType.ERASE
-            }
-            val radius = (seekBarProgress / finalScale).toInt()
-            val item = ImageEdit(
-                type = imageEditType,
-                pointArray = pointArray,
-                radius = radius
-            )
-
-            // to remove afterward items if available
-            for (index in items.size - 1 downTo (currentItemPosition + 1)) {
-                items.removeAt(index)
-            }
-
-            items.add(item)
-            currentItemPosition += 1
-
-            updateSelectedItem(item, finalScale)
+        val imageEditType = if (binding.restore.isSelected) {
+            ImageEditType.RESTORE
+        } else {
+            ImageEditType.ERASE
         }
+        val radius = (seekBarProgress / finalScale).toInt()
+        val item = ImageEdit(
+            type = imageEditType,
+            pointArray = pointArray,
+            radius = radius
+        )
+
+        // to remove afterward items if available
+        for (index in items.size - 1 downTo (currentItemPosition + 1)) {
+            items.removeAt(index)
+        }
+
+        items.add(item)
+        currentItemPosition += 1
+
+        updateSelectedItem(item, finalScale)
     }
 
     private fun updateSelectedItem(item: ImageEdit, finalScale: Float) {
@@ -265,78 +281,24 @@ class MainActivity : BaseActivity() {
             topPosition = transY
         }
 
-        updateSelectedItem(item, leftPosition, topPosition, finalScale)
+//        updateSelectedItem(item, leftPosition, topPosition, finalScale)
+//        prepareMaskedBitmap(processedBitmapArray)
 
-        prepareMaskedBitmap(processedBitmapArray)
+        val arrayList: ArrayList<ImageEdit> = ArrayList()
+        arrayList.add(item)
+        viewModel.updateItems(
+            processedBitmapArray,
+            arrayList,
+            leftPosition,
+            topPosition,
+            finalScale,
+            rawBitmap!!,
+            bitmapWidth,
+            bitmapHeight
+        )
+
         binding.overlay.clearPoints()
         binding.overlay.invalidate()
-
-        updateHistoryMenuButtons()
-    }
-
-    private fun updateSelectedItem(
-        item: ImageEdit,
-        tansX: Float,
-        tansY: Float,
-        scaleFactor: Float
-    ) {
-        for (point in item.pointArray) {
-            val selectedX = point.x // * scaleFactor // image view position x
-            val selectedY = point.y // * scaleFactor // image view position y
-
-            val x = (selectedX - tansX) / scaleFactor
-            val y = (selectedY - tansY) / scaleFactor
-
-            val circleAreaPoints = getPointsAroundSelectedPoint(x, y, item.radius)
-            for (circlePoint in circleAreaPoints) {
-                val circleX = circlePoint.first
-                val circleY = circlePoint.second
-                if (circleX < 0 || circleX >= bitmapWidth || circleY < 0 || circleY >= bitmapHeight)
-                    continue
-
-                val i = ((circleY * bitmapWidth) + circleX).toInt()
-                if (i + 1 >= (bitmapWidth * bitmapHeight))
-                    continue
-
-                if (item.type == ImageEditType.RESTORE) {
-                    val pixel = rawBitmap!!.getPixel(circleX.toInt(), circleY.toInt())
-                    val previousColor = Color.rgb(
-                        Color.red(pixel),
-                        Color.green(pixel),
-                        Color.blue(pixel)
-                    )
-                    processedBitmapArray[i] = previousColor
-                } else {
-                    processedBitmapArray[i] = Color.TRANSPARENT
-                }
-            }
-        }
-    }
-
-    private fun getPointsAroundSelectedPoint(
-        xc: Float,
-        yc: Float,
-        radius: Int
-    ): List<Pair<Float, Float>> {
-        val points = mutableListOf<Pair<Float, Float>>()
-
-        // Define the bounding box with floating-point bounds rounded to integers
-        val xMin = kotlin.math.floor(xc - radius).toInt()
-        val xMax = kotlin.math.ceil(xc + radius).toInt()
-        val yMin = kotlin.math.floor(yc - radius).toInt()
-        val yMax = kotlin.math.ceil(yc + radius).toInt()
-
-        // Check each point within the bounding box
-        for (x in xMin..xMax) {
-            for (y in yMin..yMax) {
-                // Calculate the squared distance from the center to this point
-                if ((x - xc) * (x - xc) + (y - yc) * (y - yc) <= (radius * radius).toFloat()) {
-                    points.add(Pair(x.toFloat(), y.toFloat())) // Add point as a floating-point pair
-                }
-            }
-        }
-
-        return points
     }
 
     private var seekBarProgress = 0
@@ -453,7 +415,7 @@ class MainActivity : BaseActivity() {
                 currentModel = ImageSegmentHelper.MODEL_SELFIE_MULTICLASS
             )
 
-            binding.progressBar.hide()
+            binding.progressBar.invisible()
             viewModel.processBitmapToRemoveBackground(
                 rawBitmap = rawBitmap,
                 imageWidth = bitmapWidth,
@@ -664,10 +626,21 @@ class MainActivity : BaseActivity() {
                 bitmapHeight
             )
 
+            val arrayList: ArrayList<ImageEdit> = ArrayList()
             for (index in 0..currentItemPosition) {
                 val item = items[index]
-                updateSelectedItem(item, leftPosition, topPosition, finalScale)
+                arrayList.add(item)
             }
+            viewModel.updateItems(
+                processedBitmapArray,
+                arrayList,
+                leftPosition,
+                topPosition,
+                finalScale,
+                rawBitmap!!,
+                bitmapWidth,
+                bitmapHeight
+            )
 
             prepareMaskedBitmap(processedBitmapArray)
             binding.overlay.clearPoints()

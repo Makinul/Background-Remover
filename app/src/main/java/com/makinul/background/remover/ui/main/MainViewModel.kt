@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ai.painlog.mmhi.ui.zoomable
+package com.makinul.background.remover.ui.main
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,9 @@ import com.makinul.background.remover.utils.PoseLandmarkHelper
 import com.makinul.background.remover.utils.PreferenceHelper
 import com.makinul.background.remover.data.Event
 import com.makinul.background.remover.data.Resource
+import com.makinul.background.remover.ui.main.MainActivity.ImageEdit
+import com.makinul.background.remover.ui.main.MainActivity.ImageEditType
+import com.makinul.background.remover.utils.AppConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -257,11 +261,86 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun showLog(message: String) {
+    private val _updatedBitmapArray by lazy { MutableLiveData<Event<Resource<IntArray>>>() }
+    val updatedBitmapArray: LiveData<Event<Resource<IntArray>>> = _updatedBitmapArray
 
+    fun updateItems(
+        bitmapArray: IntArray,
+        items: List<ImageEdit>,
+        tansX: Float,
+        tansY: Float,
+        scaleFactor: Float,
+        rawBitmap: Bitmap,
+        bitmapWidth: Int,
+        bitmapHeight: Int
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        for (item in items) {
+            for (point in item.pointArray) {
+                val selectedX = point.x // * scaleFactor // image view position x
+                val selectedY = point.y // * scaleFactor // image view position y
+
+                val x = (selectedX - tansX) / scaleFactor
+                val y = (selectedY - tansY) / scaleFactor
+
+                val circleAreaPoints = getPointsAroundSelectedPoint(x, y, item.radius)
+                for (circlePoint in circleAreaPoints) {
+                    val circleX = circlePoint.first
+                    val circleY = circlePoint.second
+                    if (circleX < 0 || circleX >= bitmapWidth || circleY < 0 || circleY >= bitmapHeight)
+                        continue
+
+                    val i = ((circleY * bitmapWidth) + circleX).toInt()
+                    if (i + 1 >= (bitmapWidth * bitmapHeight))
+                        continue
+
+                    if (item.type == ImageEditType.RESTORE) {
+                        val pixel = rawBitmap.getPixel(circleX.toInt(), circleY.toInt())
+                        val previousColor = Color.rgb(
+                            Color.red(pixel),
+                            Color.green(pixel),
+                            Color.blue(pixel)
+                        )
+                        bitmapArray[i] = previousColor
+                    } else {
+                        bitmapArray[i] = Color.TRANSPARENT
+                    }
+                }
+            }
+        }
+        _updatedBitmapArray.postValue(Event(Resource.success(bitmapArray)))
+    }
+
+    private fun getPointsAroundSelectedPoint(
+        xc: Float,
+        yc: Float,
+        radius: Int
+    ): List<Pair<Float, Float>> {
+        val points = mutableListOf<Pair<Float, Float>>()
+
+        // Define the bounding box with floating-point bounds rounded to integers
+        val xMin = kotlin.math.floor(xc - radius).toInt()
+        val xMax = kotlin.math.ceil(xc + radius).toInt()
+        val yMin = kotlin.math.floor(yc - radius).toInt()
+        val yMax = kotlin.math.ceil(yc + radius).toInt()
+
+        // Check each point within the bounding box
+        for (x in xMin..xMax) {
+            for (y in yMin..yMax) {
+                // Calculate the squared distance from the center to this point
+                if ((x - xc) * (x - xc) + (y - yc) * (y - yc) <= (radius * radius).toFloat()) {
+                    points.add(Pair(x.toFloat(), y.toFloat())) // Add point as a floating-point pair
+                }
+            }
+        }
+
+        return points
+    }
+
+    private fun showLog(message: String) {
+        AppConstants.showLog(TAG, message)
     }
 
     companion object {
-        private const val TAG = "ZoomableImageViewModel"
+        private const val TAG = "MainViewModel"
     }
 }
