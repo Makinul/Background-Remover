@@ -7,6 +7,12 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.home.HomeActivity">
 
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:src="@drawable/splash_bg" />-->
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"

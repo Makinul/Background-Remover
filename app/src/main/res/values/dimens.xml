@@ -151,8 +151,8 @@
     <dimen name="telemedicine_subscriber_height">100dp</dimen>
 
     <dimen name="biometric_details_message_height">100dp</dimen>
-    <dimen name="demo_image_width">50dp</dimen>
-    <dimen name="demo_image_height">50dp</dimen>
+    <dimen name="demo_image_width">60dp</dimen>
+    <dimen name="demo_image_height">60dp</dimen>
 
     <dimen name="erase_stroke_width">3dp</dimen>
     <dimen name="erase_corner_radius">10dp</dimen>

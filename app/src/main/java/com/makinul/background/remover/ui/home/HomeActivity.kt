@@ -24,20 +24,18 @@ class HomeActivity : BaseActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-
-        val bottomNavView: BottomNavigationView = binding.bottomNavView
-        val navController = findNavController(R.id.nav_host_fragment_home)
-
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.home_fragment, R.id.history_fragment, R.id.notifications_fragment
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        bottomNavView.setupWithNavController(navController)
+//        setSupportActionBar(binding.toolbar)
+//        val bottomNavView: BottomNavigationView = binding.bottomNavView
+//        val navController = findNavController(R.id.nav_host_fragment_home)
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+//        appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.home_fragment, R.id.history_fragment, R.id.notifications_fragment
+//            )
+//        )
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        bottomNavView.setupWithNavController(navController)
 
         updateHomeIcon()
     }

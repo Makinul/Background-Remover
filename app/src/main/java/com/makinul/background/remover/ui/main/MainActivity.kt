@@ -401,8 +401,8 @@ class MainActivity : BaseActivity() {
     private fun prepareHelper(rawBitmap: Bitmap) {
         backgroundExecutor = Executors.newSingleThreadExecutor()
         // Create the PoseLandmarkHelper that will handle the inference
+        binding.progressBar.visible()
         backgroundExecutor.execute {
-            binding.progressBar.visible()
 //            val poseLandmarkHelper = PoseLandmarkHelper(
 //                context = this@MainActivity
 //            )
@@ -415,7 +415,6 @@ class MainActivity : BaseActivity() {
                 currentModel = ImageSegmentHelper.MODEL_SELFIE_MULTICLASS
             )
 
-            binding.progressBar.invisible()
             viewModel.processBitmapToRemoveBackground(
                 rawBitmap = rawBitmap,
                 imageWidth = bitmapWidth,
