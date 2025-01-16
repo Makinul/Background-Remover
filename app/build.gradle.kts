@@ -3,18 +3,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
+    alias(libs.plugins.google.play.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
     namespace = "com.makinul.background.remover"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.makinul.background.remover"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 3
-        versionName = "1.0.1"
+        versionName = "1.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -83,6 +85,16 @@ dependencies {
     implementation(libs.jetbrains.kotlinx.coroutines)
 
     implementation(libs.airbnb.lottie)
+
+    // For Json parsing
+    implementation(libs.google.gson)
+
+    // Import the BoM for the Firebase platform
+    implementation(platform(libs.google.firebase.bom))
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.realtime.database)
 }
 
 // Allow references to generated code

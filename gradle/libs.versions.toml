@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.8.0"
 kotlin = "1.9.24"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -20,6 +20,10 @@ activity = "1.8.0"
 retrofit = "2.9.0"
 okhttp = "4.9.2"
 airbnbLottie = "6.6.0"
+googleGson = "2.11.0"
+googlePlayServices = "4.4.2"
+firebaseBomVersion = "33.7.0"
+firebaseCrashlytics = "3.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,9 +63,17 @@ squareup-okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = 
 
 airbnb-lottie = { module = "com.airbnb.android:lottie", version.ref = "airbnbLottie" }
 
+google-gson = { module = "com.google.code.gson:gson", version.ref = "googleGson" }
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-realtime-database = { module = "com.google.firebase:firebase-database" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-play-services = { id = "com.google.gms.google-services", version.ref = "googlePlayServices" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 
