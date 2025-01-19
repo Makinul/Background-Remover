@@ -156,4 +156,7 @@
 
     <dimen name="erase_stroke_width">3dp</dimen>
     <dimen name="erase_corner_radius">10dp</dimen>
+
+    <dimen name="edit_text_corner_size">50dp</dimen>
+    <dimen name="edit_text_corner_size_small">20dp</dimen>
 </resources>

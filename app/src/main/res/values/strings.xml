@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AI BG Remover</string>
+    <string name="app_name">Remover+</string>
     <!-- Strings used for fragments for navigation -->
     <string name="settings">Settings</string>
     <string name="next">Next</string>
@@ -42,5 +42,15 @@
     <string name="edit_image">Edit Image</string>
     <string name="your_image_stored_into_your_galley">Your image stored successfully into your galley</string>
 
-
+    <string name="add_note">Add note</string>
+    <string name="your_name">Your Name <font fgcolor='#FF0000'>*</font></string>
+    <string name="please_write_your_name">Please write your name</string>
+    <string name="your_email_address">Your Email Address <font fgcolor='#FF0000'>*</font></string>
+    <string name="please_write_your_email_address">Please write your email address</string>
+    <string name="please_write_valid_email_address">Please write valid email address</string>
+    <string name="your_message">Your message <font fgcolor='#FF0000'>*</font></string>
+    <string name="please_write_your_message">Please write your message</string>
+    <string name="send">Send</string>
+    <string name="support">Support</string>
+    <string name="submit">Submit</string>
 </resources>

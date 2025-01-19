@@ -13,6 +13,7 @@
     <color name="color_secondary">#03A9F4</color>
     <color name="color_secondary_variant">#2196F3</color>
 
+    <color name="edit_text_bg">#F7F7F7</color>
     <color name="error">#CD3100</color>
     <color name="positive">#4CAF50</color>
     <color name="toolbar_background">#E0E0E0</color>

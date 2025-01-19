@@ -3,23 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_nav_graph"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_support">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.makinul.background.remover.ui.settings.home.HomeFragment"
-        android:label="@string/home"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.makinul.background.remover.ui.settings.gallery.GalleryFragment"
-        android:label="@string/gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.makinul.background.remover.ui.settings.slideshow.SlideshowFragment"
-        android:label="@string/slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_support"
+        android:name="com.makinul.background.remover.ui.settings.support.SupportFragment"
+        android:label="@string/support"
+        tools:layout="@layout/fragment_support" />
 </navigation>
