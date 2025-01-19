@@ -67,6 +67,7 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "googleGson"
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-realtime-database = { module = "com.google.firebase:firebase-database" }
 
 [plugins]

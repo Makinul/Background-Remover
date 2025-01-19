@@ -1,6 +1,7 @@
 package com.makinul.background.remover.utils
 
 import android.content.SharedPreferences
+import com.makinul.background.remover.data.model.User
 import javax.inject.Inject
 
 class PreferenceHelper @Inject constructor(
@@ -245,6 +246,34 @@ class PreferenceHelper @Inject constructor(
 //            }
 //        }
 //    }
+
+    fun saveUser(user: User) {
+        editor.apply {
+            putBoolean(AppConstants.KEY_IS_USER_LOGGED_IN, true)
+            putString(AppConstants.KEY_USER_ID, user.userId)
+            putString(AppConstants.KEY_USER_EMAIL, user.email)
+            putString(AppConstants.KEY_USER_FIRST_NAME, user.firstName)
+            putString(AppConstants.KEY_USER_LAST_NAME, user.lastName)
+//            putString(AppConstants.KEY_USER_FULL_NAME, user.fullName)
+//            putString(AppConstants.KEY_USER_NAME, user.userName)
+//            putString(AppConstants.KEY_USER_TOKEN, user.token)
+//            putString(AppConstants.KEY_REFRESH_TOKEN, user.refreshToken)
+//            putString(AppConstants.KEY_USER_ROLE_NAME, user.roleName)
+//            putBoolean(AppConstants.KEY_USER_IS_REFERRED, user.isReferred)
+//            putBoolean(AppConstants.KEY_USER_HAS_DOCTOR, user.hasDoctor)
+            putString(AppConstants.KEY_USER_GENDER, user.gender)
+//            putString(AppConstants.KEY_USER_DOMINANT_HAND, user.dominantHand)
+//            putBoolean(AppConstants.KEY_USER_IS_SUPER_ADMIN, user.isSuperAdmin)
+//            putString(AppConstants.KEY_USER_TIME_ZONE, user.timeZone)
+//            putFloat(AppConstants.KEY_USER_HEIGHT, user.height.toFloat())
+//            putFloat(AppConstants.KEY_USER_WEIGHT, user.weight.toFloat())
+            putString(AppConstants.KEY_USER_DATE_OF_BIRTH, user.dateOfBirth)
+//            putInt(AppConstants.KEY_USER_AGE, user.age)
+//            putString(AppConstants.KEY_PATIENT_ID, user.patientId)
+        }.also {
+            it.apply()
+        }
+    }
 
     companion object {
         private const val TAG = "PreferenceHelper"

@@ -29,6 +29,9 @@ class SplashFragment : BaseFragment() {
     ): View {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
 
+        viewModel.anonymousAuth.observe(viewLifecycleOwner) { event ->
+
+        }
 
         return binding.root
     }

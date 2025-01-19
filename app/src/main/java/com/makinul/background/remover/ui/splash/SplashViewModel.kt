@@ -18,10 +18,20 @@ package com.makinul.background.remover.ui.splash
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.makinul.background.remover.utils.AppConstants
 import com.makinul.background.remover.utils.PreferenceHelper
 import com.makinul.background.remover.data.Event
+import com.makinul.background.remover.data.Resource
+import com.makinul.background.remover.data.model.Device
+import com.makinul.background.remover.data.model.User
+import com.makinul.background.remover.data.repository.SplashRepo
+import com.makinul.background.remover.utils.DeviceUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -29,12 +39,56 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val preferenceHelper: PreferenceHelper
+    private val preferenceHelper: PreferenceHelper,
+    private val deviceUtils: DeviceUtils,
+    private val firebaseAuth: FirebaseAuth,
+    private val repo: SplashRepo
 ) : ViewModel() {
 
     private var _delay = MutableLiveData<Event<Boolean>>()
     val delay: LiveData<Event<Boolean>>
         get() = _delay
+
+    private val _anonymousAuth by lazy { MutableLiveData<Event<Resource<Boolean>>>() }
+    val anonymousAuth: LiveData<Event<Resource<Boolean>>> = _anonymousAuth
+
+    fun createAnonymousAccount() = viewModelScope.launch(Dispatchers.IO) {
+        _anonymousAuth.postValue(Event(Resource.loading()))
+
+        if (firebaseAuth.currentUser == null) {
+            val data = repo.createAnonymousAccount()
+            if (data) {
+                showLog()
+            }
+        } else {
+            delay(2000)
+        }
+
+        firebaseAuth.uid?.let { userId ->
+            repo.getUser(userId).collect { remoteUser ->
+                val device = Device(
+                    deviceName = deviceUtils.deviceName,
+                    deviceId = deviceUtils.deviceId
+                )
+                val finalUser = remoteUser?.let {
+                    val devices: HashMap<String, Device> = HashMap(it.devices)
+                    devices[device.deviceId] = device
+                    it.copy(devices = devices)
+                } ?: run {
+                    val devices: HashMap<String, Device> = HashMap()
+                    devices[device.deviceId] = device
+                    User(userId, devices = devices)
+                }
+                repo.saveUser(finalUser)
+                preferenceHelper.saveUser(finalUser)
+                _anonymousAuth.postValue(Event(Resource.success(true)))
+            }
+        }
+
+//        val user = User(firebaseAuth.uid ?: "null")
+//        repo.saveUser(user)
+//        _anonymousAuth.postValue(Event(Resource.success(true)))
+    }
 
 //    fun prepareUserBasicData() {
 //        preferenceHelper.getUser()

@@ -3,6 +3,7 @@ package com.makinul.background.remover.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import com.makinul.background.remover.utils.DeviceUtils
 import com.makinul.background.remover.utils.PreferenceHelper
 import dagger.Module
 import dagger.Provides
@@ -39,5 +40,13 @@ class AppModule {
         editor: Editor
     ): PreferenceHelper {
         return PreferenceHelper(pref, editor)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceUtils(
+        @ApplicationContext context: Context
+    ): DeviceUtils {
+        return DeviceUtils(context)
     }
 }
