@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Remover+</string>
+    <string name="app_name">AiRemover+</string>
     <!-- Strings used for fragments for navigation -->
     <string name="settings">Settings</string>
     <string name="next">Next</string>
@@ -30,7 +30,7 @@
     <string name="welcome_title">Upload an image to remove the background</string>
     <string name="upload_image">Upload Image</string>
     <string name="no_image_try_one_of_these">No image? Try one of these:</string>
-    <string name="welcome_privacy_policy_message">By uploading an image or URL you agree to our Terms of Service. To learn more about how remove.bg handles your personal data, check our Privacy Policy.</string>
+    <string name="welcome_privacy_policy_message">By uploading an image or URL you agree to our <font fgcolor='#046FC5'><u><b>Terms of Service</b></u></font>. To learn more about how <font fgcolor='#046FC5'><b>AiRemover+</b></font> handles your personal data, check our <font fgcolor='#046FC5'><u><b>Privacy Policy</b></u></font>.</string>
     <string name="erase">Erase</string>
     <string name="restore">Restore</string>
     <string name="brush_size">Brush Size</string>
@@ -53,4 +53,10 @@
     <string name="send">Send</string>
     <string name="support">Support</string>
     <string name="submit">Submit</string>
+    <string name="close_button">Close Button</string>
+    <string name="proceed">Proceed</string>
+    <string name="cancel">Cancel</string>
+    <string name="alert">Alert!</string>
+    <string name="notification_error_ssl_cert_invalid">SSL certificate is invalid for \"forgot password\".\\nDo you want to proceed without SSL?</string>
+    <string name="ok">OK</string>
 </resources>

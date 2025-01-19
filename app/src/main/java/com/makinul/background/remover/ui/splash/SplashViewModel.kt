@@ -45,10 +45,6 @@ class SplashViewModel @Inject constructor(
     private val repo: SplashRepo
 ) : ViewModel() {
 
-    private var _delay = MutableLiveData<Event<Boolean>>()
-    val delay: LiveData<Event<Boolean>>
-        get() = _delay
-
     private val _anonymousAuth by lazy { MutableLiveData<Event<Resource<Boolean>>>() }
     val anonymousAuth: LiveData<Event<Resource<Boolean>>> = _anonymousAuth
 

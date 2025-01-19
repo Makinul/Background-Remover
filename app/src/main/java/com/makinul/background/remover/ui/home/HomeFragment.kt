@@ -34,11 +34,6 @@ class HomeFragment : BaseFragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         binding.uploadImage.setOnClickListener {
             getImageFromGallery.launch(arrayOf("image/*"))
@@ -55,6 +50,15 @@ class HomeFragment : BaseFragment() {
         binding.demoImage3.setOnClickListener {
             gotoHomeActivity(AppConstants.KEY_IMAGE_TYPE_ASSET, listOfDemoImagesPath[3])
         }
+        binding.privacyPolicy.setOnClickListener {
+            (activity as HomeActivity?)?.goForPrivacyPolicy()
+        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.demoImage0.setImageBitmap(getAssetBitmap(context, listOfDemoImagesPath[0]))
         binding.demoImage1.setImageBitmap(getAssetBitmap(context, listOfDemoImagesPath[1]))

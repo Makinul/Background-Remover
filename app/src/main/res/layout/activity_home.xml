@@ -7,13 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.home.HomeActivity">
 
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/splash_bg" />-->
-
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_home"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
@@ -28,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/home_bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

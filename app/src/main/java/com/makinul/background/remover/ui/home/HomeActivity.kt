@@ -1,13 +1,7 @@
 package com.makinul.background.remover.ui.home
 
 import android.os.Bundle
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
 import com.makinul.background.remover.databinding.ActivityHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,5 +60,9 @@ class HomeActivity : BaseActivity() {
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 //        supportActionBar?.setDisplayShowHomeEnabled(true)
 //        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home_white)
+    }
+
+    fun goForPrivacyPolicy() {
+        showBrowserDialog(this, "https://bg-remover-5530d.web.app/privacy_policy.html")
     }
 }

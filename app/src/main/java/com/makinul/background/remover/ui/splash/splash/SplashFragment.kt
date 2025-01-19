@@ -5,15 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import com.makinul.background.remover.base.BaseFragment
+import com.makinul.background.remover.data.Status
 import com.makinul.background.remover.databinding.FragmentSplashBinding
 import com.makinul.background.remover.ui.splash.SplashActivity
 import com.makinul.background.remover.ui.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SplashFragment : BaseFragment() {
@@ -30,7 +27,21 @@ class SplashFragment : BaseFragment() {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
 
         viewModel.anonymousAuth.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        (activity as SplashActivity?)?.gotoHomeActivity()
+                    }
 
+                    Status.ERROR -> {
+                        showLog("status Status.ERROR")
+                    }
+
+                    Status.LOADING -> {
+                        showLog("status Status.LOADING")
+                    }
+                }
+            }
         }
 
         return binding.root
@@ -39,10 +50,7 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            delay(2000)
-            (activity as SplashActivity?)?.gotoHomeActivity()
-        }
+        viewModel.createAnonymousAccount()
     }
 
     override fun onDestroyView() {

@@ -495,7 +495,7 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         optionMenu = menu
-        menuInflater.inflate(R.menu.main_top_item_menu, menu)
+        menuInflater.inflate(R.menu.main_activity_top_menu_item, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
