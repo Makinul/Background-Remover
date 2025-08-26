@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />-->
+    <!--    <uses-permission-->
+    <!--        android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
+    <!--        android:maxSdkVersion="32" />-->
+
     <application
         android:name=".base.BgRemoverApp"
         android:allowBackup="true"
@@ -17,44 +22,43 @@
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.BackgroundRemover.SplashScreen">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.Splash"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false"
-            android:label="@string/activity_settings"
-            android:theme="@style/Theme.BackgroundRemover.NoActionBar">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="false"
+            android:icon="@drawable/ic_home_black"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.Home"
+            tools:ignore="LockedOrientationActivity">
+
         </activity>
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:label="@string/activity_main"
-            android:theme="@style/Theme.BackgroundRemover">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover"
+            tools:ignore="LockedOrientationActivity">
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:theme="@style/Theme.BackgroundRemover">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+            android:label="@string/activity_settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BackgroundRemover.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
         </activity>
     </application>
 

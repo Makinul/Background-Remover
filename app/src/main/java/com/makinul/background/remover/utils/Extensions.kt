@@ -309,9 +309,19 @@ object Extensions {
         this.text = context.getString(resourceId)
     }
 
-    fun Int.toAlphaColor(): Int {
+    // more percentage more transparent
+    fun Int.toAlphaColor(percentage: Double): Int {
+        val finalPercentage: Double = if (percentage < 0) {
+            0.0
+        } else if (percentage > 100) {
+            100.0
+        } else {
+            percentage
+        }
+
+        val alpha = (finalPercentage * 255.0).toInt()
         return Color.argb(
-            128,
+            alpha,
             Color.red(this),
             Color.green(this),
             Color.blue(this)

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86066550115",
+    "project_id": "bg-remover-5530d",
+    "storage_bucket": "bg-remover-5530d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86066550115:android:835c3d7c68209fc680ef56",
+        "android_client_info": {
+          "package_name": "com.makinul.background.remover"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvu_Ec-JUVupNhLpfHW9ByX3mDVEhZ0Bs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

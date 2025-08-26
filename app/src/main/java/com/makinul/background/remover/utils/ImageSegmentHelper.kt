@@ -33,7 +33,7 @@ import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
 import java.nio.ByteBuffer
 
 class ImageSegmentHelper(
-    private var currentDelegate: Int = DELEGATE_GPU,
+    private var currentDelegate: Int = DELEGATE_CPU,
     private var runningMode: RunningMode = RunningMode.IMAGE,
     private var currentModel: Int = MODEL_SELFIE_SEGMENTER,
     val context: Context,

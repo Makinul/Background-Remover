@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.makinul.background.remover" />
+                  <option name="mobileSdkAppId" value="1:86066550115:android:835c3d7c68209fc680ef56" />
+                  <option name="projectId" value="bg-remover-5530d" />
+                  <option name="projectNumber" value="86066550115" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

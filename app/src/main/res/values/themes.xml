@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.BackgroundRemover" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.BackgroundRemover" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/color_primary</item>
@@ -10,8 +10,8 @@
         <item name="colorSecondary">@color/color_secondary</item>
         <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
         <item name="colorError">@color/error</item>
-<!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
-<!--        <item name="android:statusBarColor">@color/window_bg</item>-->
+        <!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
+        <!--        <item name="android:statusBarColor">@color/window_bg</item>-->
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/window_bg</item>
@@ -19,7 +19,7 @@
 
     <style name="Theme.BackgroundRemover" parent="Base.Theme.BackgroundRemover" />
 
-    <style name="Theme.BackgroundRemover.SplashScreen" parent="Base.Theme.BackgroundRemover">
+    <style name="Theme.BackgroundRemover.Splash" parent="Theme.BackgroundRemover">
         <!--        <item name="android:windowFullscreen">true</item>-->
         <!--        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>-->
         <!--        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">-->
@@ -32,12 +32,22 @@
         <item name="android:windowBackground">@color/splash_window_bg</item>
     </style>
 
+    <style name="Theme.BackgroundRemover.Home" parent="Base.Theme.BackgroundRemover">
+        <!--        <item name="windowActionBar">true</item>-->
+    </style>
+
+    <style name="Theme.BackgroundRemover.Main" parent="Base.Theme.BackgroundRemover">
+        <!--        <item name="windowActionBar">true</item>-->
+    </style>
+
     <style name="Theme.BackgroundRemover.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.BackgroundRemover.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.BackgroundRemover.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+<!--        <item name="android:icon">@drawable/ic_home_black_24dp</item>-->
+    </style>
 
     <style name="Theme.BackgroundRemover.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

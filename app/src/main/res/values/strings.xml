@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Background Remover</string>
+    <string name="app_name">AI BG Remover</string>
     <!-- Strings used for fragments for navigation -->
     <string name="settings">Settings</string>
     <string name="next">Next</string>
@@ -22,6 +22,7 @@
     <string name="slideshow">Slideshow</string>
 
     <string name="test_message">Test Message</string>
+    <string name="unknown_error">Unknown error, please try again.</string>
 
     <string name="brand_name">VIMIKO</string>
     <string name="splash_fragment">Splash Fragment</string>
@@ -30,4 +31,16 @@
     <string name="upload_image">Upload Image</string>
     <string name="no_image_try_one_of_these">No image? Try one of these:</string>
     <string name="welcome_privacy_policy_message">By uploading an image or URL you agree to our Terms of Service. To learn more about how remove.bg handles your personal data, check our Privacy Policy.</string>
+    <string name="erase">Erase</string>
+    <string name="restore">Restore</string>
+    <string name="brush_size">Brush Size</string>
+    <string name="done">Done</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="your_image_stored_into_your_galley">Your image stored successfully into your galley</string>
+
+
 </resources>

@@ -4,6 +4,9 @@
     <color name="splash_window_bg">#2a2b42</color>
     <color name="dialog_bg">#FFFFFF</color>
 
+    <color name="ic_launcher_background">#6CB0A1</color>
+    <color name="ic_launcher_bg">#7AC3B7</color>
+
     <color name="color_primary">#8BC34A</color>
     <color name="color_primary_variant">#4CAF50</color>
     <color name="color_primary_dark">#009688</color>
@@ -13,7 +16,6 @@
     <color name="error">#CD3100</color>
     <color name="positive">#4CAF50</color>
     <color name="toolbar_background">#E0E0E0</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
     <color name="bottom_sheet_background">#EEEEEE</color>
     <color name="bottom_sheet_text_color">@android:color/black</color>
     <color name="icActive">#FFFFFFFF</color>
@@ -34,6 +36,7 @@
     <color name="light_periwinkle">#D3D5EF</color>
     <color name="light_white">#88FFFFFF</color>
     <color name="light_gray">#E7EBEC</color>
+    <color name="transparent">#00000000</color>
 
     <color name="black">#000000</color>
     <color name="hints_color">#E7EBEC</color>
@@ -192,4 +195,7 @@
     <color name="how_it_works_number">#4CAF50</color>
 
     <color name="app_version_text_color">#03A9F4</color>
+    <color name="erase_stroke_color">#A4A4A4</color>
+    <color name="erase_button_selected">#009688</color>
+    <color name="erase_button_normal">@color/erase_stroke_color</color>
 </resources>
