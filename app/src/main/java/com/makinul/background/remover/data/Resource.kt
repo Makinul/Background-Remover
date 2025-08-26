@@ -1,4 +1,4 @@
-package com.mmh.emmahealth.data
+package com.makinul.background.remover.data
 
 import androidx.annotation.StringRes
 

@@ -1,11 +1,12 @@
 package com.makinul.background.remover.ui.home
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.makinul.background.remover.R
 import com.makinul.background.remover.base.BaseActivity
 import com.makinul.background.remover.databinding.ActivityHomeBinding
@@ -14,8 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeActivity : BaseActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +24,20 @@ class HomeActivity : BaseActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+//        setSupportActionBar(binding.toolbar)
+//        val bottomNavView: BottomNavigationView = binding.bottomNavView
+//        val navController = findNavController(R.id.nav_host_fragment_home)
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+//        appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.home_fragment, R.id.history_fragment, R.id.notifications_fragment
+//            )
+//        )
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        bottomNavView.setupWithNavController(navController)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        updateHomeIcon()
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -46,9 +56,15 @@ class HomeActivity : BaseActivity() {
 //        }
 //    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment_home)
+//        return navController.navigateUp(appBarConfiguration)
+//                || super.onSupportNavigateUp()
+//    }
+
+    fun updateHomeIcon() {
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayShowHomeEnabled(true)
+//        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home_white)
     }
 }

@@ -9,20 +9,15 @@
         android:id="@+id/home_fragment"
         android:name="com.makinul.background.remover.ui.home.HomeFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/history_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/history_fragment"
-        android:name="com.makinul.background.remover.ui.home.HistoryFragment"
+        android:name="com.makinul.background.remover.ui.home.history.HistoryFragment"
         android:label="@string/history"
-        tools:layout="@layout/fragment_history">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/home_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/notifications_fragment"
+        android:name="com.makinul.background.remover.ui.home.notofications.NotificationsFragment"
+        android:label="@string/notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

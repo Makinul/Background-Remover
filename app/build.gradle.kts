@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
+    alias(libs.plugins.google.play.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -14,13 +16,14 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 4
-        versionName = "1.1.1"
+        versionName = "1.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -36,6 +39,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -55,7 +59,6 @@ dependencies {
 
     // media pipe AI
     implementation(libs.mediapipe.tasks.vision)
-    implementation(libs.mediapipe.tasks.text)
 
     // for dependency injection
     implementation(libs.dagger.hilt.android)
@@ -80,13 +83,17 @@ dependencies {
     // coroutines
     implementation(libs.jetbrains.kotlinx.coroutines)
 
-    // for network calling
-    implementation(libs.squareup.retrofit2.retrofit)
-    implementation(libs.squareup.retrofit2.converter.gson)
+    implementation(libs.airbnb.lottie)
 
-    // okhttp for retrofit
-    implementation(libs.squareup.okhttp3.okhttp)
-    implementation(libs.squareup.okhttp3.logging.interceptor)
+    // For Json parsing
+    implementation(libs.google.gson)
+
+    // Import the BoM for the Firebase platform
+    implementation(platform(libs.google.firebase.bom))
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.realtime.database)
 }
 
 // Allow references to generated code

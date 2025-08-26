@@ -20,7 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.makinul.background.remover.utils.AppConstants
 import com.makinul.background.remover.utils.PreferenceHelper
-import com.mmh.emmahealth.data.Event
+import com.makinul.background.remover.data.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
