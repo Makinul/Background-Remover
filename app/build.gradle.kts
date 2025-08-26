@@ -7,18 +7,17 @@ plugins {
 
 android {
     namespace = "com.makinul.background.remover"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.makinul.background.remover"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 36
+        versionCode = 4
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
