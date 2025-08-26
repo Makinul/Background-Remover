@@ -19,11 +19,11 @@ lifecycleViewmodelKtx = "2.9.2"
 activity = "1.10.1"
 retrofit = "3.0.0"
 okhttp = "5.1.0"
-airbnbLottie = "6.6.0"
-googleGson = "2.11.0"
-googlePlayServices = "4.4.2"
-firebaseBomVersion = "33.7.0"
-firebaseCrashlytics = "3.0.2"
+airbnbLottie = "6.6.7"
+googleGson = "2.13.1"
+googlePlayServices = "4.4.3"
+firebaseBomVersion = "34.1.0"
+firebaseCrashlytics = "3.0.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
