@@ -327,7 +327,7 @@ class MainActivity : BaseActivity() {
             imagePath = it.getString(AppConstants.KEY_IMAGE_PATH)
         } ?: run {
             imageType = KEY_IMAGE_TYPE_ASSET
-            imagePath = AppConstants.listOfDemoImagesPath[0]
+            imagePath = AppConstants.listOfDemoImagesPath[4]
         }
     }
 
@@ -379,8 +379,8 @@ class MainActivity : BaseActivity() {
 //            showLog("scaleFactor $scaleFactor")
             minDistance = min(overlayDistancePercentage, imageDistancePercentage) / 2f
         }
-        prepareHelper(bitmap)
-//        prepareImageSegmentation(bitmap)
+//        prepareHelper(bitmap)
+        prepareImageSegmentation(bitmap)
 //        saveBitmapToLocalStorage(bitmap, "New again")
 //        binding.erase.performClick()
     }
@@ -433,15 +433,21 @@ class MainActivity : BaseActivity() {
             bitmapArray, bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888
         )
 
-        binding.imageResult.setImageBitmap(processedBitmap)
+//        binding.imageResult.setImageBitmap(processedBitmap)
     }
 
+    private lateinit var interactiveSegmentationHelper: InteractiveSegmentationHelper
+
     private fun prepareImageSegmentation(rawBitmap: Bitmap) {
-        val interactiveSegmentationHelper = InteractiveSegmentationHelper(
-            context = this@MainActivity, interactiveSegmentationListener
+        interactiveSegmentationHelper = InteractiveSegmentationHelper(
+            context = this@MainActivity,
+            interactiveSegmentationListener
         )
         interactiveSegmentationHelper.setInputImage(
             rawBitmap
+        )
+        interactiveSegmentationHelper.segment(
+            (rawBitmap.width) / 2f, (rawBitmap.height) / 2f
         )
     }
 
@@ -453,12 +459,12 @@ class MainActivity : BaseActivity() {
 
             override fun onResults(result: InteractiveSegmentationHelper.ResultBundle?) {
                 showLog("result $result")
-//
-//                result?.let {
-//                    setMaskResult(
-//                        it.byteBuffer, it.maskWidth, it.maskHeight
-//                    )
-//                }
+
+                result?.let {
+                    setMaskResult(
+                        it.byteBuffer, it.maskWidth, it.maskHeight
+                    )
+                }
             }
         }
 
@@ -470,7 +476,7 @@ class MainActivity : BaseActivity() {
         val pixels = IntArray(byteBuffer.capacity())
         for (i in pixels.indices) {
             val index = byteBuffer.get(i).toInt()
-            val color = if (index == 0) Color.TRANSPARENT else Color.RED
+            val color = if (index == 0) Color.TRANSPARENT else Color.CYAN
             pixels[i] = color
         }
 
@@ -487,7 +493,7 @@ class MainActivity : BaseActivity() {
 //        maskBitmap =
 //            Bitmap.createScaledBitmap(bitmap, scaleWidth, scaleHeight, false)
 //        invalidate()
-        binding.imageResult.setImageBitmap(null)
+        binding.imageResult.setImageBitmap(bitmap)
     }
 
     private var optionMenu: Menu? = null
