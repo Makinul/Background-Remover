@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
 
-        we need add different model image segmentation
+//        we need add different model image segmentation
     }
 
     fun gotoHomeActivity() {
